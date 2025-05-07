@@ -7,6 +7,7 @@ import MasterLayout from "../layout/MasterLayout/MasterLayout";
 import { Product } from "../pages/Products/Product";
 import { Cart } from "../pages/Cart/Cart";
 import { Login } from "../pages/Login/Login";
+import { Register } from "../pages/Register/Register";
 
 const route = createBrowserRouter([
   {
@@ -18,7 +19,8 @@ const route = createBrowserRouter([
       { path: "/about", element: <About /> },
       { path: "/contact", element: <Contact /> },
       { path: "/cart", element: <Cart /> },
-      { path: "/Login", element: <Login /> },
+      { path: "/login", element: <Login /> },
+      { path: "/register", element: <Register /> },
     ],
   },
 ]);
