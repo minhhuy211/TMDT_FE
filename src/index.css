@@ -1,3 +1,8 @@
+@tailwind components;
+@tailwind base;
+@tailwind utilities;
+
+
 :root {
   --font-size-small: 12px;
   --font-size-medium: 16px;
