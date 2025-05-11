@@ -1,4 +1,7 @@
+// src/pages/Products/Product.tsx
+
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 interface Product {
   id: number;
@@ -9,14 +12,16 @@ interface Product {
   description: string;
 }
 
+// Các danh mục sản phẩm
 const categories = ["Tất cả", "Quần áo", "Gia dụng", "Phụ kiện", "Văn phòng phẩm"];
 
-const products = [
+// Dữ liệu mẫu sản phẩm
+const products: Product[] = [
   {
     id: 1,
     name: "Móc treo 3D",
     category: "Gia dụng",
-    image: "/imgs/BST171-400x400.png",  // Đường dẫn hình ảnh từ thư mục public/imgs
+    image: "/imgs/BST171-400x400.png",
     price: "50.000đ",
     description: "Móc treo tiện dụng in bằng công nghệ 3D, chịu lực tốt.",
   },
@@ -24,7 +29,7 @@ const products = [
     id: 2,
     name: "Giá đỡ điện thoại 3D",
     category: "Phụ kiện",
-    image: "/imgs/BST171-400x400.png",  // Đường dẫn hình ảnh từ thư mục public/imgs
+    image: "/imgs/BST171-400x400.png",
     price: "70.000đ",
     description: "Giá đỡ điện thoại nhỏ gọn, thiết kế hiện đại.",
   },
@@ -32,25 +37,102 @@ const products = [
     id: 3,
     name: "Bút ký 3D",
     category: "Văn phòng phẩm",
-    image: "/imgs/BST171-400x400.png",  // Đường dẫn hình ảnh từ thư mục public/imgs
+    image: "/imgs/BST171-400x400.png",
     price: "30.000đ",
     description: "Bút ký độc đáo được in 3D với thiết kế tinh tế.",
   },
   {
     id: 4,
+    name: "Bút ký 3D",
+    category: "Văn phòng phẩm",
+    image: "/imgs/BST171-400x400.png",
+    price: "30.000đ",
+    description: "Bút ký độc đáo được in 3D với thiết kế tinh tế.",
+  },
+  {
+    id: 5,
+    name: "Bút ký 3D",
+    category: "Văn phòng phẩm",
+    image: "/imgs/BST171-400x400.png",
+    price: "30.000đ",
+    description: "Bút ký độc đáo được in 3D với thiết kế tinh tế.",
+  },
+  {
+    id: 6,
+    name: "Bút ký 3D",
+    category: "Văn phòng phẩm",
+    image: "/imgs/BST171-400x400.png",
+    price: "30.000đ",
+    description: "Bút ký độc đáo được in 3D với thiết kế tinh tế.",
+  },
+  {
+    id: 7,
     name: "Móc khóa hoodie 3D",
     category: "Quần áo",
-    image: "/imgs/BST171-400x400.png",  // Đường dẫn hình ảnh từ thư mục public/imgs
+    image: "/imgs/BST171-400x400.png",
     price: "45.000đ",
     description: "Phụ kiện thời trang dành cho fan của hoodie.",
   },
+  {
+    id: 8,
+    name: "Bút ký 3D",
+    category: "Văn phòng phẩm",
+    image: "/imgs/BST171-400x400.png",
+    price: "30.000đ",
+    description: "Bút ký độc đáo được in 3D với thiết kế tinh tế.",
+  },
+  {
+    id: 9,
+    name: "Bút ký 3D",
+    category: "Văn phòng phẩm",
+    image: "/imgs/BST171-400x400.png",
+    price: "30.000đ",
+    description: "Bút ký độc đáo được in 3D với thiết kế tinh tế.",
+  },
+  // Bạn có thể thêm nhiều sản phẩm nữa ở đây
 ];
+
+const CategoryFilter = ({ selectedCategory, setSelectedCategory }: { selectedCategory: string, setSelectedCategory: React.Dispatch<React.SetStateAction<string>> }) => (
+    <div className="flex justify-center gap-4 flex-wrap mb-8">
+      {categories.map((cat) => (
+          <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 
+          ${selectedCategory === cat
+                  ? "bg-indigo-600 text-white shadow-md scale-105" // Highlight selected category
+                  : "bg-gray-200 text-gray-700 hover:bg-indigo-500 hover:text-white border border-indigo-600"} 
+          hover:scale-105`}  // Hover effect
+          >
+            {cat}
+          </button>
+      ))}
+    </div>
+);
+
+// Component hiển thị thông tin sản phẩm
+const ProductCard = ({ product }: { product: Product }) => (
+    <div
+        className="bg-white flex flex-col justify-between p-4 rounded-lg shadow hover:shadow-lg border border-gray-200 cursor-pointer transition h-full"
+    >
+      <img
+          src={product.image}
+          alt={product.name}
+          className="w-full h-48 object-cover rounded-md mb-4"
+      />
+      <div>
+        <h2 className="text-lg font-semibold text-indigo-700">{product.name}</h2>
+        <p className="text-sm text-gray-500">{product.category}</p>
+        <p className="text-indigo-600 font-bold mt-2">{product.price}</p>
+      </div>
+    </div>
+);
 
 export const Product = () => {
   const [selectedCategory, setSelectedCategory] = useState("Tất cả");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
+  // Lọc sản phẩm theo danh mục và từ khóa tìm kiếm
   const filteredProducts = products.filter((product) => {
     const matchCategory = selectedCategory === "Tất cả" || product.category === selectedCategory;
     const matchSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -58,80 +140,42 @@ export const Product = () => {
   });
 
   return (
-      <div className="bg-gray-100 min-h-screen p-6">
-        <h1 className="text-4xl font-bold mb-8 text-center text-indigo-600">Sản phẩm in 3D</h1>
+      <div className="bg-gray-50 min-h-screen">
+        <div className="max-w-screen-xl mx-auto px-6 sm:px-12 xl:px-20">
+          <h1 className="text-4xl font-bold mt-2 mb-10 text-center text-indigo-700">
+            Sản phẩm của chúng tôi thiết kế cho bạn
+          </h1>
 
-        {/* Bộ lọc danh mục */}
-        <div className="flex justify-center gap-6 mb-6 flex-wrap">
-          {categories.map((cat) => (
-              <button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`px-6 py-2 text-lg font-semibold rounded-full transition-all duration-300 ${
-                      selectedCategory === cat
-                          ? "bg-indigo-600 text-white"
-                          : "bg-white text-indigo-600 border-2 border-indigo-600"
-                  } hover:bg-indigo-500 hover:text-white`}
-              >
-                {cat}
-              </button>
-          ))}
-        </div>
 
-        {/* Ô tìm kiếm */}
-        <div className="flex justify-center mb-8">
-          <input
-              type="text"
-              placeholder="Tìm kiếm sản phẩm..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="border-2 border-indigo-600 px-4 py-2 w-full max-w-md rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-600"
-          />
-        </div>
 
-        {/* Danh sách sản phẩm */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8">
-          {filteredProducts.map((product) => (
-              <div
-                  key={product.id}
-                  onClick={() => setSelectedProduct(product)}
-                  className="bg-white border-2 border-indigo-200 p-4 rounded-lg shadow-lg cursor-pointer hover:shadow-2xl transition-all duration-300"
-              >
-                {/* Hình ảnh sản phẩm */}
-                <img
-                    src={product.image}
-                    alt={product.name}
-                    className="mb-4 w-full h-48 object-cover rounded-lg"  // Điều chỉnh chiều cao của hình ảnh
-                />
-                <h2 className="font-semibold text-xl text-indigo-600">{product.name}</h2>
-                <p className="text-sm text-gray-500">{product.category}</p>
-                <p className="font-bold text-lg mt-2">{product.price}</p>
-              </div>
-          ))}
-        </div>
+          {/* Thanh lọc + tìm kiếm */}
+          <div className="flex justify-between mb-10 gap-2 flex-wrap">
+            <CategoryFilter
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+            />
 
-        {/* Popup chi tiết sản phẩm */}
-        {selectedProduct && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white p-6 w-full max-w-md rounded-lg shadow-xl relative">
-                <button
-                    onClick={() => setSelectedProduct(null)}
-                    className="absolute top-2 right-2 text-black text-2xl"
-                >
-                  ×
-                </button>
-                <img
-                    src={selectedProduct.image}
-                    alt={selectedProduct.name}
-                    className="w-full h-64 object-cover rounded-lg mb-4"
-                />
-                <h2 className="text-2xl font-semibold text-indigo-600 mb-2">{selectedProduct.name}</h2>
-                <p className="text-sm text-gray-600 mb-2">{selectedProduct.category}</p>
-                <p className="mb-4">{selectedProduct.description}</p>
-                <p className="font-bold text-xl text-indigo-600">{selectedProduct.price}</p>
-              </div>
+            <div className="flex justify-end">
+              <input
+                  type="text"
+                  placeholder="Tìm kiếm sản phẩm..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="border-1 border-indigo-400 px-2 py-0 text-sm w-48 max-w-xs rounded-md shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              />
             </div>
-        )}
+          </div>
+
+          {/* Danh sách sản phẩm */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {filteredProducts.map((product) => (
+                <Link to={`/product-detail/${product.id}`} key={product.id}>
+                  <ProductCard product={product} />
+                </Link>
+            ))}
+          </div>
+        </div>
       </div>
   );
+
 };

@@ -1,6 +1,11 @@
-@tailwind components;
 @tailwind base;
+@tailwind components;
 @tailwind utilities;
+/* CSS */
+input {
+  height: auto; /* Đảm bảo chiều cao của input phù hợp với nội dung */
+  line-height: 1.5; /* Đảm bảo rằng văn bản không bị trôi ra ngoài */
+}
 
 
 :root {

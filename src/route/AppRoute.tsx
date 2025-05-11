@@ -1,3 +1,5 @@
+// src/route/AppRoute.tsx
+
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { HomePage } from "../pages/Home/HomePage";
@@ -7,6 +9,8 @@ import MasterLayout from "../layout/MasterLayout/MasterLayout";
 import { Product } from "../pages/Products/Product";
 import { Cart } from "../pages/Cart/Cart";
 import { Login } from "../pages/Login/Login";
+import ProductDetail from "../pages/Products/Product-detail";  // Trang chi tiết sản phẩm
+import CheckoutPage from '../pages/Products/CheckoutPage';
 
 const route = createBrowserRouter([
   {
@@ -18,7 +22,11 @@ const route = createBrowserRouter([
       { path: "/about", element: <About /> },
       { path: "/contact", element: <Contact /> },
       { path: "/cart", element: <Cart /> },
-      { path: "/Login", element: <Login /> },
+      { path: "/login", element: <Login /> },
+      { path: "/checkout", element: <CheckoutPage /> },
+
+      // Thêm route cho trang chi tiết sản phẩm
+      { path: "/product-detail/:productId", element: <ProductDetail /> },  // Chú ý là sử dụng :productId để lấy tham số từ URL
     ],
   },
 ]);
