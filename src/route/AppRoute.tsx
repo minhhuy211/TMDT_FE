@@ -12,6 +12,7 @@ import { Login } from "../pages/Login/Login";
 import ProductDetail from "../pages/Products/Product-detail";  // Trang chi tiết sản phẩm
 import CheckoutPage from '../pages/Products/CheckoutPage';
 
+
 const route = createBrowserRouter([
   {
     path: "/",
@@ -24,6 +25,7 @@ const route = createBrowserRouter([
       { path: "/cart", element: <Cart /> },
       { path: "/login", element: <Login /> },
       { path: "/checkout", element: <CheckoutPage /> },
+      { path: "/homepage", element: <HomePage /> },
 
       // Thêm route cho trang chi tiết sản phẩm
       { path: "/product-detail/:productId", element: <ProductDetail /> },  // Chú ý là sử dụng :productId để lấy tham số từ URL
