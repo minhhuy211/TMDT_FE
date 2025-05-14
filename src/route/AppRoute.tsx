@@ -12,6 +12,7 @@ import { Login } from "../pages/Login/Login";
 import ProductDetail from "../pages/Products/Product-detail";  // Trang chi tiết sản phẩm
 import CheckoutPage from '../pages/Products/CheckoutPage';
 import PaymentSuccessPage from "../pages/Products/PaymentSuccessPage"; // Import success page
+import {Register } from "../pages/Register/Register";
 
 const route = createBrowserRouter([
   {
@@ -19,6 +20,7 @@ const route = createBrowserRouter([
     element: <MasterLayout />,
     children: [
       { path: "/", element: <HomePage /> },
+      { path: "/register", element: <Register /> },
       { path: "/product", element: <Product /> },
       { path: "/about", element: <About /> },
       { path: "/contact", element: <Contact /> },
