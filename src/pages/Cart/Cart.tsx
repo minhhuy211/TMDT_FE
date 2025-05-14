@@ -1,7 +1,9 @@
 import { FaTrashAlt } from "react-icons/fa";
 import "./style.scss";
+import {useNavigate} from "react-router-dom";
 
 export const Cart = () => {
+  const navigate  = useNavigate();
   return (
       <div className="cart-container">
         <h2 className="cart-title">🛒 Giỏ Hàng</h2>
@@ -22,7 +24,7 @@ export const Cart = () => {
               <tbody>
               <tr>
                 <td className="product-info">
-                  <img src="/" alt="" />
+                  <img src="public/imgs/BST171-400x400.png" alt="" />
                   <span>Mô hình </span>
                 </td>
                 <td>50.000 VND</td>
@@ -60,6 +62,8 @@ export const Cart = () => {
               <span>Tổng giá trị:</span>
               <span className="highlight">120.000 VND</span>
             </div>
+           
+            <Button onClick={()=>navigate("/checkout")} className="checkout-btn hover:cursor-pointer active:scale-95 transition-all">Thanh Toán</Button>
 
             {/* Nhập mã giảm giá */}
             <div className="discount-code">
@@ -68,6 +72,7 @@ export const Cart = () => {
             </div>
 
             <button className="checkout-btn">Thanh Toán</button>
+
           </div>
 
         </div>
