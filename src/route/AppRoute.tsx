@@ -1,3 +1,4 @@
+
 // src/route/AppRoute.tsx
 
 import React from "react";
@@ -9,10 +10,16 @@ import MasterLayout from "../layout/MasterLayout/MasterLayout";
 import { Product } from "../pages/Products/Product";
 import { Cart } from "../pages/Cart/Cart";
 import { Login } from "../pages/Login/Login";
+
 import ProductDetail from "../pages/Products/Product-detail";  // Trang chi tiết sản phẩm
 import CheckoutPage from '../pages/Products/CheckoutPage';
 import PaymentSuccessPage from "../pages/Products/PaymentSuccessPage"; // Import success page
 import {Register } from "../pages/Register/Register";
+
+import { Register } from "../pages/Register/Register";
+import Dashboard from "@/components/admin/Dashboard";
+import PageAdmin from "@/pages/admin/PageAdmin";
+
 
 const route = createBrowserRouter([
   {
@@ -26,14 +33,27 @@ const route = createBrowserRouter([
       { path: "/contact", element: <Contact /> },
       { path: "/cart", element: <Cart /> },
       { path: "/login", element: <Login /> },
+
       { path: "/checkout", element: <CheckoutPage /> },
       { path: "/homepage", element: <HomePage /> },
       { path: "/successPayment", element: <PaymentSuccessPage /> }, // Route for payment success
 
       // Thêm route cho trang chi tiết sản phẩm
       { path: "/product-detail/:productId", element: <ProductDetail /> },
+
+      { path: "/register", element: <Register /> },
+      
+
     ],
   },
+  {
+    path: "/admin",
+    element: <PageAdmin />,
+    children: [
+      {path: "/admin", element: <Dashboard />},
+      {path: "/admin/customer", element: <Product />},
+    ],
+  }
 ]);
 
 const AppRoute = () => <RouterProvider router={route} />;
