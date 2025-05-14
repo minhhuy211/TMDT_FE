@@ -1,4 +1,3 @@
-import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { HomePage } from "../pages/Home/HomePage";
 import { About } from "../pages/About/About";
@@ -8,6 +7,8 @@ import { Product } from "../pages/Products/Product";
 import { Cart } from "../pages/Cart/Cart";
 import { Login } from "../pages/Login/Login";
 import { Register } from "../pages/Register/Register";
+import Dashboard from "@/components/admin/Dashboard";
+import PageAdmin from "@/pages/admin/PageAdmin";
 
 const route = createBrowserRouter([
   {
@@ -21,8 +22,17 @@ const route = createBrowserRouter([
       { path: "/cart", element: <Cart /> },
       { path: "/login", element: <Login /> },
       { path: "/register", element: <Register /> },
+      
     ],
   },
+  {
+    path: "/admin",
+    element: <PageAdmin />,
+    children: [
+      {path: "/admin", element: <Dashboard />},
+      {path: "/admin/customer", element: <Product />},
+    ],
+  }
 ]);
 
 const AppRoute = () => <RouterProvider router={route} />;
