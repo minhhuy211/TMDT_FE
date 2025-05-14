@@ -1,12 +1,10 @@
-import { Button } from "../../components/ui/button";
-import { Input } from "../../components/ui/input";
 import { FaTrashAlt } from "react-icons/fa";
 import "./style.scss";
 
 export const Cart = () => {
   return (
       <div className="cart-container">
-        <h2 className="cart-title">🛒 Giỏ Hàng Của Bạn</h2>
+        <h2 className="cart-title">🛒 Giỏ Hàng</h2>
 
         <div className="cart-content">
           {/* Danh sách sản phẩm */}
@@ -42,14 +40,14 @@ export const Cart = () => {
             </table>
 
             <div className="cart-actions">
-
-              <Button variant="outline">Tiếp tục mua sắm</Button>
+              <button className="outline-btn">Tiếp tục mua sắm</button>
             </div>
           </div>
 
           {/* Tổng đơn hàng */}
           <div className="cart-summary shadow-card">
             <h3>Tổng đơn hàng</h3>
+
             <div className="summary-row">
               <span>Tổng tiền hàng:</span>
               <span>100.000 VND</span>
@@ -62,7 +60,14 @@ export const Cart = () => {
               <span>Tổng giá trị:</span>
               <span className="highlight">120.000 VND</span>
             </div>
-            <Button className="checkout-btn">Thanh Toán</Button>
+
+            {/* Nhập mã giảm giá */}
+            <div className="discount-code">
+              <input type="text" placeholder="Nhập mã giảm giá"/>
+              <button className="apply-btn">Áp dụng</button>
+            </div>
+
+            <button className="checkout-btn">Thanh Toán</button>
           </div>
 
         </div>
