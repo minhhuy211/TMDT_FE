@@ -1,85 +1,109 @@
+// src/pages/Products/CheckoutPage.tsx
+
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
+import ConfirmationModal from '../../components/modal/ConfirmationModal'; // Import the modal component
 
 const CheckoutPage = () => {
     const [name, setName] = useState('');
     const [address, setAddress] = useState('');
     const [phone, setPhone] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('Credit Card');
+    const [isModalOpen, setIsModalOpen] = useState(false); // State to control the modal visibility
+    const navigate = useNavigate(); // Initialize navigate hook
 
-    // Xử lý form submit
+    // Handle form submit
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Logic xử lý thanh toán (Ví dụ: gửi API hoặc đơn giản là in ra console)
+        setIsModalOpen(true); // Open the modal when form is submitted
+    };
+
+    // Handle confirmation
+    const handleConfirm = () => {
         console.log({ name, address, phone, paymentMethod });
-        alert('Thanh toán thành công!');
+        setIsModalOpen(false); // Close the modal
+        navigate('/successPayment'); // Redirect to success page
+    };
+
+    // Handle cancellation
+    const handleCancel = () => {
+        setIsModalOpen(false); // Close the modal
     };
 
     return (
-        <div className="w-full max-w-lg mx-auto px-8 py-12">
-        <h1 className="text-3xl font-bold text-indigo-700 text-center mb-6">Thông tin thanh toán</h1>
-    <form onSubmit={handleSubmit} className="space-y-4">
-    {/* Tên người mua */}
-    <div>
-    <label className="block text-lg text-gray-700">Họ và tên:</label>
-    <input
-    type="text"
-    value={name}
-    onChange={(e) => setName(e.target.value)}
-    className="w-full px-4 py-2 border border-gray-300 rounded-md"
-    required
-    />
-    </div>
+        <div className="w-full max-w-lg mx-auto px-8 py-12 bg-white">
+            <h1 className="text-3xl font-bold text-black text-center mb-6">Thông tin thanh toán</h1>
+            <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Name */}
+                <div>
+                    <label className="block text-lg text-black">Họ và tên:</label>
+                    <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className="w-full px-4 py-2 border border-black rounded-md bg-white text-black"
+                        required
+                    />
+                </div>
 
-    {/* Địa chỉ */}
-    <div>
-        <label className="block text-lg text-gray-700">Địa chỉ giao hàng:</label>
-    <input
-    type="text"
-    value={address}
-    onChange={(e) => setAddress(e.target.value)}
-    className="w-full px-4 py-2 border border-gray-300 rounded-md"
-    required
-    />
-    </div>
+                {/* Address */}
+                <div>
+                    <label className="block text-lg text-black">Địa chỉ giao hàng:</label>
+                    <input
+                        type="text"
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                        className="w-full px-4 py-2 border border-black rounded-md bg-white text-black"
+                        required
+                    />
+                </div>
 
-    {/* Số điện thoại */}
-    <div>
-        <label className="block text-lg text-gray-700">Số điện thoại:</label>
-    <input
-    type="tel"
-    value={phone}
-    onChange={(e) => setPhone(e.target.value)}
-    className="w-full px-4 py-2 border border-gray-300 rounded-md"
-    required
-    />
-    </div>
+                {/* Phone Number */}
+                <div>
+                    <label className="block text-lg text-black">Số điện thoại:</label>
+                    <input
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        className="w-full px-4 py-2 border border-black rounded-md bg-white text-black"
+                        required
+                    />
+                </div>
 
-    {/* Phương thức thanh toán */}
-    <div>
-        <label className="block text-lg text-gray-700">Phương thức thanh toán:</label>
-    <select
-    value={paymentMethod}
-    onChange={(e) => setPaymentMethod(e.target.value)}
-    className="w-full px-4 py-2 border border-gray-300 rounded-md"
-    >
-    <option value="Credit Card">Thẻ tín dụng</option>
-    <option value="PayPal">PayPal</option>
-        <option value="COD">Thanh toán khi nhận hàng</option>
-    </select>
-    </div>
+                {/* Payment Method */}
+                <div>
+                    <label className="block text-lg text-black">Phương thức thanh toán:</label>
+                    <select
+                        value={paymentMethod}
+                        onChange={(e) => setPaymentMethod(e.target.value)}
+                        className="w-full px-4 py-2 border border-black rounded-md bg-white text-black"
+                    >
+                        <option value="Credit Card">Thẻ tín dụng</option>
+                        <option value="PayPal">PayPal</option>
+                        <option value="COD">Thanh toán khi nhận hàng</option>
+                    </select>
+                </div>
 
-    {/* Nút gửi */}
-    <div className="mt-6">
-    <button
-        type="submit"
-    className="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-md"
-        >
-        Thanh toán
-    </button>
-    </div>
-    </form>
-    </div>
-);
+                {/* Submit Button */}
+                <div className="mt-6">
+                    <button
+                        type="submit"
+                        className="w-full bg-black text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-800"
+                    >
+                        Thanh toán
+                    </button>
+                </div>
+            </form>
+
+            {/* Confirmation Modal */}
+            <ConfirmationModal
+                isOpen={isModalOpen}
+                onConfirm={handleConfirm}
+                onCancel={handleCancel}
+                details={{ name, address, phone, paymentMethod }}
+            />
+        </div>
+    );
 };
 
 export default CheckoutPage;

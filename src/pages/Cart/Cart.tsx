@@ -2,8 +2,10 @@ import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { FaTrashAlt } from "react-icons/fa";
 import "./style.scss";
+import {useNavigate} from "react-router-dom";
 
 export const Cart = () => {
+  const navigate  = useNavigate();
   return (
       <div className="cart-container">
         <h2 className="cart-title">🛒 Giỏ Hàng Của Bạn</h2>
@@ -24,7 +26,7 @@ export const Cart = () => {
               <tbody>
               <tr>
                 <td className="product-info">
-                  <img src="/" alt="" />
+                  <img src="public/imgs/BST171-400x400.png" alt="" />
                   <span>Mô hình </span>
                 </td>
                 <td>50.000 VND</td>
@@ -62,7 +64,7 @@ export const Cart = () => {
               <span>Tổng giá trị:</span>
               <span className="highlight">120.000 VND</span>
             </div>
-            <Button className="checkout-btn">Thanh Toán</Button>
+            <Button onClick={()=>navigate("/checkout")} className="checkout-btn hover:cursor-pointer active:scale-95 transition-all">Thanh Toán</Button>
           </div>
 
         </div>

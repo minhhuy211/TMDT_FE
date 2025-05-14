@@ -11,7 +11,7 @@ import { Cart } from "../pages/Cart/Cart";
 import { Login } from "../pages/Login/Login";
 import ProductDetail from "../pages/Products/Product-detail";  // Trang chi tiết sản phẩm
 import CheckoutPage from '../pages/Products/CheckoutPage';
-
+import PaymentSuccessPage from "../pages/Products/PaymentSuccessPage"; // Import success page
 
 const route = createBrowserRouter([
   {
@@ -26,9 +26,10 @@ const route = createBrowserRouter([
       { path: "/login", element: <Login /> },
       { path: "/checkout", element: <CheckoutPage /> },
       { path: "/homepage", element: <HomePage /> },
+      { path: "/successPayment", element: <PaymentSuccessPage /> }, // Route for payment success
 
       // Thêm route cho trang chi tiết sản phẩm
-      { path: "/product-detail/:productId", element: <ProductDetail /> },  // Chú ý là sử dụng :productId để lấy tham số từ URL
+      { path: "/product-detail/:productId", element: <ProductDetail /> },
     ],
   },
 ]);
