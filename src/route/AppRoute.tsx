@@ -14,8 +14,6 @@ import { Login } from "../pages/Login/Login";
 import ProductDetail from "../pages/Products/Product-detail";  // Trang chi tiết sản phẩm
 import CheckoutPage from '../pages/Products/CheckoutPage';
 import PaymentSuccessPage from "../pages/Products/PaymentSuccessPage"; // Import success page
-import {Register } from "../pages/Register/Register";
-
 import { Register } from "../pages/Register/Register";
 import Dashboard from "@/components/admin/Dashboard";
 import PageAdmin from "@/pages/admin/PageAdmin";
