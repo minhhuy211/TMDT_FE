@@ -62,8 +62,13 @@ export const Cart = () => {
               <span>Tổng giá trị:</span>
               <span className="highlight">120.000 VND</span>
             </div>
-           
-            <Button onClick={()=>navigate("/checkout")} className="checkout-btn hover:cursor-pointer active:scale-95 transition-all">Thanh Toán</Button>
+
+            <button
+                onClick={() => navigate("/checkout")}
+                className="checkout-btn hover:cursor-pointer active:scale-95 transition-all"
+            >
+              Thanh Toán
+            </button>
 
             {/* Nhập mã giảm giá */}
             <div className="discount-code">

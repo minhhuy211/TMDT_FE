@@ -32,6 +32,7 @@ const products: Product[] = [
     price: "70.000đ",
     description: "Giá đỡ điện thoại nhỏ gọn, thiết kế hiện đại.",
   },
+
   // Thêm các sản phẩm khác...
 ];
 

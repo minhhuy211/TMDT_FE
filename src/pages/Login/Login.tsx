@@ -23,10 +23,13 @@ export const Login = () => {
             <Input type="password" placeholder="Mật khẩu" className="w-full text-black" />
           </div>
 
-          {/* Forgot password */}
-          <div className="text-right text-sm text-gray-700 hover:underline mt-2 cursor-pointer">
+          <Link
+              to="/forgot-password"
+              className="text-right text-sm text-gray-700 hover:underline mt-2 cursor-pointer block"
+          >
             Quên mật khẩu?
-          </div>
+          </Link>
+
 
           {/* Login button */}
           <Button className="w-full bg-black text-white mt-4 hover:bg-gray-800 font-semibold">

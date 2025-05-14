@@ -19,28 +19,47 @@ const Header = () => {
               <img src={logo} alt="Triple D Logo" width={40} height={40} />
             </Link>
             <nav className="hidden md:flex items-center gap-6">
-              <Link to="#" className="text-sm font-medium">
+              <Link to="/homepage" className="text-sm font-medium">
                 Trang chủ
               </Link>
-              <Link to="#" className="text-sm font-medium">
+              <Link to="/product" className="text-sm font-medium">
                 Sản phẩm
               </Link>
-              <Link to="#" className="text-sm font-medium">
+              <Link to="/about" className="text-sm font-medium">
                 Dịch vụ
               </Link>
-              <Link to="#" className="text-sm font-medium">
+              <Link to="/contact" className="text-sm font-medium">
                 Liên hệ
               </Link>
             </nav>
           </div>
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon">
-              <ShoppingCart className="h-5 w-5" />
-            </Button>
-            <Button variant="ghost" size="icon" onClick={handleLogin}>
-              <User className="h-5 w-5" />
+            {/* Nút giỏ hàng */}
+            <div className="relative">
+              <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => navigate("/cart")}
+                  className="hover:bg-gray-100 active:scale-95 transition-all cursor-pointer"
+              >
+                <ShoppingCart className="h-5 w-5 text-gray-800" />
+              </Button>
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5">
+      3
+    </span>
+            </div>
+
+            {/* Nút đăng nhập / người dùng */}
+            <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleLogin}
+                className="hover:bg-gray-100 active:scale-95 transition-all cursor-pointer"
+            >
+              <User className="h-5 w-5 text-gray-800" />
             </Button>
           </div>
+
         </div>
       </header>
     </>

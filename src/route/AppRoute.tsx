@@ -17,13 +17,14 @@ import PaymentSuccessPage from "../pages/Products/PaymentSuccessPage"; // Import
 import { Register } from "../pages/Register/Register";
 import Dashboard from "@/components/admin/Dashboard";
 import PageAdmin from "@/pages/admin/PageAdmin";
-
+import {ForgotPassword} from "@/pages/ForgetPassword/ForgotPassword.tsx";
 
 const route = createBrowserRouter([
   {
     path: "/",
     element: <MasterLayout />,
     children: [
+      {path: "/forgot-password", element: <ForgotPassword/>},
       { path: "/", element: <HomePage /> },
       { path: "/register", element: <Register /> },
       { path: "/product", element: <Product /> },
