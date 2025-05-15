@@ -63,12 +63,6 @@ export const Cart = () => {
               <span className="highlight">120.000 VND</span>
             </div>
 
-            <button
-                onClick={() => navigate("/checkout")}
-                className="checkout-btn hover:cursor-pointer active:scale-95 transition-all"
-            >
-              Thanh Toán
-            </button>
 
             {/* Nhập mã giảm giá */}
             <div className="discount-code">
@@ -76,7 +70,12 @@ export const Cart = () => {
               <button className="apply-btn">Áp dụng</button>
             </div>
 
-            <button className="checkout-btn">Thanh Toán</button>
+            <button
+                onClick={() => navigate("/checkout")}
+                className="checkout-btn hover:cursor-pointer active:scale-95 transition-all"
+            >
+              Thanh Toán
+            </button>
 
           </div>
 
