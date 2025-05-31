@@ -2,6 +2,7 @@ import { FaTrashAlt } from "react-icons/fa";
 import "./style.scss";
 import {useNavigate} from "react-router-dom";
 
+
 export const Cart = () => {
   const navigate  = useNavigate();
   return (
@@ -78,6 +79,13 @@ export const Cart = () => {
 
             <button className="checkout-btn">Thanh Toán</button>
 
+            {/* Nút xem lịch sử đơn hàng */}
+            <button
+                onClick={() => navigate("/order-history")}
+                className="outline-btn hover:cursor-pointer active:scale-95 transition-all"
+            >
+              Xem Lịch Sử Đơn Hàng
+            </button>
           </div>
 
         </div>

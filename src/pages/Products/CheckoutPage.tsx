@@ -81,7 +81,21 @@ const CheckoutPage = () => {
                         <option value="Credit Card">Thẻ tín dụng</option>
                         <option value="PayPal">PayPal</option>
                         <option value="COD">Thanh toán khi nhận hàng</option>
+                        <option value="QRCode">Quét mã QR</option>
                     </select>
+
+                    {paymentMethod === 'QRCode' && (
+                        <div className="mt-4 text-center">
+                            <p className="text-black mb-2">Quét mã QR để thanh toán:</p>
+                            <img
+                                src="/imgs/sample-qr.png"
+                                alt="QR Code"
+                                className="mx-auto w-48 h-48 border border-black p-2 bg-white"
+                            />
+                            <p className="text-sm text-gray-600 mt-2">Vui lòng quét mã bằng MoMo, VNPay hoặc ứng dụng ngân hàng của bạn.</p>
+                        </div>
+                    )}
+
                 </div>
 
                 {/* Submit Button */}
