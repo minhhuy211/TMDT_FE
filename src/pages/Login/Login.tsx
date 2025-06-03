@@ -1,63 +1,72 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import { FaFacebook, FaGoogle, FaInstagram, FaPrint } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useUser } from "@/context/UserContext";
 
 export const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [toast, setToast] = useState<{ type: "success" | "error"; message: string } | null>(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
+  const { setUsername } = useUser();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const showToast = (type: "success" | "error", message: string) => {
+    setToast({ type, message });
+    setTimeout(() => setToast(null), 3000);
   };
 
   const handleSubmit = async () => {
     setError("");
+    if (!form.email || !form.password) {
+      setError("Vui lòng nhập đầy đủ thông tin");
+      showToast("error", "Vui lòng nhập đầy đủ thông tin");
+      return;
+    }
+
+    setLoading(true);
+
     try {
-      const response = await axios.post("http://localhost:8080/api/auth/login", form);
-      const token = response.data.result.token;
-      const username = response.data.result.username;  // Lấy username từ response
+      const { data } = await axios.post("http://localhost:8080/api/auth/login", form);
+      const token = data.result.token;
+      const username = data.result.username;
 
       localStorage.setItem("token", token);
-      localStorage.setItem("username", username);       // Lưu username vào localStorage
+      localStorage.setItem("username", username);
 
-      console.log(username);
-      // Hiện toast thành công
-      setToast({ type: "success", message: "Đăng nhập thành công!" });
+      setUsername(username); // set username trong context để Header nhận
 
-      // Tự động ẩn toast sau 3s và chuyển hướng
-      setTimeout(() => {
-        setToast(null);
-        navigate("/homepage");
-      }, 3000);
+      showToast("success", "Đăng nhập thành công!");
+      setTimeout(() => navigate("/homepage"), 3000);
     } catch (err: any) {
-      setError(err.response?.data?.message || "Đăng nhập thất bại");
-
-      // Hiện toast lỗi
-      setToast({ type: "error", message: err.response?.data?.message || "Đăng nhập thất bại" });
-      setTimeout(() => setToast(null), 3000);
+      const msg = err.response?.data?.message || "Đăng nhập thất bại";
+      setError(msg);
+      showToast("error", msg);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-300 px-4 relative">
-
         {toast && (
             <div
                 className={`fixed top-5 right-5 px-6 py-3 rounded shadow-lg text-white font-semibold
-      ${toast.type === "success" ? "bg-green-500" : "bg-red-500"}
-      animate-slideBounce
-    `}
+            ${toast.type === "success" ? "bg-green-500" : "bg-red-500"}
+            animate-slideBounce
+          `}
                 style={{ zIndex: 1000 }}
             >
               {toast.message}
             </div>
         )}
-
 
         <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md">
           <div className="text-center mb-8">
@@ -72,19 +81,21 @@ export const Login = () => {
           <div className="space-y-4">
             <Input
                 name="email"
+                type="email"
                 placeholder="Email"
-                className="w-full text-black"
                 value={form.email}
                 onChange={handleChange}
-                type="email"
+                className="w-full text-black"
+                disabled={loading}
             />
             <Input
-                type="password"
                 name="password"
+                type="password"
                 placeholder="Mật khẩu"
-                className="w-full text-black"
                 value={form.password}
                 onChange={handleChange}
+                className="w-full text-black"
+                disabled={loading}
             />
           </div>
 
@@ -100,8 +111,9 @@ export const Login = () => {
           <Button
               onClick={handleSubmit}
               className="w-full bg-black text-white mt-4 hover:bg-gray-800 font-semibold"
+              disabled={loading}
           >
-            Đăng nhập
+            {loading ? "Đang đăng nhập..." : "Đăng nhập"}
           </Button>
 
           <div className="text-center text-sm mt-4">
