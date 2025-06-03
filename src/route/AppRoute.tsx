@@ -16,6 +16,7 @@ import ProductDetail from "../pages/Products/Product-detail";  // Trang chi tiáº
 import CheckoutPage from '../pages/Products/CheckoutPage';
 import PaymentSuccessPage from "../pages/Products/PaymentSuccessPage"; // Import success page
 // import NotificationsPage from "../account/NotificationsPage";
+import { VerifyEmail } from "../pages/Register/VerifyEmail.tsx";
 
 import { Register } from "../pages/Register/Register";
 import Dashboard from "@/components/admin/Dashboard";
@@ -31,6 +32,8 @@ const route = createBrowserRouter([
     path: "/",
     element: <MasterLayout />,
     children: [
+      { path: "/verify", element: <VerifyEmail /> },
+
       { path: "/address", element: <AddressPage /> },
       // {path :"/notifications", element: <NotificationsPage />},
       { path : "/order-history", element: <OrderHistory />},
