@@ -60,20 +60,19 @@ const Sidebar: React.FC = React.memo(() => {
                         </NavLink>
                     </div>
                     <div className="border p-4 rounded-lg shadow-sm">
+                        <NavLink to="/order-history" className={({ isActive }) => `${linkClass} ${isActive ? activeClass : ''}`}>
+
                         <div className={linkClass}>
                             <FiShoppingBag /> Đơn Mua
                         </div>
+                        </NavLink>
                     </div>
                     <div className="border p-4 rounded-lg shadow-sm">
                         <div className={linkClass}>
                             <FiTag /> Kho Voucher
                         </div>
                     </div>
-                    <div className="border p-4 rounded-lg shadow-sm">
-                        <div className={linkClass}>
-                            <FiGift /> Shopee Xu
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </aside>
