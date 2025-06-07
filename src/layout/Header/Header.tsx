@@ -4,8 +4,11 @@ import { Button } from "@/components/ui/button";
 import { ShoppingCart, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useUser } from "@/context/UserContext";
+import { useDispatch } from 'react-redux';
+import {logoutUser} from "@/store/features/userSlice.tsx";
 
 const Header = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { username, setUsername } = useUser();
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -18,6 +21,7 @@ const Header = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("username");
+    dispatch(logoutUser());
     setUsername(null);
     setDropdownOpen(false);  // **đóng dropdown khi logout**
     navigate("/login");

@@ -1,7 +1,4 @@
 
-// src/route/AppRoute.tsx
-
-import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { HomePage } from "../pages/Home/HomePage";
 import { About } from "../pages/About/About";

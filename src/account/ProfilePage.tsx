@@ -1,23 +1,30 @@
-import React, { useState } from 'react';
-import Sidebar from './sidebar'; // Ensure the path is correct
+import React, {useEffect, useState} from 'react';
+import Sidebar from './sidebar';
+import { useSelector } from "react-redux";
+import {selectUserInfo} from "@/store/features/userSlice.tsx"; // Ensure the path is correct
 
 const ProfilePage: React.FC = () => {
-    const [username] = useState('ngquananhkhoa');
-    const [email, setEmail] = useState('21******@st.hcmuaf.edu.vn');
-    const [gender, setGender] = useState('Nam');
+    const userInfo = useSelector(selectUserInfo);
     const [dob, setDob] = useState('');
     const [avatar, setAvatar] = useState<File | null>(null);
+
+
+    useEffect(() => {
+        if (userInfo?.dob) {
+            setDob(userInfo.dob);
+        }
+    }, [userInfo]);
+    const handleSave = () => {
+        alert('Đã lưu thông tin!');
+    };
+
+
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             setAvatar(e.target.files[0]);
         }
     };
-
-    const handleSave = () => {
-        alert('Đã lưu thông tin!');
-    };
-
     return (
         <div className="min-h-screen bg-gray-100 flex">
             {/* Sidebar bên trái */}
@@ -35,11 +42,10 @@ const ProfilePage: React.FC = () => {
                         <label className="block font-semibold text-black">Tên đăng nhập</label>
                         <input
                             type="text"
-                            value={username}
+                            value={userInfo.username || ''}
                             disabled
                             className="w-full p-2 border border-gray-400 rounded bg-gray-100 text-black"
                         />
-                        <p className="text-xs text-gray-500">Tên đăng nhập chỉ có thể thay đổi một lần.</p>
                     </div>
 
                     <div>
@@ -47,41 +53,37 @@ const ProfilePage: React.FC = () => {
                         <div className="flex space-x-2">
                             <input
                                 type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                value={userInfo.email || ""}
+                                disabled
                                 className="flex-1 p-2 border border-gray-400 rounded text-black"
                             />
-                            <button className="bg-black text-white px-4 rounded hover:bg-gray-800">Thay đổi</button>
                         </div>
                     </div>
 
                     <div>
                         <label className="block font-semibold text-black">Số điện thoại</label>
-                        <button className="p-2 border border-black rounded text-sm text-black hover:bg-gray-200">Thêm</button>
+                        {userInfo.phoneNumber ? (
+                            <input
+                                type="text"
+                                value={userInfo.phoneNumber}
+                                disabled
+                                className="w-full p-2 border border-gray-400 rounded text-black bg-gray-100"
+                            />
+                        ) : (
+                            <button
+                                className="p-2 border border-black rounded text-sm text-black hover:bg-gray-200"
+                            >
+                                Thêm
+                            </button>
+                        )}
                     </div>
 
-                    <div>
-                        <label className="block font-semibold text-black">Giới tính</label>
-                        <div className="flex gap-4">
-                            {['Nam', 'Nữ', 'Khác'].map((g) => (
-                                <label key={g} className="flex items-center gap-1 text-black">
-                                    <input
-                                        type="radio"
-                                        value={g}
-                                        checked={gender === g}
-                                        onChange={() => setGender(g)}
-                                    />
-                                    {g}
-                                </label>
-                            ))}
-                        </div>
-                    </div>
 
                     <div>
                         <label className="block font-semibold text-black">Ngày sinh</label>
                         <input
                             type="date"
-                            value={dob}
+                            value={userInfo.dob || ""}
                             onChange={(e) => setDob(e.target.value)}
                             className="w-full p-2 border border-gray-400 rounded text-black"
                         />
@@ -90,7 +92,7 @@ const ProfilePage: React.FC = () => {
                     <div className="flex items-start gap-6 mt-4">
                         <div>
                             <label className="block font-semibold text-black mb-2">Ảnh đại diện</label>
-                            <input type="file" accept=".png,.jpg,.jpeg" onChange={handleFileChange} />
+                            <input type="file" accept=".png,.jpg,.jpeg" onChange={handleFileChange}/>
                             <p className="text-xs text-gray-500 mt-1">
                                 Dung lượng tối đa 1 MB. Định dạng: .JPEG, .PNG
                             </p>

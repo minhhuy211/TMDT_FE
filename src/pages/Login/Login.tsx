@@ -5,8 +5,12 @@ import { FaFacebook, FaGoogle, FaInstagram, FaPrint } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useUser } from "@/context/UserContext";
+import {fetchUserDetails} from "@/api/userInfo.tsx";
+import {loadUserInfo} from "@/store/features/userSlice.tsx";
+import { useDispatch } from "react-redux";
 
 export const Login = () => {
+  const dispatch = useDispatch();
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [toast, setToast] = useState<{ type: "success" | "error"; message: string } | null>(null);
@@ -35,16 +39,20 @@ export const Login = () => {
 
     try {
       const { data } = await axios.post("http://localhost:8080/api/auth/login", form);
-      const token = data.result.token;
-      const username = data.result.username;
+      if(data){
+        const token = data.result.token;
+        const username = data.result.username;
 
-      localStorage.setItem("token", token);
-      localStorage.setItem("username", username);
+        localStorage.setItem("token", token);
+        localStorage.setItem("username", username);
 
-      setUsername(username); // set username trong context để Header nhận
+        setUsername(username); // set username trong context để Header nhận
+        const user = await fetchUserDetails();
+        dispatch(loadUserInfo(user));
+        showToast("success", "Đăng nhập thành công!");
+        setTimeout(() => navigate("/homepage"), 3000);
+      }
 
-      showToast("success", "Đăng nhập thành công!");
-      setTimeout(() => navigate("/homepage"), 3000);
     } catch (err: any) {
       const msg = err.response?.data?.message || "Đăng nhập thất bại";
       setError(msg);
