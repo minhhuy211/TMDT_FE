@@ -3,13 +3,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Check, CircleX, ShoppingCart } from "lucide-react";
 
 type ProductAPI = {
-  productId: number;
+  productId: string;
   categoryName: string;
   productName: string;
   description: string;
   price: number;
   stock: number;
-  img: string;
+  imgUrl: string;
 };
 
 const ProductDetail = () => {
@@ -44,7 +44,7 @@ const ProductDetail = () => {
         .then((data) => {
           // Tìm product theo productId trong param
           const prod = data.result.find(
-              (p: ProductAPI) => p.productId.toString() === productId
+              (p: ProductAPI) => p.productId === productId
           );
           if (!prod) {
             setError("Không tìm thấy sản phẩm.");
@@ -89,7 +89,7 @@ const ProductDetail = () => {
     const cartItem = {
       id: product.productId,
       name: product.productName,
-      image: product.img,
+      image: product.imgUrl,
       quantity,
       color: selectedColor,
       printLocation: selectedPrintLocation,
@@ -122,7 +122,7 @@ const ProductDetail = () => {
                 </h2>
                 <div className="flex items-center justify-center gap-4 mb-4">
                   <img
-                      src={product.img}
+                      src={product.imgUrl}
                       alt={product.productName}
                       className="w-16 h-16 object-cover rounded-lg"
                   />
@@ -168,14 +168,14 @@ const ProductDetail = () => {
         <div className="flex flex-col lg:flex-row gap-12">
           <div className="flex flex-col lg:w-2/5 gap-4">
             <img
-                src={product.img}
+                src={product.imgUrl}
                 alt={product.productName}
                 className="w-full h-96 object-cover rounded-lg shadow-md border border-gray-300"
             />
             {/* Nếu có nhiều ảnh thì map tương tự, hiện demo chỉ có 1 */}
             <div className="flex gap-4 overflow-x-auto pb-4">
               <img
-                  src={product.img}
+                  src={product.imgUrl}
                   alt={product.productName}
                   className="w-24 h-24 object-cover rounded-lg cursor-pointer border border-gray-300"
               />
