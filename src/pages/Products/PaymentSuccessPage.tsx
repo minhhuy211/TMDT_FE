@@ -1,7 +1,3 @@
-// src/pages/Products/PaymentSuccessPage.tsx
-
-import React from 'react';
-
 const PaymentSuccessPage = () => {
     return (
         <div className="w-full max-w-lg mx-auto px-8 py-12 bg-white">

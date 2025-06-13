@@ -277,7 +277,7 @@ const ProductDetail = () => {
           </div>
         </div>
 
-        {/* Phần đánh giá có thể giữ nguyên hoặc tạm ẩn nếu API không có */}
+
       </div>
   );
 };
