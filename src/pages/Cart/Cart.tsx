@@ -3,6 +3,7 @@ import "./style.scss";
 import {useNavigate} from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
+
 export const Cart = () => {
   const navigate  = useNavigate();
   return (
@@ -63,8 +64,7 @@ export const Cart = () => {
               <span>Tổng giá trị:</span>
               <span className="highlight">120.000 VND</span>
             </div>
-           
-            <Button onClick={()=>navigate("/checkout")} className="checkout-btn hover:cursor-pointer active:scale-95 transition-all">Thanh Toán</Button>
+
 
             {/* Nhập mã giảm giá */}
             <div className="discount-code">
@@ -72,8 +72,20 @@ export const Cart = () => {
               <button className="apply-btn">Áp dụng</button>
             </div>
 
-            <button className="checkout-btn">Thanh Toán</button>
+            <button
+                onClick={() => navigate("/checkout")}
+                className="checkout-btn hover:cursor-pointer active:scale-95 transition-all"
+            >
+              Thanh Toán
+            </button>
 
+            {/* Nút xem lịch sử đơn hàng */}
+            <button
+                onClick={() => navigate("/order-history")}
+                className="outline-btn hover:cursor-pointer active:scale-95 transition-all"
+            >
+              Xem Lịch Sử Đơn Hàng
+            </button>
           </div>
 
         </div>
