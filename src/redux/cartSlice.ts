@@ -1,4 +1,5 @@
 // redux/cartSlice.ts
+import { CartItemResponse, CartResponse } from "@/model/Cart";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 interface CartState {
