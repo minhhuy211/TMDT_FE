@@ -10,11 +10,6 @@ const Header = () => {
   const { username, setUsername } = useUser();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  useEffect(() => {
-    const storedUsername = localStorage.getItem("username");
-    setUsername(storedUsername);
-  }, []);
-
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("username");
@@ -90,10 +85,10 @@ const Header = () => {
                       onClick={() => setDropdownOpen(!dropdownOpen)}
                       className="hover:bg-gray-100 active:scale-95 transition-all cursor-pointer flex items-center gap-2"
                   >
-                    <User className="size-7 text-gray-800" />
-                    <span className="hidden md:inline text-sm font-medium text-gray-800">
-                  Hello, {username}
-                </span>
+                    <div className="w-9 h-9 rounded-full bg-gray-700 text-white flex items-center justify-center text-sm font-semibold uppercase">
+                      {username?.charAt(0)}
+                    </div>
+
                   </Button>
 
                   {dropdownOpen && (
