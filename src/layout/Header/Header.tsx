@@ -18,13 +18,6 @@ const Header = () => {
   // Lấy trạng thái authenticated từ Redux
   const { authenticated } = useSelector((state: RootState) => state.auth);
 
-  const { data: user } = useQuery<UserResponse>({
-    queryKey: ["me"],
-    queryFn: userApi.getMyInfo,
-
-    enabled: authenticated, // Chỉ gọi API khi người dùng đã đăng   
-    refetchOnWindowFocus: false,
-  });
 
   const handleLogout = () => {
     dispatch(logout());
@@ -97,6 +90,7 @@ const Header = () => {
                     </AvatarFallback>
                   </Avatar>
                 </Button>
+
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
@@ -142,6 +136,7 @@ const Header = () => {
               <Link to="/login"><User/></Link>
             </Button>
           )}
+
           </div>
         </div>
       </header>
