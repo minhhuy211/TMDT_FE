@@ -16,15 +16,16 @@ import ProductDetail from "../pages/Products/Product-detail";  // Trang chi ti�
 import CheckoutPage from '../pages/Products/CheckoutPage';
 import PaymentSuccessPage from "../pages/Products/PaymentSuccessPage"; // Import success page
 // import NotificationsPage from "../account/NotificationsPage";
-import { VerifyEmail } from "../pages/Register/VerifyEmail.tsx";
 
-import { Register } from "../pages/Register/Register";
 import Dashboard from "@/components/admin/Dashboard";
 import PageAdmin from "@/pages/admin/PageAdmin";
 import {ForgotPassword} from "@/pages/ForgetPassword/ForgotPassword.tsx";
 import AccountManagement from '@/account/ProfilePage.tsx';
 import ChangePassword from '@/account/ChangePassword';
 import UserCart from '@/account/user-cart.tsx';
+import Register from "@/pages/register/Register";
+import VerifyPage from "@/pages/register/Verify";
+import OAuth2RedirectHandler from "@/pages/Login/OAuth2RedirectHandler";
 
 
 const route = createBrowserRouter([
@@ -32,7 +33,7 @@ const route = createBrowserRouter([
     path: "/",
     element: <MasterLayout />,
     children: [
-      { path: "/verify", element: <VerifyEmail /> },
+      { path: "/verify", element: <VerifyPage /> },
 
       { path: "/address", element: <AddressPage /> },
       // {path :"/notifications", element: <NotificationsPage />},
@@ -51,6 +52,7 @@ const route = createBrowserRouter([
       { path: "/checkout", element: <CheckoutPage /> },
       { path: "/homepage", element: <HomePage /> },
       { path: "/successPayment", element: <PaymentSuccessPage /> }, // Route for payment success
+      { path: "/oauth2-redirect", element: <OAuth2RedirectHandler /> },
 
       // Thêm route cho trang chi tiết sản phẩm
       { path: "/product-detail/:productId", element: <ProductDetail /> },

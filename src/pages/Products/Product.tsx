@@ -3,17 +3,17 @@ import { Link } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
 
 interface Product {
-    productId: number;
+    productId: string;
     productName: string;
     categoryName: string;
-    img: string;
+    imgUrl: string;
     price: number;
     description: string;
     stock: number;
 }
 
 interface Category {
-    cate_ID: number;
+    cate_ID: string;
     name: string;
     description: string;
     urlImage: string;
@@ -53,7 +53,7 @@ const ProductCard = ({ product }: { product: Product }) => (
     <div className="group bg-white flex flex-col justify-between p-4 rounded-lg shadow hover:shadow-lg border border-gray-200 cursor-pointer transition h-full">
         <div className="relative">
             <img
-                src={product.img}
+                src={product.imgUrl}
                 alt={product.productName}
                 className="w-full h-48 object-cover rounded-md mb-4"
             />

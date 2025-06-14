@@ -91,7 +91,7 @@
 
   .checkout-btn {
     margin-top: 1rem;
-    padding: 0.75rem;
+    padding: 0.5rem;
     width: 100%;
     background-color: rgba(39, 40, 41, 0.87);
     color: white;
@@ -197,19 +197,7 @@
   }
 }
 
-.checkout-btn {
-  margin-top: 1rem;
-  width: 100%;
-  background-color: rgba(39, 40, 41, 0.87);
-  color: white;
-  height: 40px;
-  border-radius: 15px;
-  border: none;
 
-  &:hover {
-    background-color: #333;
-  }
-}
 
 /* Responsive */
 @media (max-width: 768px) {

@@ -1,25 +1,30 @@
 import logo from "../../assets/logo/logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, User } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useUser } from "@/context/UserContext";
+import { Heart, LogOut, Package, ShoppingCart, User, Users } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { RootState } from "@/redux/store";
+import { UserResponse } from "@/model/User";
+import userApi from "@/services/userApi";
+import { logout } from "@/redux/authSlice";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Header = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { username, setUsername } = useUser();
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const queryClient = useQueryClient();
+  // Lấy trạng thái authenticated từ Redux
+  const { authenticated } = useSelector((state: RootState) => state.auth);
+
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("username");
-    setUsername(null);
-    setDropdownOpen(false);  // **đóng dropdown khi logout**
-    navigate("/login");
-  };
+    dispatch(logout());
+    localStorage.removeItem("token"); // Xóa token khỏi localStorage
 
+    queryClient.removeQueries({ queryKey: ["me"] });
 
-  const handleLogin = () => {
     navigate("/login");
   };
 
@@ -69,40 +74,69 @@ const Header = () => {
             </div>
 
             {/* User / Login */}
-            {!username ? (
+            {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
                 <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={handleLogin}
-                    className="hover:bg-gray-100 active:scale-95 transition-all cursor-pointer"
+                  className="relative h-8 w-8 rounded-full"
                 >
-                  <User className="size-7 text-gray-800" />
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage
+                      src={`https://ui-avatars.com/api/?name=${user.username}&background=random`}
+                      alt={user.username}
+                    />
+                    <AvatarFallback>
+                      {user.username.substring(0, 2).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
                 </Button>
-            ) : (
-                <div className="relative">
-                  <Button
-                      variant="ghost"
-                      onClick={() => setDropdownOpen(!dropdownOpen)}
-                      className="hover:bg-gray-100 active:scale-95 transition-all cursor-pointer flex items-center gap-2"
-                  >
-                    <div className="w-9 h-9 rounded-full bg-gray-700 text-white flex items-center justify-center text-sm font-semibold uppercase">
-                      {username?.charAt(0)}
-                    </div>
 
-                  </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end" forceMount>
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">
+                      {user.username}
+                    </p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {user.firstName}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem asChild>
+                    <Link to="/">
+                      <User className="mr-2 h-4 w-4" />
+                      <span>Profile</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/">
+                      <Package className="mr-2 h-4 w-4" />
+                      <span>Orders</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/">
+                      <Heart className="mr-2 h-4 w-4" />
+                      <span>Wishlist</span>
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button asChild variant="outline">
+              <Link to="/login"><User/></Link>
+            </Button>
+          )}
 
-                  {dropdownOpen && (
-                      <div className="absolute right-0 mt-2 w-36 bg-white border rounded-lg shadow-lg z-50">
-                        <button
-                            onClick={handleLogout}
-                            className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm"
-                        >
-                          Logout
-                        </button>
-                      </div>
-                  )}
-                </div>
-            )}
           </div>
         </div>
       </header>

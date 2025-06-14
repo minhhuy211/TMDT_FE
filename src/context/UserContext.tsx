@@ -1,42 +1,35 @@
-// src/context/UserContext.tsx
 
-import React, { createContext, useContext, useEffect, useState } from "react";
 
-interface UserContextType {
-    username: string | null;
-    setUsername: (username: string | null) => void;
-}
+// import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
-const UserContext = createContext<UserContextType>({
-    username: null,
-    setUsername: () => {},
-});
+// type UserContextType = {
+//     username: string | null;
+//     setUsername: (username: string | null) => void;
+// };
 
-export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [username, setUsernameState] = useState<string | null>(null);
+// const UserContext = createContext<UserContextType | undefined>(undefined);
 
-    // Load từ localStorage khi khởi động app
-    useEffect(() => {
-        const storedUsername = localStorage.getItem("username");
-        if (storedUsername) {
-            setUsernameState(storedUsername);
-        }
-    }, []);
+// export const UserProvider = ({ children }: { children: ReactNode }) => {
+//     const [username, setUsername] = useState<string | null>(null);
 
-    const setUsername = (username: string | null) => {
-        setUsernameState(username);
-        if (username) {
-            localStorage.setItem("username", username);
-        } else {
-            localStorage.removeItem("username");
-        }
-    };
+//     useEffect(() => {
+//         // Lấy username từ localStorage lúc app load
+//         const storedUsername = localStorage.getItem("username");
+//         if (storedUsername) setUsername(storedUsername);
+//     }, []);
 
-    return (
-        <UserContext.Provider value={{ username, setUsername }}>
-            {children}
-        </UserContext.Provider>
-    );
-};
+//     return (
+//         <UserContext.Provider value={{ username, setUsername }}>
+//             {children}
+//         </UserContext.Provider>
+//     );
+// };
 
-export const useUser = () => useContext(UserContext);
+// export const useUser = () => {
+//     const context = useContext(UserContext);
+//     if (!context) {
+//         throw new Error("useUser must be used within UserProvider");
+//     }
+//     return context;
+// };
+
