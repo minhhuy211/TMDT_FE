@@ -4,7 +4,7 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { HomePage } from "../pages/Home/HomePage";
-import { About } from "../pages/About/About";
+import { Service } from "@/pages/Service/Service.tsx";
 import { Contact } from "../pages/Contact/Contact";
 import MasterLayout from "../layout/MasterLayout/MasterLayout";
 import { Product } from "../pages/Products/Product";
@@ -42,7 +42,7 @@ const route = createBrowserRouter([
       { path: "/", element: <HomePage /> },
       { path: "/register", element: <Register /> },
       { path: "/product", element: <Product /> },
-      { path: "/about", element: <About /> },
+      { path: "/about", element: <Service /> },
       { path: "/contact", element: <Contact /> },
       { path: "/cart", element: <Cart /> },
       { path: "/login", element: <Login /> },

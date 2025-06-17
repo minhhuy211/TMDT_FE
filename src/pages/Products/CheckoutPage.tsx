@@ -1,111 +1,173 @@
-// src/pages/Products/CheckoutPage.tsx
+"use client"
 
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
-import ConfirmationModal from '../../components/modal/ConfirmationModal'; // Import the modal component
+import type React from "react"
+import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import ConfirmationModal from "../../components/modal/ConfirmationModal" // Import the modal component
+
+// Import shadcn/ui components
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select" // Confirmed: Select is imported here
 
 const CheckoutPage = () => {
-    const [name, setName] = useState('');
-    const [address, setAddress] = useState('');
-    const [phone, setPhone] = useState('');
-    const [paymentMethod, setPaymentMethod] = useState('Credit Card');
-    const [isModalOpen, setIsModalOpen] = useState(false); // State to control the modal visibility
-    const navigate = useNavigate(); // Initialize navigate hook
+    const initialSavedAddresses = [
+        { id: "1", value: "123 Đường ABC, Phường XYZ, Quận 1, TP.HCM" },
+        { id: "2", value: "456 Đường DEF, Phường GHI, Quận 2, TP.HCM" },
+    ]
+
+    const [name, setName] = useState("")
+    const [address, setAddress] = useState(initialSavedAddresses[0].value) // Pre-fill with first sample address
+    const [selectedAddressId, setSelectedAddressId] = useState(initialSavedAddresses[0].id) // Track selected address
+    const [newAddressInput, setNewAddressInput] = useState("") // State for new address input
+    const [phone, setPhone] = useState("")
+    const [paymentMethod, setPaymentMethod] = useState("Credit Card")
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const navigate = useNavigate()
+
+    // Update the main 'address' state when 'selectedAddressId' or 'newAddressInput' changes
+    useEffect(() => {
+        if (selectedAddressId === "new") {
+            setAddress(newAddressInput)
+        } else {
+            const selected = initialSavedAddresses.find((addr) => addr.id === selectedAddressId)
+            setAddress(selected ? selected.value : "")
+        }
+    }, [selectedAddressId, newAddressInput])
 
     // Handle form submit
     const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsModalOpen(true); // Open the modal when form is submitted
-    };
+        e.preventDefault()
+        if (!name || !address || !phone || !paymentMethod) {
+            alert("Vui lòng điền đầy đủ thông tin.")
+            return
+        }
+        setIsModalOpen(true)
+    }
 
     // Handle confirmation
     const handleConfirm = () => {
-        console.log({ name, address, phone, paymentMethod });
-        setIsModalOpen(false); // Close the modal
-        navigate('/successPayment'); // Redirect to success page
-    };
+        console.log({ name, address, phone, paymentMethod })
+        setIsModalOpen(false)
+        navigate("/successPayment")
+    }
 
     // Handle cancellation
     const handleCancel = () => {
-        setIsModalOpen(false); // Close the modal
-    };
+        setIsModalOpen(false)
+    }
 
     return (
-        <div className="w-full max-w-lg mx-auto px-8 py-12 bg-white">
-            <h1 className="text-3xl font-bold text-black text-center mb-6">Thông tin thanh toán</h1>
-            <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="w-full max-w-lg mx-auto px-6 py-10 mt-10 mb-20 bg-white rounded-xl shadow-lg">
+            <h1 className="text-3xl font-bold text-gray-900 text-center mb-8">Thông tin thanh toán</h1>
+            <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Name */}
                 <div>
-                    <label className="block text-lg text-black">Họ và tên:</label>
-                    <input
+                    <Label htmlFor="name" className="block text-base font-medium text-gray-700 mb-1">
+                        Họ và tên:
+                    </Label>
+                    <Input
+                        id="name"
                         type="text"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        className="w-full px-4 py-2 border border-black rounded-md bg-white text-black"
+                        placeholder="Nhập họ và tên của bạn"
+                        className="w-full text-black"
                         required
                     />
                 </div>
 
-                {/* Address */}
+                {/* Address Selection */}
                 <div>
-                    <label className="block text-lg text-black">Địa chỉ giao hàng:</label>
-                    <input
-                        type="text"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                        className="w-full px-4 py-2 border border-black rounded-md bg-white text-black"
-                        required
-                    />
+                    <Label htmlFor="address-select" className="block text-base font-medium text-gray-700 mb-1">
+                        Địa chỉ giao hàng:
+                    </Label>
+                    <Select value={selectedAddressId} onValueChange={setSelectedAddressId}>
+                        <SelectTrigger id="address-select" className="w-full text-black">
+                            <SelectValue placeholder="Chọn địa chỉ hoặc thêm mới" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {initialSavedAddresses.map((addr) => (
+                                <SelectItem key={addr.id} value={addr.id}>
+                                    {addr.value}
+                                </SelectItem>
+                            ))}
+                            <SelectItem value="new">Thêm địa chỉ mới</SelectItem>
+                        </SelectContent>
+                    </Select>
+
+                    {selectedAddressId === "new" && (
+                        <div className="mt-4">
+                            <Label htmlFor="new-address-input" className="sr-only">
+                                Địa chỉ mới
+                            </Label>
+                            <Input
+                                id="new-address-input"
+                                type="text"
+                                value={newAddressInput}
+                                onChange={(e) => setNewAddressInput(e.target.value)}
+                                placeholder="Nhập địa chỉ mới của bạn"
+                                className="w-full text-black"
+                                required
+                            />
+                        </div>
+                    )}
                 </div>
 
                 {/* Phone Number */}
                 <div>
-                    <label className="block text-lg text-black">Số điện thoại:</label>
-                    <input
+                    <Label htmlFor="phone" className="block text-base font-medium text-gray-700 mb-1">
+                        Số điện thoại:
+                    </Label>
+                    <Input
+                        id="phone"
                         type="tel"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                        className="w-full px-4 py-2 border border-black rounded-md bg-white text-black"
+                        placeholder="Nhập số điện thoại của bạn"
+                        className="w-full text-black"
                         required
                     />
                 </div>
 
                 {/* Payment Method */}
                 <div>
-                    <label className="block text-lg text-black">Phương thức thanh toán:</label>
-                    <select
-                        value={paymentMethod}
-                        onChange={(e) => setPaymentMethod(e.target.value)}
-                        className="w-full px-4 py-2 border border-black rounded-md bg-white text-black"
-                    >
-                        <option value="Credit Card">Thẻ tín dụng</option>
-                        <option value="PayPal">PayPal</option>
-                        <option value="COD">Thanh toán khi nhận hàng</option>
-                        <option value="QRCode">Quét mã QR</option>
-                    </select>
+                    <Label htmlFor="payment-method" className="block text-base font-medium text-gray-700 mb-1">
+                        Phương thức thanh toán:
+                    </Label>
+                    <Select value={paymentMethod} onValueChange={setPaymentMethod}>
+                        <SelectTrigger id="payment-method" className="w-full text-black">
+                            <SelectValue placeholder="Chọn phương thức thanh toán" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="Credit Card">Thẻ tín dụng</SelectItem>
+                            <SelectItem value="PayPal">PayPal</SelectItem>
+                            <SelectItem value="COD">Thanh toán khi nhận hàng</SelectItem>
+                            <SelectItem value="QRCode">Quét mã QR</SelectItem>
+                        </SelectContent>
+                    </Select>
 
-                    {paymentMethod === 'QRCode' && (
-                        <div className="mt-4 text-center">
-                            <p className="text-black mb-2">Quét mã QR để thanh toán:</p>
+                    {paymentMethod === "QRCode" && (
+                        <div className="mt-4 text-center p-4 border border-gray-200 rounded-md bg-gray-50">
+                            <p className="text-gray-800 font-medium mb-3">Quét mã QR để thanh toán:</p>
                             <img
-                                src="/imgs/sample-qr.png"
+                                src="/placeholder.svg?height=200&width=200" // Using placeholder for QR code
                                 alt="QR Code"
-                                className="mx-auto w-48 h-48 border border-black p-2 bg-white"
+                                className="mx-auto w-48 h-48 object-contain border border-gray-300 p-2 bg-white rounded-md"
                             />
-                            <p className="text-sm text-gray-600 mt-2">Vui lòng quét mã bằng MoMo, VNPay hoặc ứng dụng ngân hàng của bạn.</p>
+                            <p className="text-sm text-gray-600 mt-3">
+                                Vui lòng quét mã bằng MoMo, VNPay hoặc ứng dụng ngân hàng của bạn.
+                            </p>
                         </div>
                     )}
-
                 </div>
 
                 {/* Submit Button */}
                 <div className="mt-6">
-                    <button
-                        type="submit"
-                        className="w-full bg-black text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-800"
-                    >
+                    <Button type="submit" className="w-full bg-black text-white py-2.5 text-base hover:bg-gray-800">
                         Thanh toán
-                    </button>
+                    </Button>
                 </div>
             </form>
 
@@ -117,7 +179,7 @@ const CheckoutPage = () => {
                 details={{ name, address, phone, paymentMethod }}
             />
         </div>
-    );
-};
+    )
+}
 
-export default CheckoutPage;
+export default CheckoutPage
