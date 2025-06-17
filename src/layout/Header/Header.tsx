@@ -75,10 +75,14 @@ const Header = () => {
             </div>
 
             {/* User / Login */}
-            {user && user.username ? (
+
+            {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button className="relative h-8 w-8 rounded-full">
+                    <Button
+                        className="relative h-8 w-8 rounded-full"
+                    >
+
                       <Avatar className="h-8 w-8">
                         <AvatarImage
                             src={`https://ui-avatars.com/api/?name=${user.username}&background=random`}
@@ -89,6 +93,7 @@ const Header = () => {
                         </AvatarFallback>
                       </Avatar>
                     </Button>
+
                   </DropdownMenuTrigger>
 
                   <DropdownMenuContent className="w-56" align="end" forceMount>
@@ -135,6 +140,54 @@ const Header = () => {
                   <Link to="/login">
                     <User />
                   </Link>
+                </Button>
+            )}
+
+
+
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56" align="end" forceMount>
+                    <DropdownMenuLabel className="font-normal">
+                      <div className="flex flex-col space-y-1">
+                        <p className="text-sm font-medium leading-none">
+                          {user.username}
+                        </p>
+                        <p className="text-xs leading-none text-muted-foreground">
+                          {user.firstName}
+                        </p>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuGroup>
+                      <DropdownMenuItem asChild>
+                        <Link to="/">
+                          <User className="mr-2 h-4 w-4" />
+                          <span>Profile</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/">
+                          <Package className="mr-2 h-4 w-4" />
+                          <span>Orders</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/">
+                          <Heart className="mr-2 h-4 w-4" />
+                          <span>Wishlist</span>
+                        </Link>
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleLogout}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Log out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+            ) : (
+                <Button asChild variant="outline">
+                  <Link to="/login"><User/></Link>
                 </Button>
             )}
 
