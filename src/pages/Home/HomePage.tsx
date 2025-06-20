@@ -1,11 +1,34 @@
-import React from "react";
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Star, ArrowUp } from "lucide-react"
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Star, ArrowUp } from "lucide-react";
+import {Category} from "@/model/Category.ts";
+import {useQuery} from "@tanstack/react-query";
+import categoryApi from "@/services/categoryApi.ts";
+import {Product} from "@/model/Product.ts";
+import ProductCard from "@/pages/Products/ProductCard.tsx";
 
 export const HomePage = () => {
+
+  const [selectedCateId, setSelectedCateId] = useState<string | null>(null);
+
+  const { data: categories = [], isLoading: loadingCate } = useQuery<Category[]>({
+    queryKey: ["categories"],
+    queryFn: categoryApi.getCategories,
+  });
+
+  // Tính productList hiển thị
+  let productList: Product[] = [];
+  if (categories.length > 0) {
+    if (selectedCateId) {
+      const selectedCate = categories.find((c) => c.cate_ID === selectedCateId);
+      productList = selectedCate?.productList || [];
+    } else {
+      productList = categories.flatMap((c) => c.productList);
+    }
+  }
   return (
-    <main className="flex-1 ">
+      <main className="flex-1 ">
         {/* Promotion Banner */}
         <div className="bg-black text-white text-center py-2 text-sm">
           <p>Giảm 10% cho lần đầu mua</p>
@@ -17,7 +40,7 @@ export const HomePage = () => {
             <div className="space-y-6">
               <h1 className="text-3xl md:text-4xl font-bold">
                 Thiết kế của bạn,
-                <br />
+                <br/>
                 in ấn hoàn hảo!
               </h1>
               <p className="text-gray-600">6,000+ khách hàng hài lòng</p>
@@ -31,11 +54,11 @@ export const HomePage = () => {
             <div className="flex justify-center">
               <div className="relative bg-gray-100 rounded-lg p-6">
                 <img
-                  src="https://img.staticdj.com/c6d8abbb4916a5bf0f9708adfdfc4e0c_2560x.jpg?height=300&width=400"
-                  alt="Ender-3 V3 KE 3D Printer"
-                  width={400}
-                  height={400}
-                  className="object-cover"
+                    src="https://img.staticdj.com/c6d8abbb4916a5bf0f9708adfdfc4e0c_2560x.jpg?height=300&width=400"
+                    alt="Ender-3 V3 KE 3D Printer"
+                    width={400}
+                    height={400}
+                    className="object-cover"
                 />
                 {/* <div className="absolute top-4 right-4 bg-white rounded-lg p-2 shadow-md">
                   <h3 className="font-bold">Ender-3 V3 KE</h3>
@@ -65,132 +88,42 @@ export const HomePage = () => {
               Khởi nguồn sáng tạo bắt đầu từ một thành phẩm thực và công nghệ in 3D tiên tiến - Đủ chính xác, chất lượng
               vượt trội, đáp ứng mọi nhu cầu thiết kế của bạn!
             </p>
-
             <div className="flex overflow-x-auto gap-4 pb-4 mb-6 -mx-4 px-4 md:mx-0 md:px-0 no-scrollbar">
-              <Button variant="outline" className="rounded-full whitespace-nowrap">
-                Tất cả (6 Trang)
-              </Button>
               <Button
-                variant="outline"
-                className="rounded-full whitespace-nowrap bg-black text-white hover:bg-gray-800"
+                  variant={!selectedCateId ? "default" : "outline"}
+                  className="rounded-full whitespace-nowrap"
+                  onClick={() => setSelectedCateId(null)}
               >
-                Sản phẩm
+                Tất cả ({productList.length} Sản phẩm)
               </Button>
-              <Button variant="outline" className="rounded-full whitespace-nowrap">
-                Dịch vụ
-              </Button>
-              <Button variant="outline" className="rounded-full whitespace-nowrap">
-                Phụ kiện
-              </Button>
+              {categories.map((cate) => (
+                  <Button
+                      key={cate.cate_ID}
+                      variant={selectedCateId === cate.cate_ID ? "default" : "outline"}
+                      className="rounded-full whitespace-nowrap"
+                      onClick={() => setSelectedCateId(cate.cate_ID)}
+                  >
+                    {cate.name} ({cate.productList.length})
+                  </Button>
+              ))}
             </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-              <Card className="border shadow-sm overflow-hidden">
-                <CardContent className="p-0">
-                  <div className="aspect-square bg-gray-100 flex items-center justify-center">
-                    <img
-                      src="/placeholder.svg?height=200&width=200"
-                      alt="VR Headset"
-                      width={200}
-                      height={200}
-                      className="object-contain p-4"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <h3 className="font-medium text-center">Name Product</h3>
-                    <p className="text-center text-gray-500 text-sm">$XX.X</p>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card className="border shadow-sm overflow-hidden">
-                <CardContent className="p-0">
-                  <div className="aspect-square bg-gray-100 flex items-center justify-center">
-                    <img
-                      src="/placeholder.svg?height=200&width=200"
-                      alt="Building Model"
-                      width={200}
-                      height={200}
-                      className="object-contain p-4"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <h3 className="font-medium text-center">Name Product</h3>
-                    <p className="text-center text-gray-500 text-sm">$XX.X</p>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card className="border shadow-sm overflow-hidden">
-                <CardContent className="p-0">
-                  <div className="aspect-square bg-gray-100 flex items-center justify-center">
-                    <img
-                      src="/placeholder.svg?height=200&width=200"
-                      alt="Red Figurine"
-                      width={200}
-                      height={200}
-                      className="object-contain p-4"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <h3 className="font-medium text-center">Name Product</h3>
-                    <p className="text-center text-gray-500 text-sm">$XX.X</p>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card className="border shadow-sm overflow-hidden">
-                <CardContent className="p-0">
-                  <div className="aspect-square bg-gray-100 flex items-center justify-center">
-                    <img
-                      src="/placeholder.svg?height=200&width=200"
-                      alt="Industrial Parts"
-                      width={200}
-                      height={200}
-                      className="object-contain p-4"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <h3 className="font-medium text-center">Name Product</h3>
-                    <p className="text-center text-gray-500 text-sm">$XX.X</p>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card className="border shadow-sm overflow-hidden">
-                <CardContent className="p-0">
-                  <div className="aspect-square bg-gray-100 flex items-center justify-center">
-                    <img
-                      src="/placeholder.svg?height=200&width=200"
-                      alt="Mechanical Parts"
-                      width={200}
-                      height={200}
-                      className="object-contain p-4"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <h3 className="font-medium text-center">Name Product</h3>
-                    <p className="text-center text-gray-500 text-sm">$XX.X</p>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card className="border shadow-sm overflow-hidden">
-                <CardContent className="p-0">
-                  <div className="aspect-square bg-gray-100 flex items-center justify-center">
-                    <img
-                      src="/placeholder.svg?height=200&width=200"
-                      alt="Medical Model"
-                      width={200}
-                      height={200}
-                      className="object-contain p-4"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <h3 className="font-medium text-center">Name Product</h3>
-                    <p className="text-center text-gray-500 text-sm">$XX.X</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-            <div className="flex justify-center mt-8">
-              <Button className="rounded-full px-6 bg-black hover:bg-gray-800">Xem thêm</Button>
-            </div>
+            {/* Product List */}
+            <section className="py-16">
+              <div className="mx-16 px-4">
+                {/* ... filter button ... */}
+                {loadingCate ? (
+                    <div>Đang tải danh mục...</div>
+                ) : productList.length === 0 ? (
+                    <div>Không có sản phẩm nào</div>
+                ) : (
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                      {productList.map((prod) => (
+                          <ProductCard product={prod} key={prod.productId}/>
+                      ))}
+                    </div>
+                )}
+              </div>
+            </section>
           </div>
         </section>
 
@@ -204,7 +137,7 @@ export const HomePage = () => {
             <div className="grid md:grid-cols-3 gap-8">
               <div className="text-center space-y-4">
                 <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto shadow-md">
-                  <ArrowUp className="h-6 w-6" />
+                  <ArrowUp className="h-6 w-6"/>
                 </div>
                 <h3 className="font-bold">TẢI THIẾT KẾ</h3>
                 <p className="text-gray-600">
@@ -213,7 +146,7 @@ export const HomePage = () => {
               </div>
               <div className="text-center space-y-4">
                 <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto shadow-md">
-                  <img src="/placeholder.svg?height=24&width=24" alt="Choose" width={24} height={24} />
+                  <img src="/placeholder.svg?height=24&width=24" alt="Choose" width={24} height={24}/>
                 </div>
                 <h3 className="font-bold">CHỌN SẢN PHẨM</h3>
                 <p className="text-gray-600">
@@ -222,7 +155,7 @@ export const HomePage = () => {
               </div>
               <div className="text-center space-y-4">
                 <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto shadow-md">
-                  <img src="/placeholder.svg?height=24&width=24" alt="Delivery" width={24} height={24} />
+                  <img src="/placeholder.svg?height=24&width=24" alt="Delivery" width={24} height={24}/>
                 </div>
                 <h3 className="font-bold">GIAO HÀNG</h3>
                 <p className="text-gray-600">
@@ -242,7 +175,7 @@ export const HomePage = () => {
                   Tính năng nổi bật
                 </div>
                 <h2 className="text-2xl md:text-3xl font-bold mb-8">
-                  In ấn chất lượng, <br />
+                  In ấn chất lượng, <br/>
                   không thỏa hiệp
                 </h2>
                 <p className="text-gray-600 mb-8">
@@ -272,11 +205,11 @@ export const HomePage = () => {
               </div>
               <div className="flex justify-center items-center">
                 <img
-                  src="/placeholder.svg?height=400&width=400"
-                  alt="3D Printer Features"
-                  width={400}
-                  height={400}
-                  className="object-contain"
+                    src="/placeholder.svg?height=400&width=400"
+                    alt="3D Printer Features"
+                    width={400}
+                    height={400}
+                    className="object-contain"
                 />
               </div>
             </div>
@@ -296,7 +229,7 @@ export const HomePage = () => {
                 <CardContent className="p-6 space-y-4">
                   <div className="flex">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                        <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400"/>
                     ))}
                   </div>
                   <p className="text-gray-600">
@@ -313,7 +246,7 @@ export const HomePage = () => {
                 <CardContent className="p-6 space-y-4">
                   <div className="flex">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                        <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400"/>
                     ))}
                   </div>
                   <p className="text-gray-600">
@@ -330,7 +263,7 @@ export const HomePage = () => {
                 <CardContent className="p-6 space-y-4">
                   <div className="flex">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                        <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400"/>
                     ))}
                   </div>
                   <p className="text-gray-600">

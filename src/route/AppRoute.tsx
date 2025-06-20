@@ -4,7 +4,7 @@ import { HomePage } from "../pages/Home/HomePage";
 import { Service } from "@/pages/Service/Service.tsx";
 import { Contact } from "../pages/Contact/Contact";
 import MasterLayout from "../layout/MasterLayout/MasterLayout";
-import { Product } from "../pages/Products/Product";
+import ProductPage from "../pages/Products/Product";
 import { Cart } from "../pages/Cart/Cart";
 import { Login } from "../pages/Login/Login";
 import AddressPage from '@/account/AddressPage'; // hoặc đúng theo đường dẫn của bạn
@@ -39,7 +39,7 @@ const route = createBrowserRouter([
       {path: "/forgot-password", element: <ForgotPassword/>},
       { path: "/", element: <HomePage /> },
       { path: "/register", element: <Register /> },
-      { path: "/product", element: <Product /> },
+      { path: "/product", element: <ProductPage /> },
       { path: "/about", element: <Service /> },
       { path: "/contact", element: <Contact /> },
       { path: "/cart", element: <Cart /> },
@@ -65,7 +65,7 @@ const route = createBrowserRouter([
     element: <PageAdmin />,
     children: [
       {path: "/admin", element: <Dashboard />},
-      {path: "/admin/customer", element: <Product />},
+      {path: "/admin/customer", element: <ProductPage />},
     ],
   }
 ]);
