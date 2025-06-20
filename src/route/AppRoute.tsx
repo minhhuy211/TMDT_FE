@@ -20,10 +20,11 @@ import {ForgotPassword} from "@/pages/ForgetPassword/ForgotPassword.tsx";
 import AccountManagement from '@/account/ProfilePage.tsx';
 import ChangePassword from '@/account/ChangePassword';
 import UserCart from '@/account/user-cart.tsx';
-import Register from "@/pages/Register/Register";
-import VerifyPage from "@/pages/Register/Verify";
+
 import OAuth2RedirectHandler from "@/pages/Login/OAuth2RedirectHandler";
 import ProfilePage from "@/account/ProfilePage.tsx";
+import VerifyPage from "@/pages/register/Verify";
+import Register from "@/pages/register/Register";
 
 
 const route = createBrowserRouter([
@@ -38,7 +39,6 @@ const route = createBrowserRouter([
       { path : "/order-history", element: <OrderHistory />},
       {path: "/forgot-password", element: <ForgotPassword/>},
       { path: "/", element: <HomePage /> },
-      { path: "/register", element: <Register /> },
       { path: "/product", element: <Product /> },
       { path: "/about", element: <Service /> },
       { path: "/contact", element: <Contact /> },
