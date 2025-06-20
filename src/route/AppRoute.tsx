@@ -4,7 +4,7 @@ import { HomePage } from "../pages/Home/HomePage";
 import { Service } from "@/pages/Service/Service.tsx";
 import { Contact } from "../pages/Contact/Contact";
 import MasterLayout from "../layout/MasterLayout/MasterLayout";
-import { Product } from "../pages/Products/Product";
+import ProductPage from "../pages/Products/Product";
 import { Cart } from "../pages/Cart/Cart";
 import { Login } from "../pages/Login/Login";
 import AddressPage from '@/account/AddressPage'; // hoặc đúng theo đường dẫn của bạn
@@ -23,8 +23,8 @@ import UserCart from '@/account/user-cart.tsx';
 
 import OAuth2RedirectHandler from "@/pages/Login/OAuth2RedirectHandler";
 import ProfilePage from "@/account/ProfilePage.tsx";
-import VerifyPage from "@/pages/register/Verify";
-import Register from "@/pages/register/Register";
+import VerifyPage from "@/pages/Register/Verify";
+import Register from "@/pages/Register/Register";
 
 
 const route = createBrowserRouter([
@@ -39,8 +39,10 @@ const route = createBrowserRouter([
       { path : "/order-history", element: <OrderHistory />},
       {path: "/forgot-password", element: <ForgotPassword/>},
       { path: "/", element: <HomePage /> },
-      { path: "/product", element: <Product /> },
-      { path: "/about", element: <Service /> },
+
+
+      { path: "/product", element: <ProductPage /> },
+       { path: "/about", element: <Service /> },
       { path: "/contact", element: <Contact /> },
       { path: "/cart", element: <Cart /> },
       { path: "/login", element: <Login /> },
@@ -65,7 +67,7 @@ const route = createBrowserRouter([
     element: <PageAdmin />,
     children: [
       {path: "/admin", element: <Dashboard />},
-      {path: "/admin/customer", element: <Product />},
+      {path: "/admin/customer", element: <ProductPage />},
     ],
   }
 ]);

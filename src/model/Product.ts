@@ -1,8 +1,8 @@
 import type { Category } from "./Category";
 
 export interface Product {
-  productId: number;
-  category: Category;  // Tham chiếu đến Category
+  productId: string;          // UUID
+  category: Category;
   productName: string;
   description: string;
   price: number;
@@ -16,11 +16,11 @@ export interface ProductRequest {
   price: number;
   stock: number;
   img: string;
-  cate_ID: number;  // giữ nguyên nếu backend yêu cầu
+  cate_ID: string;            // UUID
 }
 
 export interface ProductResponse {
-  productId: number;
+  productId: string;          // UUID
   categoryName: string;
   productName: string;
   description: string;
