@@ -1,12 +1,13 @@
-import "./App.css";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AppRoute from "./route/AppRoute";
-import { UserProvider } from "@/context/UserContext.tsx";
+const queryClient = new QueryClient();
 
 function App() {
   return (
-      <UserProvider>
-        <AppRoute />
-      </UserProvider>
+    <QueryClientProvider client={queryClient}>
+      <AppRoute />
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+    </QueryClientProvider>
   );
 }
 

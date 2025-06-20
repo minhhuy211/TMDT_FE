@@ -1,32 +1,35 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
-type UserContextType = {
-    username: string | null;
-    setUsername: (username: string | null) => void;
-};
 
-const UserContext = createContext<UserContextType | undefined>(undefined);
+// import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
-export const UserProvider = ({ children }: { children: ReactNode }) => {
-    const [username, setUsername] = useState<string | null>(null);
+// type UserContextType = {
+//     username: string | null;
+//     setUsername: (username: string | null) => void;
+// };
 
-    useEffect(() => {
-        // Lấy username từ localStorage lúc app load
-        const storedUsername = localStorage.getItem("username");
-        if (storedUsername) setUsername(storedUsername);
-    }, []);
+// const UserContext = createContext<UserContextType | undefined>(undefined);
 
-    return (
-        <UserContext.Provider value={{ username, setUsername }}>
-            {children}
-        </UserContext.Provider>
-    );
-};
+// export const UserProvider = ({ children }: { children: ReactNode }) => {
+//     const [username, setUsername] = useState<string | null>(null);
 
-export const useUser = () => {
-    const context = useContext(UserContext);
-    if (!context) {
-        throw new Error("useUser must be used within UserProvider");
-    }
-    return context;
-};
+//     useEffect(() => {
+//         // Lấy username từ localStorage lúc app load
+//         const storedUsername = localStorage.getItem("username");
+//         if (storedUsername) setUsername(storedUsername);
+//     }, []);
+
+//     return (
+//         <UserContext.Provider value={{ username, setUsername }}>
+//             {children}
+//         </UserContext.Provider>
+//     );
+// };
+
+// export const useUser = () => {
+//     const context = useContext(UserContext);
+//     if (!context) {
+//         throw new Error("useUser must be used within UserProvider");
+//     }
+//     return context;
+// };
+

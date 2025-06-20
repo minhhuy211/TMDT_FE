@@ -1,6 +1,7 @@
 import { FaTrashAlt } from "react-icons/fa";
 import "./style.scss";
 import {useNavigate} from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 
 export const Cart = () => {
