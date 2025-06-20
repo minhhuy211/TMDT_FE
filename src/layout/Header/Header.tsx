@@ -1,7 +1,7 @@
 import logo from "../../assets/logo/logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Heart, LogOut, Package, ShoppingCart, User, Users } from "lucide-react";
+import { Heart, LogOut, Package, ShoppingCart, User } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { RootState } from "@/redux/store";
@@ -16,9 +16,15 @@ const Header = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   // Lấy trạng thái authenticated từ Redux
+  const { authenticated } = useSelector((state: RootState) => state.auth);
 
-  const { authenticated, user } = useSelector((state: RootState) => state.auth);
+  const { data: user } = useQuery<UserResponse>({
+    queryKey: ["me"],
+    queryFn: userApi.getMyInfo,
 
+    enabled: authenticated, // Chỉ gọi API khi người dùng đã đăng   
+    refetchOnWindowFocus: false,
+  });
 
   const handleLogout = () => {
     dispatch(logout());
@@ -75,123 +81,67 @@ const Header = () => {
             </div>
 
             {/* User / Login */}
-
             {user ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                        className="relative h-8 w-8 rounded-full"
-                    >
-
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage
-                            src={`https://ui-avatars.com/api/?name=${user.username}&background=random`}
-                            alt={user.username}
-                        />
-                        <AvatarFallback>
-                          {user.username.substring(0, 2).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                    </Button>
-
-                  </DropdownMenuTrigger>
-
-                  <DropdownMenuContent className="w-56" align="end" forceMount>
-                    <DropdownMenuLabel className="font-normal">
-                      <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none">
-                          {user.username}
-                        </p>
-                        <p className="text-xs leading-none text-muted-foreground">
-                          {user.firstName || ""}
-                        </p>
-                      </div>
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuGroup>
-                      <DropdownMenuItem asChild>
-                        <Link to="/">
-                          <User className="mr-2 h-4 w-4" />
-                          <span>Profile</span>
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/">
-                          <Package className="mr-2 h-4 w-4" />
-                          <span>Orders</span>
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/">
-                          <Heart className="mr-2 h-4 w-4" />
-                          <span>Wishlist</span>
-                        </Link>
-                      </DropdownMenuItem>
-                    </DropdownMenuGroup>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleLogout}>
-                      <LogOut className="mr-2 h-4 w-4" />
-                      <span>Log out</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-            ) : (
-                <Button asChild variant="outline">
-                  <Link to="/login">
-                    <User />
-                  </Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  className="relative h-8 w-8 rounded-full"
+                >
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage
+                      src={`https://ui-avatars.com/api/?name=${user.username}&background=random`}
+                      alt={user.username}
+                    />
+                    <AvatarFallback>
+                      {user.username.substring(0, 2).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
                 </Button>
-            )}
-
-
-
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56" align="end" forceMount>
-                    <DropdownMenuLabel className="font-normal">
-                      <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none">
-                          {user.username}
-                        </p>
-                        <p className="text-xs leading-none text-muted-foreground">
-                          {user.firstName}
-                        </p>
-                      </div>
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuGroup>
-                      <DropdownMenuItem asChild>
-                        <Link to="/">
-                          <User className="mr-2 h-4 w-4" />
-                          <span>Profile</span>
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/">
-                          <Package className="mr-2 h-4 w-4" />
-                          <span>Orders</span>
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/">
-                          <Heart className="mr-2 h-4 w-4" />
-                          <span>Wishlist</span>
-                        </Link>
-                      </DropdownMenuItem>
-                    </DropdownMenuGroup>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleLogout}>
-                      <LogOut className="mr-2 h-4 w-4" />
-                      <span>Log out</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-            ) : (
-                <Button asChild variant="outline">
-                  <Link to="/login"><User/></Link>
-                </Button>
-            )}
-
-
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end" forceMount>
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">
+                      {user.username}
+                    </p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {user.firstName}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem asChild>
+                    <Link to="/">
+                      <User className="mr-2 h-4 w-4" />
+                      <span>Profile</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/">
+                      <Package className="mr-2 h-4 w-4" />
+                      <span>Orders</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/">
+                      <Heart className="mr-2 h-4 w-4" />
+                      <span>Wishlist</span>
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button asChild variant="outline">
+              <Link to="/login"><User/></Link>
+            </Button>
+          )}
           </div>
         </div>
       </header>
