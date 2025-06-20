@@ -21,15 +21,14 @@ const Header = () => {
   const { data: user } = useQuery<UserResponse>({
     queryKey: ["me"],
     queryFn: userApi.getMyInfo,
-
-    enabled: authenticated, // Chỉ gọi API khi người dùng đã đăng   
+    enabled: authenticated,
     refetchOnWindowFocus: false,
   });
 
+
   const handleLogout = () => {
     dispatch(logout());
-    localStorage.removeItem("token"); // Xóa token khỏi localStorage
-
+    localStorage.removeItem("token");
     queryClient.removeQueries({ queryKey: ["me"] });
 
     navigate("/login");
@@ -112,7 +111,7 @@ const Header = () => {
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   <DropdownMenuItem asChild>
-                    <Link to="/">
+                    <Link to="/profile">
                       <User className="mr-2 h-4 w-4" />
                       <span>Profile</span>
                     </Link>

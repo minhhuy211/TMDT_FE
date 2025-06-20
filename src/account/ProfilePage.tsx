@@ -1,12 +1,29 @@
-import React, { useState } from 'react';
-import Sidebar from './sidebar'; // Ensure the path is correct
+import { useQuery } from "@tanstack/react-query";
+import userApi from "@/services/userApi";
+import type { UserResponse } from "@/model/User";
+import Sidebar from "./sidebar";
+import React, { useState, useEffect } from "react";
 
 const ProfilePage: React.FC = () => {
-    const [username] = useState('ngquananhkhoa');
-    const [email, setEmail] = useState('21******@st.hcmuaf.edu.vn');
-    const [gender, setGender] = useState('Nam');
-    const [dob, setDob] = useState('');
+    // Lấy profile giống Header
+    const { data: user, isLoading } = useQuery<UserResponse>({
+        queryKey: ["me"],
+        queryFn: userApi.getMyInfo,
+        refetchOnWindowFocus: false,
+    });
+
+    // Quản lý ngày sinh và avatar trong local state (nếu muốn cho phép sửa)
+    const [dob, setDob] = useState("");
     const [avatar, setAvatar] = useState<File | null>(null);
+
+    useEffect(() => {
+        setDob(user?.dob || "");
+    }, [user?.dob]);
+
+    const handleSave = () => {
+        alert("Đã lưu thông tin!");
+        // TODO: gọi API cập nhật nếu cần
+    };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -14,16 +31,13 @@ const ProfilePage: React.FC = () => {
         }
     };
 
-    const handleSave = () => {
-        alert('Đã lưu thông tin!');
-    };
+    if (isLoading) return <div className="p-10">Đang tải thông tin...</div>;
+    if (!user) return <div className="p-10 text-red-500">Không tìm thấy thông tin tài khoản.</div>;
 
     return (
         <div className="min-h-screen bg-gray-100 flex">
-            {/* Sidebar bên trái */}
             <Sidebar />
 
-            {/* Nội dung chính */}
             <main className="flex-1 bg-white p-6 rounded shadow">
                 <h1 className="text-xl font-bold text-black mb-6">Hồ sơ của tôi</h1>
                 <p className="text-sm text-gray-600 mb-4">
@@ -31,52 +45,46 @@ const ProfilePage: React.FC = () => {
                 </p>
 
                 <div className="space-y-4 max-w-xl">
+                    {/* Tên đăng nhập */}
                     <div>
                         <label className="block font-semibold text-black">Tên đăng nhập</label>
                         <input
                             type="text"
-                            value={username}
+                            value={user.username}
                             disabled
                             className="w-full p-2 border border-gray-400 rounded bg-gray-100 text-black"
                         />
-                        <p className="text-xs text-gray-500">Tên đăng nhập chỉ có thể thay đổi một lần.</p>
                     </div>
 
+                    {/* Email */}
                     <div>
                         <label className="block font-semibold text-black">Email</label>
-                        <div className="flex space-x-2">
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="flex-1 p-2 border border-gray-400 rounded text-black"
-                            />
-                            <button className="bg-black text-white px-4 rounded hover:bg-gray-800">Thay đổi</button>
-                        </div>
+                        <input
+                            type="email"
+                            value={user.email}
+                            disabled
+                            className="w-full p-2 border border-gray-400 rounded text-black"
+                        />
                     </div>
 
+                    {/* Số điện thoại */}
                     <div>
                         <label className="block font-semibold text-black">Số điện thoại</label>
-                        <button className="p-2 border border-black rounded text-sm text-black hover:bg-gray-200">Thêm</button>
+                        {user.phoneNumber ? (
+                            <input
+                                type="text"
+                                value={user.phoneNumber}
+                                disabled
+                                className="w-full p-2 border border-gray-400 rounded text-black bg-gray-100"
+                            />
+                        ) : (
+                            <button className="p-2 border border-black rounded text-sm text-black hover:bg-gray-200">
+                                Thêm
+                            </button>
+                        )}
                     </div>
 
-                    <div>
-                        <label className="block font-semibold text-black">Giới tính</label>
-                        <div className="flex gap-4">
-                            {['Nam', 'Nữ', 'Khác'].map((g) => (
-                                <label key={g} className="flex items-center gap-1 text-black">
-                                    <input
-                                        type="radio"
-                                        value={g}
-                                        checked={gender === g}
-                                        onChange={() => setGender(g)}
-                                    />
-                                    {g}
-                                </label>
-                            ))}
-                        </div>
-                    </div>
-
+                    {/* Ngày sinh */}
                     <div>
                         <label className="block font-semibold text-black">Ngày sinh</label>
                         <input
@@ -87,6 +95,7 @@ const ProfilePage: React.FC = () => {
                         />
                     </div>
 
+                    {/* Ảnh đại diện */}
                     <div className="flex items-start gap-6 mt-4">
                         <div>
                             <label className="block font-semibold text-black mb-2">Ảnh đại diện</label>
@@ -95,7 +104,6 @@ const ProfilePage: React.FC = () => {
                                 Dung lượng tối đa 1 MB. Định dạng: .JPEG, .PNG
                             </p>
                         </div>
-
                         {avatar && (
                             <img
                                 src={URL.createObjectURL(avatar)}

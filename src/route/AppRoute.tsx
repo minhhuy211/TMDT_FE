@@ -1,7 +1,4 @@
 
-// src/route/AppRoute.tsx
-
-import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { HomePage } from "../pages/Home/HomePage";
 import { Service } from "@/pages/Service/Service.tsx";
@@ -23,9 +20,10 @@ import {ForgotPassword} from "@/pages/ForgetPassword/ForgotPassword.tsx";
 import AccountManagement from '@/account/ProfilePage.tsx';
 import ChangePassword from '@/account/ChangePassword';
 import UserCart from '@/account/user-cart.tsx';
-import Register from "@/pages/register/Register";
-import VerifyPage from "@/pages/register/Verify";
+import Register from "@/pages/Register/Register";
+import VerifyPage from "@/pages/Register/Verify";
 import OAuth2RedirectHandler from "@/pages/Login/OAuth2RedirectHandler";
+import ProfilePage from "@/account/ProfilePage.tsx";
 
 
 const route = createBrowserRouter([
@@ -58,7 +56,7 @@ const route = createBrowserRouter([
       { path: "/product-detail/:productId", element: <ProductDetail /> },
 
       { path: "/register", element: <Register /> },
-
+      { path: "/profile", element: <ProfilePage /> },
 
     ],
   },

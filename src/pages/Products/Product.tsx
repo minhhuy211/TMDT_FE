@@ -200,6 +200,7 @@ export const Product = () => {
             .then((res) => res.json())
             .then((data) => {
                 if (data.result && Array.isArray(data.result)) {
+
                     setCategories(data.result)
                     const names = data.result.map((cat: Category) =>
                         cat.name

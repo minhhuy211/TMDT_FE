@@ -22,6 +22,7 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <Provider store={store}>
+
       <App />
     </Provider>
     </StrictMode>
