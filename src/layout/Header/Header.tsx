@@ -1,7 +1,7 @@
 import logo from "../../assets/logo/logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Heart, LogOut, Package, ShoppingCart, User, Users } from "lucide-react";
+import { Heart, LogOut, Package, ShoppingCart, User } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { RootState } from "@/redux/store";
@@ -21,15 +21,14 @@ const Header = () => {
   const { data: user } = useQuery<UserResponse>({
     queryKey: ["me"],
     queryFn: userApi.getMyInfo,
-
-    enabled: authenticated, // Chỉ gọi API khi người dùng đã đăng   
+    enabled: authenticated,
     refetchOnWindowFocus: false,
   });
 
+
   const handleLogout = () => {
     dispatch(logout());
-    localStorage.removeItem("token"); // Xóa token khỏi localStorage
-
+    localStorage.removeItem("token");
     queryClient.removeQueries({ queryKey: ["me"] });
 
     navigate("/login");
@@ -112,7 +111,7 @@ const Header = () => {
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   <DropdownMenuItem asChild>
-                    <Link to="/">
+                    <Link to="/profile">
                       <User className="mr-2 h-4 w-4" />
                       <span>Profile</span>
                     </Link>

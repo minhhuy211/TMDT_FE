@@ -10,6 +10,24 @@ export  interface User {
   roles: string[];
 }
 
+
+export interface UserInfo {
+  id: string;
+  username: string;
+  password?: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  email: string;
+  verificationCode?: string | null;
+  verificationCodeExpireAt?: string | null;
+  dob?: string | null;
+  roles?: string[]; // là mảng string: ["USER", ...]
+}
+
+export interface APIResponse<T> {
+  code: number;
+  result: T;
+}
 // UserCreationRequest.ts
 export  interface UserCreationRequest {
   username: string;
@@ -19,7 +37,6 @@ export  interface UserCreationRequest {
 
 // UserResponse.ts
 export  interface UserResponse {
-  name: any;
   id: string;
   username: string;
   password: string;
@@ -27,6 +44,7 @@ export  interface UserResponse {
   verificationCode: string;
   firstName: string;
   lastName: string;
+  phoneNumber: string;
   dob: string;
   roles: string[];
 }

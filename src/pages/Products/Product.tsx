@@ -89,7 +89,6 @@ export const Product = () => {
             .then((data) => {
                 if (data.result && Array.isArray(data.result)) {
                     setCategories(data.result);
-
                     // Lấy danh sách tên category viết hoa chữ cái đầu
                     const names = data.result.map((cat: Category) =>
                         cat.name

@@ -16,7 +16,7 @@ export default {
     const token = localStorage.getItem("token");
     const response = await api.get<APIResponse<UserResponse[]>>("/users", {
       headers: {
-        Authorization: `Bearer ${token}`,  
+        Authorization: `Bearer ${token}`,
       },
       withCredentials: true,
     });
@@ -30,15 +30,15 @@ export default {
 
     const response = await api.get<APIResponse<UserResponse>>(`/users/myInfo`, {
       headers: {
-        Authorization: `Bearer ${token}`,  // Đảm bảo token được gửi chính xác
+        Authorization: `Bearer ${token}`,
       },
       withCredentials: true,
     });
 
     if (response.code === 401) {
       alert("Token hết hạn hoặc không hợp lệ. Vui lòng đăng nhập lại.");
-      localStorage.removeItem("token");  // Xóa token khi không hợp lệ
-      window.location.href = "/login";  // Chuyển hướng về trang đăng nhập
+      localStorage.removeItem("token");
+      window.location.href = "/login";
     }
     console.log(response);
     return response.result;  // Trả về dữ liệu người dùng

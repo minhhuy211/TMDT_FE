@@ -6,7 +6,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AppRoute />
-      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+
     </QueryClientProvider>
   );
 }
