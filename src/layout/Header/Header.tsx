@@ -92,7 +92,7 @@ const Header = () => {
                       alt={user.username}
                     />
                     <AvatarFallback>
-                      {user.username.substring(0, 2).toUpperCase()}
+                      {user.username}
                     </AvatarFallback>
                   </Avatar>
                 </Button>

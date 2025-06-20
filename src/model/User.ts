@@ -8,6 +8,8 @@ export  interface User {
   email: string;
   verificationCode: string;
   roles: string[];
+  avatarUrl : string;
+
 }
 
 
@@ -47,14 +49,14 @@ export  interface UserResponse {
   phoneNumber: string;
   dob: string;
   roles: string[];
+  avatarUrl : string;
+
+}
+export  interface UserUpdateRequest {
+  username?: string;
+  firstName?: string;
+  lastName?: string;
+  dob?: string;
 }
 
-// UserUpdateRequest.ts
-export  interface UserUpdateRequest {
-  username: string;
-  password: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  dob: string;
-}
+
