@@ -14,8 +14,8 @@ import CheckoutPage from '../pages/Products/CheckoutPage';
 import PaymentSuccessPage from "../pages/Products/PaymentSuccessPage"; // Import success page
 // import NotificationsPage from "../account/NotificationsPage";
 
-import Dashboard from "@/components/admin/Dashboard";
-import PageAdmin from "@/pages/admin/PageAdmin";
+import Dashboard from "../components/admin/Dashboard.tsx";
+import PageAdmin from "@/components/admin/SideBarData";
 import {ForgotPassword} from "@/pages/ForgetPassword/ForgotPassword.tsx";
 import AccountManagement from '@/account/ProfilePage.tsx';
 import ChangePassword from '@/account/ChangePassword';
@@ -25,6 +25,10 @@ import OAuth2RedirectHandler from "@/pages/Login/OAuth2RedirectHandler";
 import ProfilePage from "@/account/ProfilePage.tsx";
 import VerifyPage from "@/pages/Register/Verify";
 import Register from "@/pages/Register/Register";
+// giả sử file ở: src/pages/admin/CustomerPage.tsx
+import CustomerPage from "../components/admin-data/CustomerPage";
+import OrderPage from "@/components/admin-data/OrderPage";
+import CategoryPage from "@/components/admin-data/CategoryPage";
 
 
 const route = createBrowserRouter([
@@ -67,7 +71,10 @@ const route = createBrowserRouter([
     element: <PageAdmin />,
     children: [
       {path: "/admin", element: <Dashboard />},
-      {path: "/admin/customer", element: <ProductPage />},
+      { path: "/admin/customer", element: <CustomerPage /> }, // 👈 đã thêm route customer
+      { path: "/admin/order", element: <OrderPage /> }, // 👈 THÊM DÒNG NÀY
+      {  path: "/admin/category",
+        element: <CategoryPage />}
     ],
   }
 ]);

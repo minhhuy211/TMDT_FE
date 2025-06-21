@@ -47,8 +47,9 @@ import { Input } from "@/components/ui/input"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Progress } from "@/components/ui/progress"
-import { cn } from "@/lib/utils"
+import { cn } from "@/components/admin-ts/utils"
 import { useTheme } from "next-themes"
+
 
 import { DatePickerWithRange } from "@/components/ui/DatePickerWithRange"
 import { useMobile } from "@/hooks/useMobile"
@@ -391,12 +392,12 @@ export default function Dashboard() {
         </div>
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
           <SidebarItem icon={<BarChart3 size={20} />} label="Thống kê" active={true} to="/admin"/>
-          <SidebarItem icon={<Users size={20} />} label="Khách hàng" to="/admin/customer"/>
-          <SidebarItem icon={<ShoppingCart size={20} />} label="Đơn hàng" to="/admin"/>
-          <SidebarItem icon={<Layers size={20} />} label="Danh mục" to="/admin"/>
-          <SidebarItem icon={<Gift size={20} />} label="Ưu đãi" to="/admin"/>
-          <SidebarItem icon={<Calendar size={20} />} label="Lịch" to="/admin"/>
-          <SidebarItem icon={<HelpCircle size={20} />} label="Hỗ trợ khách hàng" to="/admin"/>
+          <SidebarItem icon={<Users size={20} />} label="Khách hàng" to="/admin/customer" />
+          <SidebarItem icon={<ShoppingCart size={20} />} label="Đơn hàng" to="/admin/order"/>
+          <SidebarItem icon={<Layers size={20} />} label="Danh mục" to="/admin/category" />
+          {/*<SidebarItem icon={<Gift size={20} />} label="Ưu đãi" to="/admin"/>*/}
+          {/*<SidebarItem icon={<Calendar size={20} />} label="Lịch" to="/admin"/>*/}
+          {/*<SidebarItem icon={<HelpCircle size={20} />} label="Hỗ trợ khách hàng" to="/admin"/>*/}
 
           <div className="pt-4 mt-4 border-t border-gray-200 dark:border-gray-800">
             <h3 className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
@@ -504,7 +505,7 @@ export default function Dashboard() {
         </header>
         <Outlet />
       </div>
-      
+
     </div>
   )
 }
