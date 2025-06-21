@@ -2,8 +2,10 @@ import store from "@/redux/store";
 import axios from "axios";
 import type { AxiosRequestConfig } from "axios";
 
-const DOMAIN = "http://localhost:8080/api";
 
+
+export const API_BASE_URL = "http://localhost:8080/api";
+const DOMAIN = `${API_BASE_URL}`;
 const api = axios.create({
   proxy: false,
   baseURL: DOMAIN,

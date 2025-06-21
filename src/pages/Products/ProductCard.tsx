@@ -4,6 +4,7 @@ import { FaShoppingCart } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Product } from "@/model/Product";
+import {addToCartLocal} from "@/utils/localCart.ts";
 
 interface ProductCardProps {
     product: Product;
@@ -38,7 +39,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
                         if (onAddToCart) {
                             onAddToCart(product);
                         } else {
-                            alert(`Đã thêm "${productName}" vào giỏ hàng!`);
+                            addToCartLocal(product);
+                            alert(`Đã thêm "${product.productName}" vào giỏ hàng!`);
                         }
                     }}
                 >

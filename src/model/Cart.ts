@@ -1,34 +1,35 @@
-import type { Product, ProductResponse } from "./Product";
-import type { User, UserResponse } from "./User";
+import type { Product } from "@/model/Product";
 
-export interface Cart{
-    id: number;
-  totalAmount: number;
-  cartItems: CartItem[];
-  // Nếu bạn cần thông tin người dùng trong frontend
-  user?: User;
+// Dùng cho lưu trên localStorage (frontend)
+export interface LocalCartItem {
+    productId: string;     // UUID của sản phẩm
+    productName: string;   // Tên sản phẩm (giúp hiển thị)
+    image?: string;        // Link ảnh sp (giúp hiển thị)
+    price: number;         // Đơn giá hiện tại
+    quantity: number;      // Số lượng trong giỏ
+    discount?: number;     // Giảm giá (tùy chọn)
 }
 
-export interface CartItem {
-    id: number;
-    totalPrice: number;
-    product: Product;
-    cart: Cart
-  }
+// Giỏ hàng local (không cần id)
+export interface LocalCart {
+    items: LocalCartItem[];
+    totalAmount: number; // Tổng tiền (có thể tính động hoặc lưu sẵn)
+}
 
-export interface CartResponse {
-    id: number;
+// Khi gửi đi OrderRequest
+export interface OrderItemRequest {
+    productId: string;
+    quantity: number;
+    discount?: number;
+}
+
+export interface OrderRequest {
+    userId: string;
+    orderDate: string;
+    addressId: string;
+    orderItemRequests: OrderItemRequest[];
     totalAmount: number;
-    cartItems: CartItemResponse[];
-  }
-
-export interface CartItemResponse {
-    id: number;
-    totalPrice: number;
-    product: ProductResponse;
-  }
-
-export interface CartItemRequest {
-    productId: number; // ID của sản phẩm
+    discount?: number;
+    paymentMethod: string;
+    expectedDeliveryDate?: string | null;
 }
-

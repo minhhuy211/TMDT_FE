@@ -25,6 +25,7 @@ import OAuth2RedirectHandler from "@/pages/Login/OAuth2RedirectHandler";
 import ProfilePage from "@/account/ProfilePage.tsx";
 import VerifyPage from "@/pages/Register/Verify";
 import Register from "@/pages/Register/Register";
+import UploadDesignsPage from "@/pages/Products/UploadDesignsPage.tsx";
 
 
 const route = createBrowserRouter([
@@ -42,6 +43,7 @@ const route = createBrowserRouter([
 
 
       { path: "/product", element: <ProductPage /> },
+      { path: "/productCustom", element: <UploadDesignsPage /> },
        { path: "/about", element: <Service /> },
       { path: "/contact", element: <Contact /> },
       { path: "/cart", element: <Cart /> },
@@ -59,6 +61,7 @@ const route = createBrowserRouter([
 
       { path: "/register", element: <Register /> },
       { path: "/profile", element: <ProfilePage /> },
+
 
     ],
   },
