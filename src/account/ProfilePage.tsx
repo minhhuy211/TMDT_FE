@@ -3,11 +3,11 @@ import userApi from "@/services/userApi";
 import type { UserResponse, UserUpdateRequest } from "@/model/User";
 import Sidebar from "./sidebar";
 import React, { useState, useEffect } from "react";
-
+import { API_BASE_URL } from "@/services/api";
 const ProfilePage: React.FC = () => {
     const queryClient = useQueryClient();
 
-    // Lấy user
+    // Lấy user info
     const { data: user, isLoading } = useQuery<UserResponse>({
         queryKey: ["me"],
         queryFn: userApi.getMyInfo,
@@ -21,7 +21,7 @@ const ProfilePage: React.FC = () => {
     const [preview, setPreview] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
-    // Mutation update user info
+    // Update user mutation (chỉ phone & dob)
     const updateUserMutation = useMutation({
         mutationFn: (data: UserUpdateRequest) => userApi.updateUser(data),
         onSuccess: () => {
@@ -33,7 +33,7 @@ const ProfilePage: React.FC = () => {
         }
     });
 
-    // Mutation upload avatar
+    // Upload avatar mutation
     const uploadAvatarMutation = useMutation({
         mutationFn: (file: File) => userApi.uploadAvatar(file),
         onSuccess: () => {
@@ -49,11 +49,19 @@ const ProfilePage: React.FC = () => {
         if (user) {
             setDob(user.dob || "");
             setPhone(user.phoneNumber || "");
-            setPreview(user.avatarUrl || null); // Nếu backend trả về avatarUrl
+            if (user.avatarUrl) {
+                if (user.avatarUrl.startsWith("http")) {
+                    setPreview(user.avatarUrl);
+                } else {
+                    setPreview(API_BASE_URL + user.avatarUrl);
+                }
+            } else {
+                setPreview(null);
+            }
         }
     }, [user]);
 
-    // Xử lý chọn ảnh
+    // Chọn ảnh mới
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             setAvatar(e.target.files[0]);
@@ -61,20 +69,21 @@ const ProfilePage: React.FC = () => {
         }
     };
 
-    // Xử lý lưu thông tin
+    // Lưu cập nhật
     const handleSave = async () => {
         setLoading(true);
-        // Update số điện thoại và ngày sinh
-        await updateUserMutation.mutateAsync({
-            phoneNumber: phone,
-            dob: dob,
-        });
-        // Nếu có file ảnh thì upload
-        if (avatar) {
-            await uploadAvatarMutation.mutateAsync(avatar);
-            setAvatar(null);
+        try {
+            await updateUserMutation.mutateAsync({
+                phoneNumber: phone,
+                dob: dob,
+            });
+            if (avatar) {
+                await uploadAvatarMutation.mutateAsync(avatar);
+                setAvatar(null);
+            }
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     if (isLoading) return <div className="p-10">Đang tải thông tin...</div>;
@@ -87,14 +96,27 @@ const ProfilePage: React.FC = () => {
                 <h1 className="text-xl font-bold text-black mb-6">Hồ sơ của tôi</h1>
                 <p className="text-sm text-gray-600 mb-4">Quản lý thông tin hồ sơ để bảo mật tài khoản</p>
                 <div className="space-y-4 max-w-xl">
+                    {/* Username (readonly) */}
                     <div>
                         <label className="block font-semibold text-black">Tên đăng nhập</label>
-                        <input type="text" value={user.username} disabled className="w-full p-2 border border-gray-400 rounded bg-gray-100 text-black" />
+                        <input
+                            type="text"
+                            value={user.username}
+                            disabled
+                            className="w-full p-2 border border-gray-400 rounded bg-gray-100 text-black"
+                        />
                     </div>
+                    {/* Email (readonly) */}
                     <div>
                         <label className="block font-semibold text-black">Email</label>
-                        <input type="email" value={user.email} disabled className="w-full p-2 border border-gray-400 rounded text-black" />
+                        <input
+                            type="email"
+                            value={user.email}
+                            disabled
+                            className="w-full p-2 border border-gray-400 rounded bg-gray-100 text-black"
+                        />
                     </div>
+                    {/* Số điện thoại (editable) */}
                     <div>
                         <label className="block font-semibold text-black">Số điện thoại</label>
                         <input
@@ -105,6 +127,7 @@ const ProfilePage: React.FC = () => {
                             maxLength={15}
                         />
                     </div>
+                    {/* Ngày sinh (editable) */}
                     <div>
                         <label className="block font-semibold text-black">Ngày sinh</label>
                         <input
@@ -114,6 +137,7 @@ const ProfilePage: React.FC = () => {
                             className="w-full p-2 border border-gray-400 rounded text-black"
                         />
                     </div>
+                    {/* Ảnh đại diện (editable) */}
                     <div className="flex items-start gap-6 mt-4">
                         <div>
                             <label className="block font-semibold text-black mb-2">Ảnh đại diện</label>
@@ -124,9 +148,15 @@ const ProfilePage: React.FC = () => {
                         </div>
                         {preview && (
                             <img
-                                src={preview}
-                                alt="avatar"
-                                className="w-24 h-24 object-cover rounded border border-black"
+                                src={
+                                    preview ||
+                                    (user?.avatarUrl
+                                        ? `http://localhost:8080${user.avatarUrl}`
+                                        : "/placeholder-avatar.png")
+                                }
+                                alt="Avatar"
+                                className="w-24 h-24 rounded-full object-cover border mx-auto"
+                                style={{aspectRatio: "1/1", objectFit: "cover", display: "block"}}
                             />
                         )}
                     </div>

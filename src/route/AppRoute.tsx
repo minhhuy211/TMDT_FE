@@ -25,10 +25,14 @@ import OAuth2RedirectHandler from "@/pages/Login/OAuth2RedirectHandler";
 import ProfilePage from "@/account/ProfilePage.tsx";
 import VerifyPage from "@/pages/Register/Verify";
 import Register from "@/pages/Register/Register";
+
+import UploadDesignsPage from "@/pages/Products/UploadDesignsPage.tsx";
+
 // giả sử file ở: src/pages/admin/CustomerPage.tsx
 import CustomerPage from "../components/admin-data/CustomerPage";
 import OrderPage from "@/components/admin-data/OrderPage";
 import CategoryPage from "@/components/admin-data/CategoryPage";
+
 
 
 const route = createBrowserRouter([
@@ -46,6 +50,7 @@ const route = createBrowserRouter([
 
 
       { path: "/product", element: <ProductPage /> },
+      { path: "/productCustom", element: <UploadDesignsPage /> },
        { path: "/about", element: <Service /> },
       { path: "/contact", element: <Contact /> },
       { path: "/cart", element: <Cart /> },
@@ -63,6 +68,7 @@ const route = createBrowserRouter([
 
       { path: "/register", element: <Register /> },
       { path: "/profile", element: <ProfilePage /> },
+
 
     ],
   },

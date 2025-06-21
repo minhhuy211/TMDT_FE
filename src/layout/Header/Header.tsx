@@ -10,6 +10,7 @@ import userApi from "@/services/userApi";
 import { logout } from "@/redux/authSlice";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { API_BASE_URL } from "@/services/api";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -55,6 +56,9 @@ const Header = () => {
               <Link to="/product" className="text-xl font-semibold">
                 Sản phẩm
               </Link>
+              <Link to="/productCustom" className="text-xl font-semibold">
+                Sản phẩm thiết kế
+              </Link>
               <Link to="/about" className="text-xl font-semibold">
                 Dịch vụ
               </Link>
@@ -86,15 +90,23 @@ const Header = () => {
                 <Button
                   className="relative h-8 w-8 rounded-full"
                 >
-                  <Avatar className="h-8 w-8">
+                  <Avatar className="h-10 w-10 rounded-full overflow-hidden border border-gray-200 bg-gray-100 shadow">
                     <AvatarImage
-                      src={`https://ui-avatars.com/api/?name=${user.username}&background=random`}
-                      alt={user.username}
+                        src={
+                          user.avatarUrl
+                              ? user.avatarUrl.startsWith("http")
+                                  ? user.avatarUrl
+                                  : `${API_BASE_URL}${user.avatarUrl}`
+                              : `https://ui-avatars.com/api/?name=${user.username}&background=random`
+                        }
+                        alt={user.username}
+                        className="object-cover w-full h-full rounded-full"
                     />
                     <AvatarFallback>
-                      {user.username}
+                      {user.username.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
+
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>

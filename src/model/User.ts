@@ -52,11 +52,10 @@ export  interface UserResponse {
   avatarUrl : string;
 
 }
-export  interface UserUpdateRequest {
-  username?: string;
+export interface UserUpdateRequest {
   firstName?: string;
   lastName?: string;
   dob?: string;
+  phoneNumber?: string;
 }
-
 
