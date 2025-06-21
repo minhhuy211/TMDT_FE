@@ -1,7 +1,6 @@
 
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter,  RouterProvider } from "react-router-dom";
 import { HomePage } from "../pages/Home/HomePage";
-import { Service } from "@/pages/Service/Service.tsx";
 import { Contact } from "../pages/Contact/Contact";
 import MasterLayout from "../layout/MasterLayout/MasterLayout";
 import ProductPage from "../pages/Products/Product";
@@ -23,8 +22,7 @@ import UserCart from '@/account/user-cart.tsx';
 
 import OAuth2RedirectHandler from "@/pages/Login/OAuth2RedirectHandler";
 import ProfilePage from "@/account/ProfilePage.tsx";
-import VerifyPage from "@/pages/Register/Verify";
-import Register from "@/pages/Register/Register";
+
 
 import UploadDesignsPage from "@/pages/Products/UploadDesignsPage.tsx";
 
@@ -33,6 +31,9 @@ import CustomerPage from "../components/admin-data/CustomerPage";
 import OrderPage from "@/components/admin-data/OrderPage";
 import CategoryPage from "@/components/admin-data/CategoryPage";
 import User from "@/components/admin-data/UserPage";
+import VerifyPage from "@/pages/register/Verify.tsx";
+import Register from "@/pages/register/Register.tsx";
+import { Service } from "@/pages/Service/Service.tsx";
 
 
 
