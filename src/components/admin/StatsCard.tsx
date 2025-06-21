@@ -1,7 +1,7 @@
 import { ArrowDownRight, ArrowUpRight } from "lucide-react"
 import { Card, CardContent } from "../ui/card"
 import { useTheme } from "next-themes"
-import { cn } from "@/lib/utils"
+import { cn } from "@/components/admin-ts/utils"
 import { ReactNode } from "react"
 
 // Stats card data type
@@ -13,8 +13,7 @@ type StatsCardProps = {
     trend: "up" | "down"
     bgColor: string
   }
-  
-// Stats card component
+  // Stats card component
 function StatsCard({ icon, title, value, change, trend, bgColor }: StatsCardProps) {
     const { theme } = useTheme()
   
