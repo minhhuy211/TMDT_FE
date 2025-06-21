@@ -39,6 +39,7 @@ export const Login = () => {
         loginSuccess({ token: data.token, userResponse: data.userResponse })
       );
       localStorage.setItem("token", data.token);
+
       const roles = data.userResponse.roles;
       if (roles.includes("ADMIN")) {
         navigate("/admin");

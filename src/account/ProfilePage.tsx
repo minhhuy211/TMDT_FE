@@ -4,24 +4,26 @@ import type { UserResponse, UserUpdateRequest } from "@/model/User";
 import Sidebar from "./sidebar";
 import React, { useState, useEffect } from "react";
 import { API_BASE_URL } from "@/services/api";
+import AddressSection from "@/account/AddressSection";
+
 const ProfilePage: React.FC = () => {
     const queryClient = useQueryClient();
 
-    // Lấy user info
     const { data: user, isLoading } = useQuery<UserResponse>({
         queryKey: ["me"],
         queryFn: userApi.getMyInfo,
         refetchOnWindowFocus: false,
     });
 
-    // Local state cho form
+    // State cho form
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
     const [dob, setDob] = useState("");
     const [phone, setPhone] = useState("");
     const [avatar, setAvatar] = useState<File | null>(null);
     const [preview, setPreview] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
-    // Update user mutation (chỉ phone & dob)
     const updateUserMutation = useMutation({
         mutationFn: (data: UserUpdateRequest) => userApi.updateUser(data),
         onSuccess: () => {
@@ -33,7 +35,6 @@ const ProfilePage: React.FC = () => {
         }
     });
 
-    // Upload avatar mutation
     const uploadAvatarMutation = useMutation({
         mutationFn: (file: File) => userApi.uploadAvatar(file),
         onSuccess: () => {
@@ -47,6 +48,8 @@ const ProfilePage: React.FC = () => {
 
     useEffect(() => {
         if (user) {
+            setFirstName(user.firstName || "");
+            setLastName(user.lastName || "");
             setDob(user.dob || "");
             setPhone(user.phoneNumber || "");
             if (user.avatarUrl) {
@@ -74,6 +77,8 @@ const ProfilePage: React.FC = () => {
         setLoading(true);
         try {
             await updateUserMutation.mutateAsync({
+                firstName,
+                lastName,
                 phoneNumber: phone,
                 dob: dob,
             });
@@ -96,6 +101,29 @@ const ProfilePage: React.FC = () => {
                 <h1 className="text-xl font-bold text-black mb-6">Hồ sơ của tôi</h1>
                 <p className="text-sm text-gray-600 mb-4">Quản lý thông tin hồ sơ để bảo mật tài khoản</p>
                 <div className="space-y-4 max-w-xl">
+                    {/* Ảnh đại diện */}
+                    <div className="flex items-start gap-6 mt-4">
+                        <div>
+                            <label className="block font-semibold text-black mb-2">Ảnh đại diện</label>
+                            <input type="file" accept=".png,.jpg,.jpeg" onChange={handleFileChange}/>
+                            <p className="text-xs text-gray-500 mt-1">
+                                Dung lượng tối đa 1 MB. Định dạng: .JPEG, .PNG
+                            </p>
+                        </div>
+                        {preview && (
+                            <img
+                                src={
+                                    preview ||
+                                    (user?.avatarUrl
+                                        ? `http://localhost:8080${user.avatarUrl}`
+                                        : "/placeholder-avatar.png")
+                                }
+                                alt="Avatar"
+                                className="w-24 h-24 rounded-full object-cover border mx-auto"
+                                style={{aspectRatio: "1/1", objectFit: "cover", display: "block"}}
+                            />
+                        )}
+                    </div>
                     {/* Username (readonly) */}
                     <div>
                         <label className="block font-semibold text-black">Tên đăng nhập</label>
@@ -116,50 +144,52 @@ const ProfilePage: React.FC = () => {
                             className="w-full p-2 border border-gray-400 rounded bg-gray-100 text-black"
                         />
                     </div>
-                    {/* Số điện thoại (editable) */}
+                    {/* Họ */}
+                    <div>
+                        <label className="block font-semibold text-black">Họ</label>
+                        <input
+                            type="text"
+                            value={firstName}
+                            onChange={e => setFirstName(e.target.value)}
+                            className="w-full p-2 border border-gray-400 rounded text-black"
+                        />
+                    </div>
+                    {/* Tên */}
+                    <div>
+                        <label className="block font-semibold text-black">Tên</label>
+                        <input
+                            type="text"
+                            value={lastName}
+                            onChange={e => setLastName(e.target.value)}
+                            className="w-full p-2 border border-gray-400 rounded text-black"
+                        />
+                    </div>
+                    {/* Số điện thoại */}
                     <div>
                         <label className="block font-semibold text-black">Số điện thoại</label>
                         <input
                             type="text"
                             value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
+                            onChange={e => setPhone(e.target.value)}
                             className="w-full p-2 border border-gray-400 rounded text-black"
                             maxLength={15}
                         />
                     </div>
-                    {/* Ngày sinh (editable) */}
+                    {/* Ngày sinh */}
                     <div>
                         <label className="block font-semibold text-black">Ngày sinh</label>
                         <input
                             type="date"
                             value={dob}
-                            onChange={(e) => setDob(e.target.value)}
+                            onChange={e => setDob(e.target.value)}
                             className="w-full p-2 border border-gray-400 rounded text-black"
                         />
                     </div>
-                    {/* Ảnh đại diện (editable) */}
-                    <div className="flex items-start gap-6 mt-4">
-                        <div>
-                            <label className="block font-semibold text-black mb-2">Ảnh đại diện</label>
-                            <input type="file" accept=".png,.jpg,.jpeg" onChange={handleFileChange} />
-                            <p className="text-xs text-gray-500 mt-1">
-                                Dung lượng tối đa 1 MB. Định dạng: .JPEG, .PNG
-                            </p>
-                        </div>
-                        {preview && (
-                            <img
-                                src={
-                                    preview ||
-                                    (user?.avatarUrl
-                                        ? `http://localhost:8080${user.avatarUrl}`
-                                        : "/placeholder-avatar.png")
-                                }
-                                alt="Avatar"
-                                className="w-24 h-24 rounded-full object-cover border mx-auto"
-                                style={{aspectRatio: "1/1", objectFit: "cover", display: "block"}}
-                            />
-                        )}
+                    <div className="mt-10">
+                        <AddressSection/>
                     </div>
+
+
                     <div className="pt-4">
                         <button
                             onClick={handleSave}
@@ -170,6 +200,7 @@ const ProfilePage: React.FC = () => {
                         </button>
                     </div>
                 </div>
+
             </main>
         </div>
     );
