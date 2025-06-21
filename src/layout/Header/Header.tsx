@@ -11,11 +11,14 @@ import { logout } from "@/redux/authSlice";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { API_BASE_URL } from "@/services/api";
+import { selectCartCount } from "@/redux/cartSlice";
 
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const cartCount = useSelector(selectCartCount);
+
   // Lấy trạng thái authenticated từ Redux
   const { authenticated } = useSelector((state: RootState) => state.auth);
 
@@ -31,7 +34,6 @@ const Header = () => {
     dispatch(logout());
     localStorage.removeItem("token");
     queryClient.removeQueries({ queryKey: ["me"] });
-
     navigate("/login");
   };
 
@@ -78,9 +80,11 @@ const Header = () => {
               >
                 <ShoppingCart className="size-7 text-gray-800" />
               </Button>
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5">
-              3
-            </span>
+              {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5">
+                    {cartCount}
+                </span>
+              )}
             </div>
 
             {/* User / Login */}

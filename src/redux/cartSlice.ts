@@ -1,48 +1,37 @@
-// redux/cartSlice.ts
-import { CartItemResponse, CartResponse } from "@/model/Cart";
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+// src/store/cartSlice.ts
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import type { CartItemLocal } from "@/model/Cart";
+import { getCartLocal } from "@/utils/localCart";
 
 interface CartState {
-  items: CartItemResponse[];
-  cart: CartResponse | null;
+  items: CartItemLocal[];
 }
 
 const initialState: CartState = {
-  items: [],
-  cart: null,
+  items: getCartLocal(),
 };
 
 const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    addCartItem: (state, action: PayloadAction<CartItemResponse>) => {
-      const item = action.payload;
-      const existing = state.items.find(
-        (i) => i.product.productId === item.product.productId
-      );
-
-      if (existing) {
-        existing.totalPrice += item.totalPrice;
-      } else {
-        state.items.push(item);
-      }
+    setCart: (state, action: PayloadAction<CartItemLocal[]>) => {
+      state.items = action.payload;
     },
-    removeCartItem: (state, action: PayloadAction<number>) => {
-      const productId = action.payload;
-      if (state.cart) {
-        state.cart.cartItems = state.cart.cartItems.filter((i) => i.id !== productId);
-      }
-    },
+    // Dùng thêm clearCart cho các tác vụ đặc biệt
     clearCart: (state) => {
       state.items = [];
-      state.cart = null;
-    },
-    setCartItems: (state, action: PayloadAction<CartResponse>) => {
-      state.cart = action.payload;
     },
   },
 });
 
-export const { addCartItem, removeCartItem, clearCart, setCartItems } = cartSlice.actions;
+export const { setCart, clearCart } = cartSlice.actions;
 export default cartSlice.reducer;
+
+// Selector tổng quantity (dùng cho badge icon giỏ hàng...)
+export const selectCartCount = (state: { cart: CartState }) =>
+    state.cart.items.reduce((sum, item) => sum + item.quantity, 0);
+
+// Selector tổng tiền (nếu cần)
+export const selectCartTotal = (state: { cart: CartState }) =>
+    state.cart.items.reduce((sum, item) => sum + item.quantity * item.price, 0);

@@ -36,8 +36,27 @@ export function addToCartLocal(product: Product) {
     }
     setCartLocal(cart);
 }
-
+export function updateCartItemLocal(productId: string, quantity: number) {
+    let cart = getCartLocal();
+    const idx = cart.findIndex(item => item.productId === productId);
+    if (idx !== -1) {
+        if (quantity > 0) {
+            cart[idx].quantity = quantity;
+        } else {
+            cart.splice(idx, 1);
+        }
+        setCartLocal(cart);
+    }
+}
 export function removeFromCartLocal(productId: string) {
     const cart = getCartLocal().filter(item => item.productId !== productId);
     setCartLocal(cart);
+}
+// Xóa toàn bộ giỏ hàng
+export function clearCartLocal() {
+    setCartLocal([]);
+}
+
+export function countCartLocal(): number {
+    return getCartLocal().reduce((sum, item) => sum + item.quantity, 0);
 }
