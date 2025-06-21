@@ -52,7 +52,7 @@ import { useTheme } from "next-themes"
 
 
 import { DatePickerWithRange } from "@/components/ui/DatePickerWithRange"
-import { useMobile } from "@/hooks/useMobile"
+import { useMobile } from "@/components/admin-data/hooks/useMobile"
 import { Outlet, useNavigate } from "react-router-dom"
 
 // Register ChartJS components
@@ -398,6 +398,7 @@ export default function Dashboard() {
           {/*<SidebarItem icon={<Gift size={20} />} label="Ưu đãi" to="/admin"/>*/}
           {/*<SidebarItem icon={<Calendar size={20} />} label="Lịch" to="/admin"/>*/}
           {/*<SidebarItem icon={<HelpCircle size={20} />} label="Hỗ trợ khách hàng" to="/admin"/>*/}
+          <SidebarItem icon={<Users size={20} />} label="Người dùng" to="/admin/user" />
 
           <div className="pt-4 mt-4 border-t border-gray-200 dark:border-gray-800">
             <h3 className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
