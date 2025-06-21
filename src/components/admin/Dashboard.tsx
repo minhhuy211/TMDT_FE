@@ -35,6 +35,7 @@ import { RevenueDistributionChart } from "../admin-chart/revenue-distribution-ch
 import { RecentOrdersTable } from "../admin-chart/recent-orders-table"
 import { TopProductsTable } from "../admin-data/top-products-table"
 import { getLineChartData, getChartOptions } from "../admin-ts/chart-config"
+import React from "react";
 
 // Register ChartJS components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, PointElement, LineElement)

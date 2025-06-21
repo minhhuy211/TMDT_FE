@@ -3,6 +3,7 @@ import { Card, CardContent } from "../ui/card"
 import { useTheme } from "next-themes"
 import { cn } from "@/components/admin-ts/utils"
 import { ReactNode } from "react"
+import React from "react"
 
 // Stats card data type
 type StatsCardProps = {
