@@ -32,6 +32,7 @@ import UploadDesignsPage from "@/pages/Products/UploadDesignsPage.tsx";
 import CustomerPage from "../components/admin-data/CustomerPage";
 import OrderPage from "@/components/admin-data/OrderPage";
 import CategoryPage from "@/components/admin-data/CategoryPage";
+import User from "@/components/admin-data/UserPage";
 
 
 
@@ -79,8 +80,8 @@ const route = createBrowserRouter([
       {path: "/admin", element: <Dashboard />},
       { path: "/admin/customer", element: <CustomerPage /> }, // 👈 đã thêm route customer
       { path: "/admin/order", element: <OrderPage /> }, // 👈 THÊM DÒNG NÀY
-      {  path: "/admin/category",
-        element: <CategoryPage />}
+      {  path: "/admin/category", element: <CategoryPage />},
+      {path: "/admin/user",element: <User/>}
     ],
   }
 ]);
