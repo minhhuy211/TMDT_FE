@@ -40,47 +40,10 @@ type Category = {
     createdAt?: string
     status?: "active" | "inactive"
 }
-// Mock data với nhiều thông tin hơn
-const initialCategories: Category[] = [
-    {
-        id: 1,
-        name: "Điện thoại",
-        description: "Các loại smartphone và điện thoại di động",
-        productCount: 45,
-        createdAt: "2023-01-15",
-        status: "active",
-    },
-    {
-        id: 2,
-        name: "Laptop",
-        description: "Máy tính xách tay và workstation",
-        productCount: 23,
-        createdAt: "2023-02-20",
-        status: "active",
-    },
-    {
-        id: 3,
-        name: "Phụ kiện",
-        description: "Tai nghe, sạc, ốp lưng và các phụ kiện khác",
-        productCount: 67,
-        createdAt: "2023-03-10",
-        status: "active",
-    },
-    {
-        id: 4,
-        name: "Máy tính bảng",
-        description: "iPad, Android tablet và các thiết bị tương tự",
-        productCount: 12,
-        createdAt: "2023-04-05",
-        status: "inactive",
-    },
-]
-
-// Search Input Component
 function SearchInput({ value, onChange }: { value: string; onChange: (value: string) => void }) {
     return (
         <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4"/>
             <Input
                 placeholder="Tìm kiếm danh mục..."
                 value={value}
@@ -94,14 +57,12 @@ function SearchInput({ value, onChange }: { value: string; onChange: (value: str
                     className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
                     onClick={() => onChange("")}
                 >
-                    <X className="h-3 w-3" />
+                    <X className="h-3 w-3"/>
                 </Button>
             )}
         </div>
     )
 }
-
-// Add/Edit Category Dialog
 function CategoryDialog({
                             category,
                             isOpen,
@@ -184,8 +145,6 @@ function CategoryDialog({
         </Dialog>
     )
 }
-
-// Delete Confirmation Dialog
 function DeleteDialog({
                           category,
                           isOpen,
@@ -222,8 +181,6 @@ function DeleteDialog({
         </AlertDialog>
     )
 }
-
-// Stats Cards Component
 function StatsCards({ categories }: { categories: Category[] }) {
     const stats = useMemo(() => {
         const total = categories.length
@@ -288,26 +245,21 @@ function StatsCards({ categories }: { categories: Category[] }) {
         </div>
     )
 }
-
-// Main Component
 export default function CategoryPage() {
-    const [categories, setCategories] = useState<Category[]>(initialCategories)
+    const [categories, setCategories] = useState<Category[]>([])
     const [search, setSearch] = useState("")
     const [dialogOpen, setDialogOpen] = useState(false)
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
     const [editingCategory, setEditingCategory] = useState<Category | undefined>()
     const [deletingCategory, setDeletingCategory] = useState<Category | undefined>()
     const [loading, setLoading] = useState(false);
-
     const filteredCategories = useMemo(() => {
         if (!search.trim()) return categories
-
         const searchText = search.toLowerCase().trim()
         return categories.filter(
             (cat) => cat.name.toLowerCase().includes(searchText) || cat.description.toLowerCase().includes(searchText),
         )
     }, [categories, search])
-
     const handleAddCategory = () => {
         setEditingCategory(undefined)
         setDialogOpen(true)
@@ -315,16 +267,15 @@ export default function CategoryPage() {
     useEffect(() => {
         async function fetchCategories() {
             try {
-                const data = await categoryService.getCategories()
-                setCategories(data)
+                const data = await categoryService.getCategories();
+                setCategories(data);
             } catch (error) {
-                toast.error("Lấy danh mục thất bại")
-                console.error(error)
+                toast.error("Lấy danh mục thất bại");
+                console.error(error);
             }
         }
-        fetchCategories()
-    }, [])
-
+        fetchCategories();
+    }, []);
     const handleEditCategory = (category: Category) => {
         setEditingCategory(category)
         setDialogOpen(true)
@@ -335,33 +286,43 @@ export default function CategoryPage() {
         setDeleteDialogOpen(true)
     }
 
-    const handleSaveCategory = (categoryData: Omit<Category, "id" | "createdAt" | "productCount">) => {
-        if (editingCategory) {
-            // Update existing category
-            setCategories((prev) => prev.map((cat) => (cat.id === editingCategory.id ? { ...cat, ...categoryData } : cat)))
-            toast.success("Cập nhật danh mục thành công")
-        } else {
-            // Add new category
-            const newId = Math.max(...categories.map((c) => c.id), 0) + 1
-            const newCategory: Category = {
-                id: newId,
-                ...categoryData,
-                productCount: 0,
-                createdAt: new Date().toISOString().split("T")[0],
+    const handleSaveCategory = async (
+        categoryData: Omit<Category, "id" | "createdAt" | "productCount">
+    ) => {
+        try {
+            if (editingCategory) {
+                // Gọi API cập nhật
+                const updated = await categoryService.updateCategory(editingCategory.id, categoryData);
+                setCategories((prev) =>
+                    prev.map((cat) => (cat.id === updated.id ? updated : cat))
+                );
+                toast.success("Cập nhật danh mục thành công");
+            } else {
+                // Gọi API tạo mới
+                const created = await categoryService.createCategory(categoryData);
+                setCategories((prev) => [...prev, created]);
+                toast.success("Thêm danh mục thành công");
             }
-            setCategories((prev) => [...prev, newCategory])
-            toast.success("Thêm danh mục thành công")
+        } catch (error) {
+            toast.error("Lưu danh mục thất bại");
+            console.error(error);
         }
-    }
-
-    const handleConfirmDelete = () => {
+    };
+    const handleConfirmDelete = async () => {
         if (deletingCategory) {
-            setCategories((prev) => prev.filter((cat) => cat.id !== deletingCategory.id))
-            toast.success("Xóa danh mục thành công")
-            setDeleteDialogOpen(false)
-            setDeletingCategory(undefined)
+            try {
+                await categoryService.deleteCategory(deletingCategory.id);
+                setCategories((prev) => prev.filter((cat) => cat.id !== deletingCategory.id));
+                toast.success("Xóa danh mục thành công");
+            } catch (error) {
+                toast.error("Xóa danh mục thất bại");
+                console.error(error);
+            } finally {
+                setDeleteDialogOpen(false);
+                setDeletingCategory(undefined);
+            }
         }
-    }
+    };
 
     const getStatusBadge = (status: "active" | "inactive") => {
         return status === "active" ? (
