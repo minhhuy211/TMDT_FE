@@ -133,17 +133,17 @@ const Header = () => {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link to="/">
+                    <Link to="/order-history">
                       <Package className="mr-2 h-4 w-4" />
                       <span>Orders</span>
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/">
-                      <Heart className="mr-2 h-4 w-4" />
-                      <span>Wishlist</span>
-                    </Link>
-                  </DropdownMenuItem>
+                  {/*<DropdownMenuItem asChild>*/}
+                  {/*  <Link to="/">*/}
+                  {/*    <Heart className="mr-2 h-4 w-4" />*/}
+                  {/*    <span>Wishlist</span>*/}
+                  {/*  </Link>*/}
+                  {/*</DropdownMenuItem>*/}
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout}>
