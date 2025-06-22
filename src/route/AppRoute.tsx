@@ -69,7 +69,7 @@ const route = createBrowserRouter([
 
       { path: "/register", element: <Register /> },
       { path: "/profile", element: <ProfilePage /> },
-      { path: "/my-order-custom", element: <MyOrdersCustomPage /> },
+      { path: "/my-orders-custom", element: <MyOrdersCustomPage /> },
       { path: "/payment/:id", element: <CheckoutCustomPage /> },
 
     ],
