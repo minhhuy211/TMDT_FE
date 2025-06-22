@@ -7,7 +7,7 @@ import ProductPage from "../pages/Products/Product";
 import { Cart } from "../pages/Cart/Cart";
 import { Login } from "../pages/Login/Login";
 import OrderHistory from "@/account/OrderHistory.tsx"
-import ProductDetail from "../pages/Products/Product-detail";  // Trang chi tiết sản phẩm
+import ProductDetail from "../pages/Products/Product-detail";
 import CheckoutPage from '../pages/Products/CheckoutPage';
 import PaymentSuccessPage from "../pages/Products/PaymentSuccessPage"; // Import success page
 // import NotificationsPage from "../account/NotificationsPage";

@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Star, ArrowUp } from "lucide-react";
+import { Star, ArrowUp,ShoppingCart, Truck } from "lucide-react";
 import {Category} from "@/model/Category.ts";
 import {useQuery} from "@tanstack/react-query";
 import categoryApi from "@/services/categoryApi.ts";
 import {Product} from "@/model/Product.ts";
 import ProductCard from "@/pages/Products/ProductCard.tsx";
+import {Link} from "react-router-dom";
 
 export const HomePage = () => {
 
@@ -45,10 +46,17 @@ export const HomePage = () => {
               </h1>
               <p className="text-gray-600">6,000+ khách hàng hài lòng</p>
               <div className="flex gap-4">
-                <Button className="rounded-full px-6 bg-black hover:bg-gray-800">Thiết kế</Button>
-                <Button variant="outline" className="rounded-full px-6 border-black text-black hover:bg-gray-100">
-                  Sản phẩm
-                </Button>
+                <Link to="/productCustom">
+                  <Button className="rounded-full px-6 bg-black hover:bg-gray-800">Thiết kế</Button>
+                </Link>
+                <Link to="/product">
+                  <Button
+                      variant="outline"
+                      className="rounded-full px-6 border-black text-black hover:bg-gray-100"
+                  >
+                    Sản phẩm
+                  </Button>
+                </Link>
               </div>
             </div>
             <div className="flex justify-center">
@@ -146,7 +154,7 @@ export const HomePage = () => {
               </div>
               <div className="text-center space-y-4">
                 <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto shadow-md">
-                  <img src="/placeholder.svg?height=24&width=24" alt="Choose" width={24} height={24}/>
+                  <ShoppingCart className="h-6 w-6"/>
                 </div>
                 <h3 className="font-bold">CHỌN SẢN PHẨM</h3>
                 <p className="text-gray-600">
@@ -155,7 +163,7 @@ export const HomePage = () => {
               </div>
               <div className="text-center space-y-4">
                 <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto shadow-md">
-                  <img src="/placeholder.svg?height=24&width=24" alt="Delivery" width={24} height={24}/>
+                  <Truck className="h-6 w-6"/>
                 </div>
                 <h3 className="font-bold">GIAO HÀNG</h3>
                 <p className="text-gray-600">
@@ -165,6 +173,7 @@ export const HomePage = () => {
             </div>
           </div>
         </section>
+
 
         {/* Features */}
         <section className="py-16">

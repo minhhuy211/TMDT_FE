@@ -8,6 +8,7 @@ import { Category } from "@/model/Category";
 import { Product } from "@/model/Product";
 import categoryApi from "@/services/categoryApi";
 
+
 const ProductPage = () => {
     const [selectedCateId, setSelectedCateId] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
@@ -113,7 +114,9 @@ const ProductPage = () => {
                             </p>
                         )}
                     </div>
+
                 )}
+
             </div>
         </div>
     );

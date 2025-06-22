@@ -16,21 +16,21 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
 
     const dispatch = useDispatch();
-    const { productId, img, productName, price, category } = product;
+    const { productId, urlImage, productName, price } = product;
 
     return (
         <Card className="group flex flex-col justify-between h-full overflow-hidden">
             <Link to={`/product-detail/${productId}`} className="block">
                 <CardHeader className="p-0">
                     <img
-                        src={img || "/placeholder.svg?height=300&width=300"}
+                        src={urlImage || "/placeholder.svg?height=300&width=300"}
                         alt={productName}
                         className="w-full h-48 object-cover rounded-t-lg transition-transform duration-300 group-hover:scale-105"
                     />
                 </CardHeader>
                 <CardContent className="p-4 flex-grow">
                     <CardTitle className="text-lg font-semibold text-gray-900 mb-1">{productName}</CardTitle>
-                    <p className="text-sm text-gray-600 mb-2">{category?.name || "Không rõ danh mục"}</p>
+                    <p className="text-sm text-gray-600 mb-2">{ product.categoryName || "Không rõ danh mục"}</p>
                     <p className="text-gray-900 font-bold text-lg">{price.toLocaleString("vi-VN")}đ</p>
                 </CardContent>
             </Link>
