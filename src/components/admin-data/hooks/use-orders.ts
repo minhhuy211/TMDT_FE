@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { toast } from "react-toastify"
+import { API_BASE_URL } from "@/services/api"  // giống như placeOrder
+
 
 export type OrderStatus = "pending" | "processing" | "completed" | "cancelled" | "shipped"
 
@@ -20,115 +22,56 @@ export type Order = {
     createdAt?: string
     updatedAt?: string
 }
-
-// Mock data với nhiều thông tin hơn
-const mockOrders: Order[] = [
-    {
-        id: "DH001",
-        customer: "Nguyễn Văn A",
-        customerEmail: "nguyenvana@email.com",
-        customerPhone: "0901234567",
-        date: "2024-06-01",
-        total: "2.000.000 ₫",
-        totalAmount: 2000000,
-        status: "completed",
-        items: 3,
-        paymentMethod: "Thẻ tín dụng",
-        shippingAddress: "123 Đường ABC, Quận 1, TP.HCM",
-        createdAt: "2024-06-01T10:30:00Z",
-        updatedAt: "2024-06-01T14:30:00Z",
-    },
-    {
-        id: "DH002",
-        customer: "Trần Thị B",
-        customerEmail: "tranthib@email.com",
-        customerPhone: "0907654321",
-        date: "2024-06-03",
-        total: "1.500.000 ₫",
-        totalAmount: 1500000,
-        status: "processing",
-        items: 2,
-        paymentMethod: "Chuyển khoản",
-        shippingAddress: "456 Đường XYZ, Quận 2, TP.HCM",
-        createdAt: "2024-06-03T09:15:00Z",
-        updatedAt: "2024-06-03T11:20:00Z",
-    },
-    {
-        id: "DH003",
-        customer: "Lê Văn C",
-        customerEmail: "levanc@email.com",
-        customerPhone: "0912345678",
-        date: "2024-06-04",
-        total: "3.000.000 ₫",
-        totalAmount: 3000000,
-        status: "cancelled",
-        items: 5,
-        paymentMethod: "Tiền mặt",
-        shippingAddress: "789 Đường DEF, Quận 3, TP.HCM",
-        createdAt: "2024-06-04T08:45:00Z",
-        updatedAt: "2024-06-04T16:30:00Z",
-    },
-    {
-        id: "DH004",
-        customer: "Phạm Thị D",
-        customerEmail: "phamthid@email.com",
-        customerPhone: "0923456789",
-        date: "2024-06-05",
-        total: "4.500.000 ₫",
-        totalAmount: 4500000,
-        status: "shipped",
-        items: 4,
-        paymentMethod: "Ví điện tử",
-        shippingAddress: "321 Đường GHI, Quận 4, TP.HCM",
-        createdAt: "2024-06-05T13:20:00Z",
-        updatedAt: "2024-06-05T15:45:00Z",
-    },
-    {
-        id: "DH005",
-        customer: "Hoàng Văn E",
-        customerEmail: "hoangvane@email.com",
-        customerPhone: "0934567890",
-        date: "2024-06-06",
-        total: "1.200.000 ₫",
-        totalAmount: 1200000,
-        status: "pending",
-        items: 1,
-        paymentMethod: "Thẻ tín dụng",
-        shippingAddress: "654 Đường JKL, Quận 5, TP.HCM",
-        createdAt: "2024-06-06T07:30:00Z",
-        updatedAt: "2024-06-06T07:30:00Z",
-    },
-]
-
-// Mock API service
 const orderApi = {
     getOrders: async (): Promise<Order[]> => {
-        await new Promise((resolve) => setTimeout(resolve, 1000))
-        return mockOrders
+        const token = localStorage.getItem("token")
+        const res = await fetch(`${API_BASE_URL}/order`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        })
+
+        if (!res.ok) {
+            throw new Error("Lỗi khi lấy danh sách đơn hàng")
+        }
+
+        return res.json()
     },
 
     updateOrderStatus: async (id: string, status: OrderStatus): Promise<Order> => {
-        await new Promise((resolve) => setTimeout(resolve, 500))
-        const orderIndex = mockOrders.findIndex((o) => o.id === id)
-        if (orderIndex === -1) throw new Error("Order not found")
+        const token = localStorage.getItem("token")
+        const res = await fetch(`${API_BASE_URL}/order/${id}/status`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ status }),
+        })
 
-        mockOrders[orderIndex] = {
-            ...mockOrders[orderIndex],
-            status,
-            updatedAt: new Date().toISOString(),
+        if (!res.ok) {
+            throw new Error("Không thể cập nhật trạng thái đơn hàng")
         }
-        return mockOrders[orderIndex]
+
+        return res.json()
     },
 
     deleteOrder: async (id: string): Promise<void> => {
-        await new Promise((resolve) => setTimeout(resolve, 500))
-        const orderIndex = mockOrders.findIndex((o) => o.id === id)
-        if (orderIndex === -1) throw new Error("Order not found")
+        const token = localStorage.getItem("token")
+        const res = await fetch(`${API_BASE_URL}/order/${id}`, {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
 
-        mockOrders.splice(orderIndex, 1)
+        if (!res.ok) {
+            throw new Error("Không thể xóa đơn hàng")
+        }
     },
 }
-
 export function useOrders() {
     const [orders, setOrders] = useState<Order[]>([])
     const [loading, setLoading] = useState(false)

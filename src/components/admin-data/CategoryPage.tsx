@@ -318,9 +318,6 @@ export default function CategoryPage() {
         setDeletingCategory(category);
         setDeleteDialogOpen(true);
     };
-
-
-
     const handleSaveCategory = async (
         categoryData: Omit<Category, "id" | "createdAt" | "productCount"> // Không cần tách status riêng nữa
     ) => {
