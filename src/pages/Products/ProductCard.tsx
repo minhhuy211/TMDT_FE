@@ -15,7 +15,7 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
 
-    const dispatch = useDispatch();// Destructuring cho gọn và rõ ràng
+    const dispatch = useDispatch();
     const { productId, img, productName, price, category } = product;
 
     return (

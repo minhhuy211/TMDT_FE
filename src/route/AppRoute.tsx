@@ -6,7 +6,6 @@ import MasterLayout from "../layout/MasterLayout/MasterLayout";
 import ProductPage from "../pages/Products/Product";
 import { Cart } from "../pages/Cart/Cart";
 import { Login } from "../pages/Login/Login";
-import AddressPage from '@/account/AddressPage'; // hoặc đúng theo đường dẫn của bạn
 import OrderHistory from "@/account/OrderHistory.tsx"
 import ProductDetail from "../pages/Products/Product-detail";  // Trang chi tiết sản phẩm
 import CheckoutPage from '../pages/Products/CheckoutPage';
@@ -31,8 +30,8 @@ import CustomerPage from "../components/admin-data/CustomerPage";
 import OrderPage from "@/components/admin-data/OrderPage";
 import CategoryPage from "@/components/admin-data/CategoryPage";
 import User from "@/components/admin-data/UserPage";
-import VerifyPage from "@/pages/register/Verify.tsx";
-import Register from "@/pages/register/Register.tsx";
+import VerifyPage from "@/pages/Register/Verify.tsx";
+import Register from "@/pages/Register/Register.tsx";
 import { Service } from "@/pages/Service/Service.tsx";
 
 
@@ -44,7 +43,6 @@ const route = createBrowserRouter([
     children: [
       { path: "/verify", element: <VerifyPage /> },
 
-      { path: "/address", element: <AddressPage /> },
       // {path :"/notifications", element: <NotificationsPage />},
       { path : "/order-history", element: <OrderHistory />},
       {path: "/forgot-password", element: <ForgotPassword/>},
