@@ -181,7 +181,7 @@ export default function Dashboard() {
         },
       },
     },
-  }
+  };
   return (
       <div className={cn("flex min-h-screen", theme === "dark" ? "bg-gray-950" : "bg-gray-50")}>
         {/* Mobile sidebar toggle */}
