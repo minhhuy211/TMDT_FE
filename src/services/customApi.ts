@@ -79,6 +79,23 @@ export default {
     return response.result;
   },
 
+  getOrderCustomsByStatus: async (
+    status: string
+  ): Promise<OrderCustomResponse[]> => {
+    const token = localStorage.getItem("token");
+    const response = await api.get<APIResponse<OrderCustomResponse[]>>(
+      `/order-custom/me/status?status=${status}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    console.log("Get Order Customs by Status Response:", response);
+    return response.result;
+  },
+
+
   getOrderCustomById: async (id: string): Promise<OrderCustomResponse> => {
     const token = localStorage.getItem("token");
     const response = await api.get<APIResponse<OrderCustomResponse>>(
@@ -117,6 +134,9 @@ export default {
         }
     );
   },
+
+  
+
   cancelOrderCustom: async (id: string): Promise<void> => {
     const token = localStorage.getItem("token");
     await api.put(

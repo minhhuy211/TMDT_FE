@@ -1,7 +1,4 @@
-"use client"
-
 import { ReactNode, useState } from "react"
-import { Bar, Pie, Line } from "react-chartjs-2"
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -16,172 +13,52 @@ import {
 } from "chart.js"
 import {
   Users,
-  Package,
   ShoppingCart,
-  DollarSign,
   BarChart3,
   Settings,
   Bell,
   Grid,
   Layers,
-  Calendar,
-  Gift,
-  HelpCircle,
   Search,
-  Download,
   ChevronDown,
-  Filter,
-  ArrowUpRight,
-  ArrowDownRight,
   Moon,
   Sun,
   Menu,
   X,
 } from "lucide-react"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Progress } from "@/components/ui/progress"
 import { cn } from "@/components/admin-ts/utils"
 import { useTheme } from "next-themes"
 
 
-import { DatePickerWithRange } from "@/components/ui/DatePickerWithRange"
 import { useMobile } from "@/components/admin-data/hooks/useMobile"
 import { Outlet, useNavigate } from "react-router-dom"
+import { useDispatch } from "react-redux"
+import { useQueryClient } from "@tanstack/react-query"
+import { logout } from "@/redux/authSlice"
 
 // Register ChartJS components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, PointElement, LineElement)
 
 export default function Dashboard() {
-  const [activeTab, setActiveTab] = useState("overview")
   const { theme, setTheme } = useTheme()
   const isMobile = useMobile()
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
-  // Bar chart data
-  const barChartData = {
-    labels: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7"],
-    datasets: [
-      {
-        label: "Doanh thu (triệu)",
-        data: [35, 15, 55, 35, 45, 25, 30],
-        backgroundColor: "rgba(34, 197, 94, 0.8)",
-        borderRadius: 6,
-        hoverBackgroundColor: "rgba(34, 197, 94, 1)",
-      },
-    ],
-  }
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  // Bar chart options
-  const barChartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        display: false,
-      },
-      tooltip: {
-        backgroundColor: "rgba(0, 0, 0, 0.8)",
-        padding: 12,
-        titleFont: {
-          size: 14,
-        },
-        bodyFont: {
-          size: 13,
-        },
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        grid: {
-          color: theme === "dark" ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.05)",
-        },
-        ticks: {
-          font: {
-            size: 12,
-          },
-          color: theme === "dark" ? "rgba(255, 255, 255, 0.7)" : "rgba(0, 0, 0, 0.7)",
-        },
-      },
-      x: {
-        grid: {
-          display: false,
-        },
-        ticks: {
-          font: {
-            size: 12,
-          },
-          color: theme === "dark" ? "rgba(255, 255, 255, 0.7)" : "rgba(0, 0, 0, 0.7)",
-        },
-      },
-    },
-  }
+  const handleLogout = () => {
+    dispatch(logout());
+    localStorage.removeItem("token");
+    queryClient.removeQueries({ queryKey: ["me"] });
+    navigate("/login");
+  };
 
-  // Pie chart data
-  const pieChartData = {
-    labels: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7"],
-    datasets: [
-      {
-        data: [25, 15, 12, 8, 18, 12, 10],
-        backgroundColor: [
-          "rgba(99, 102, 241, 0.8)",
-          "rgba(251, 191, 36, 0.8)",
-          "rgba(234, 88, 12, 0.8)",
-          "rgba(6, 182, 212, 0.8)",
-          "rgba(219, 39, 119, 0.8)",
-          "rgba(132, 204, 22, 0.8)",
-          "rgba(124, 58, 237, 0.8)",
-        ],
-        hoverBackgroundColor: [
-          "rgba(99, 102, 241, 1)",
-          "rgba(251, 191, 36, 1)",
-          "rgba(234, 88, 12, 1)",
-          "rgba(6, 182, 212, 1)",
-          "rgba(219, 39, 119, 1)",
-          "rgba(132, 204, 22, 1)",
-          "rgba(124, 58, 237, 1)",
-        ],
-        borderWidth: 0,
-      },
-    ],
-  }
-
-  // Pie chart options
-  const pieChartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: "right" as const,
-        labels: {
-          padding: 15,
-          usePointStyle: true,
-          pointStyle: "circle",
-          font: {
-            size: 12,
-          },
-          color: theme === "dark" ? "rgba(255, 255, 255, 0.7)" : "rgba(0, 0, 0, 0.7)",
-        },
-      },
-      tooltip: {
-        backgroundColor: "rgba(0, 0, 0, 0.8)",
-        padding: 12,
-        titleFont: {
-          size: 14,
-        },
-        bodyFont: {
-          size: 13,
-        },
-      },
-    },
-  }
   return (
       <div className={cn("flex min-h-screen", theme === "dark" ? "bg-gray-950" : "bg-gray-50")}>
         {/* Mobile sidebar toggle */}
@@ -229,9 +106,7 @@ export default function Dashboard() {
             <SidebarItem icon={<Users size={20} />} label="Người dùng" to="/admin/user" />
             <SidebarItem icon={<ShoppingCart size={20} />} label="Đơn hàng" to="/admin/order"/>
             <SidebarItem icon={<Layers size={20} />} label="Danh mục" to="/admin/category" />
-            {/*<SidebarItem icon={<Gift size={20} />} label="Sản phẩm" to="/admin/product"/>*/}
-            {/*<SidebarItem icon={<Calendar size={20} />} label="Lịch" to="/admin"/>*/}
-            {/*<SidebarItem icon={<HelpCircle size={20} />} label="Hỗ trợ khách hàng" to="/admin"/>*/}
+
 
             <div className="pt-4 mt-4 border-t border-gray-200 dark:border-gray-800">
               <h3 className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
@@ -332,7 +207,7 @@ export default function Dashboard() {
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuItem>Hồ sơ</DropdownMenuItem>
                   <DropdownMenuItem>Cài đặt tài khoản</DropdownMenuItem>
-                  <DropdownMenuItem>Đăng xuất</DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleLogout}>Đăng xuất</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -375,43 +250,5 @@ function SidebarItem({ icon , label, active = false, to }:SidebarLinkItemProps) 
         {icon}
         <span>{label}</span>
       </button>
-  )
-}
-
-// Stats card data type
-type StatsCardProps = {
-  icon: ReactNode
-  title: string
-  value: string
-  change: string
-  trend: "up" | "down"
-  bgColor: string
-}
-
-// Stats card component
-function StatsCard({ icon, title, value, change, trend, bgColor }: StatsCardProps) {
-  const { theme } = useTheme()
-
-  return (
-      <Card
-          className={cn(
-              "overflow-hidden transition-all duration-300 hover:shadow-md",
-              theme === "dark" ? "bg-gray-900 border-gray-800" : "",
-          )}
-      >
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className={cn("p-3 rounded-lg", bgColor)}>{icon}</div>
-            <div className={cn("flex items-center gap-1", trend === "up" ? "text-green-500" : "text-red-500")}>
-              {trend === "up" ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
-              <span className="text-sm font-medium">{change}</span>
-            </div>
-          </div>
-          <div>
-            <p className={cn("text-sm font-medium", theme === "dark" ? "text-gray-400" : "text-gray-500")}>{title}</p>
-            <h4 className={cn("text-2xl font-bold mt-1", theme === "dark" ? "text-white" : "text-gray-900")}>{value}</h4>
-          </div>
-        </CardContent>
-      </Card>
   )
 }

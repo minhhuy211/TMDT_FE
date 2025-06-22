@@ -24,7 +24,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 import { Progress } from "../ui/progress"
 import { cn } from "../admin-ts/utils"
 import { useTheme } from "next-themes"
-import { DatePickerWithRange } from "../ui/DatePickerWithRange"
 
 
 import DesignManager from "../admin-data/DesignManager"
@@ -55,7 +54,6 @@ export default function Dashboard() {
               <p className="text-gray-500 dark:text-gray-400 mt-1">Xem tổng quan về hoạt động kinh doanh của bạn</p>
             </div>
             <div className="flex flex-col sm:flex-row gap-3">
-              <DatePickerWithRange className="w-full sm:w-auto" />
               <TabsList>
 
                 <TabsTrigger value="overview">Tổng quan</TabsTrigger>
