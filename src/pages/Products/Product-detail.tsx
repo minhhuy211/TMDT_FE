@@ -161,7 +161,7 @@ export const ProductDetail = () => {
           {recommendedProducts.length > 0 && (
               <RecommendedProducts products={recommendedProducts} />
           )}
-          <ProductReviews />
+          {/*<ProductReviews />*/}
         </div>
       </div>
   );
