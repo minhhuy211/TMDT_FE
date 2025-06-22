@@ -75,4 +75,8 @@ export default {
     api.defaults.headers.common[key] = data;
     console.log(`Set header: ${key} = ${data}`);
   },
+  async patch<T>(endpoint: string, data?: any, option?: AxiosRequestConfig): Promise<T> {
+    return await api.patch(endpoint, data, option);
+  },
+
 };

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import customApi from "@/services/customApi";
+import { useNavigate } from "react-router-dom";
 
 const UploadDesignPage = () => {
 
@@ -8,6 +9,7 @@ const UploadDesignPage = () => {
   const [quantity, setQuantity] = useState<number>(1);
   const [description, setDescription] = useState<string>("");
   const [previews, setPreviews] = useState<string[]>([]);
+  const navigate = useNavigate();
 
   const createOrderMutation = useMutation({
     mutationFn: async () => {
@@ -21,6 +23,7 @@ const UploadDesignPage = () => {
       setPreviews([]);
       setQuantity(1);
       setDescription("");
+      navigate('/my-orders-custom'); // Redirect to My Orders page
     },
     onError: (err: any) => alert(err.message || "Tạo đơn thất bại"),
   });

@@ -107,15 +107,25 @@ export default {
     return response.result;
   },
 
-  payOrderCustom: async (id: string): Promise<void> => {
+  payOrderCustom: async (id: string): Promise<OrderCustomResponse> => {
     const token = localStorage.getItem("token");
+
     await api.put(
         `/order-custom/${id}/pay`,
         {},
         {
           headers: {Authorization: `Bearer ${token}`},
         }
+
+    const response = await api.post<APIResponse<OrderCustomResponse>>(
+      `/order-custom/${id}/pay`,
+      {},
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+
     );
+    return response.result;
   },
   cancelOrderCustom: async (id: string): Promise<void> => {
     const token = localStorage.getItem("token");
@@ -127,6 +137,7 @@ export default {
         }
     );
   },
+
 
   rejectOrderCustom: async (id: string, status: string): Promise<OrderCustomResponse> => {
     const token = localStorage.getItem("token");
@@ -172,4 +183,22 @@ export default {
     }
   }
 }
+
+
+  getOrderCustomsByStatus: async (
+    status: string
+  ): Promise<OrderCustomResponse[]> => {
+    const token = localStorage.getItem("token");
+    const response = await api.get<APIResponse<OrderCustomResponse[]>>(
+      `/order-custom/me/status?status=${status}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    console.log("Get Order Customs by Status Response:", response);
+    return response.result;
+  },
+};
 
