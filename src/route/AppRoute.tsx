@@ -34,6 +34,8 @@ import User from "@/components/admin-data/UserPage";
 import VerifyPage from "@/pages/register/Verify.tsx";
 import Register from "@/pages/register/Register.tsx";
 import { Service } from "@/pages/Service/Service.tsx";
+import MyOrdersCustomPage from "@/pages/Order/MyOrderCustom.tsx";
+import CheckoutCustomPage from "@/pages/Order/CheckoutCustomPage.tsx";
 
 
 
@@ -70,6 +72,8 @@ const route = createBrowserRouter([
 
       { path: "/register", element: <Register /> },
       { path: "/profile", element: <ProfilePage /> },
+      { path: "/my-order-custom", element: <MyOrdersCustomPage /> },
+      { path: "/payment/:id", element: <CheckoutCustomPage /> },
 
 
     ],
