@@ -1,14 +1,24 @@
 import { useState, useEffect } from "react";
 import Sidebar from "@/account/sidebar.tsx";
-import { getOrderHistory } from "@/services/orderApi";
+import { cancelOrder, getOrderHistory } from "@/services/orderApi";
 import type { OrderDetails, OrderItemDetail } from "@/model/Order";
 
-// Map trạng thái đơn hàng sang tiếng Việt
+// Map trạng thái sang tiếng Việt & danh sách tab lọc
+const orderTabs = [
+    { label: "Tất cả", value: "ALL" },
+    { label: "Chờ xác nhận", value: "PENDING" },
+    { label: "Đã xác nhận", value: "CONFIRMED" },
+    { label: "Đã thanh toán", value: "PAID" },
+    { label: "Đang giao", value: "SHIPPED" },
+    { label: "Thành công", value: "DELIVERED" },
+    { label: "Đã hủy", value: "CANCELLED" }
+];
 const statusMap: Record<string, string> = {
     "PENDING": "Chờ xác nhận",
     "CONFIRMED": "Đã xác nhận",
-    "SHIPPED": "Đã giao cho vận chuyển",
-    "DELIVERED": "Giao hàng thành công",
+    "PAID": "Đã thanh toán",
+    "SHIPPED": "Đang giao",
+    "DELIVERED": "Thành công",
     "CANCELLED": "Đã hủy"
 };
 
@@ -16,33 +26,53 @@ const OrderHistory = () => {
     const [orders, setOrders] = useState<OrderDetails[]>([]);
     const [search, setSearch] = useState("");
     const [loading, setLoading] = useState(true);
+    const [cancelingId, setCancelingId] = useState<string | null>(null);
+    const [statusFilter, setStatusFilter] = useState<string>("ALL");
 
     useEffect(() => {
-        getOrderHistory()
-            .then(data => {
-                // Kiểm tra log nếu cần debug dữ liệu trả về
-                // console.log("Order API data:", data);
-                setOrders(data || []);
-            })
-            .catch(err => {
-                setOrders([]);
-            })
-            .finally(() => setLoading(false));
+        loadOrders();
     }, []);
 
-    // Lọc đơn theo mã, tên sản phẩm, hoặc danh mục (an toàn cho null)
+    const loadOrders = async () => {
+        setLoading(true);
+        try {
+            const data = await getOrderHistory();
+            setOrders(data || []);
+        } catch {
+            setOrders([]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Lọc đơn theo search + filter trạng thái
     const filteredOrders = orders.filter(order => {
         const searchLower = search.toLowerCase();
-        if (order.id?.toLowerCase().includes(searchLower)) return true;
-        if (
+        const matchesSearch =
+            order.id?.toLowerCase().includes(searchLower) ||
             order.orderItemList?.some(item =>
                 (item.productName || "").toLowerCase().includes(searchLower) ||
                 (item.category || "").toLowerCase().includes(searchLower)
-            )
-        )
-            return true;
-        return false;
+            );
+        const matchesStatus =
+            statusFilter === "ALL" ? true : order.orderStatus === statusFilter;
+        return matchesSearch && matchesStatus;
     });
+
+    // Hủy đơn
+    const handleCancelOrder = async (orderId: string) => {
+        if (!window.confirm("Bạn chắc chắn muốn hủy đơn hàng này?")) return;
+        setCancelingId(orderId);
+        try {
+            await cancelOrder(orderId);
+            await loadOrders();
+            alert("Hủy đơn hàng thành công!");
+        } catch (error: any) {
+            alert(error?.message || "Có lỗi khi hủy đơn hàng!");
+        } finally {
+            setCancelingId(null);
+        }
+    };
 
     const formatPrice = (price?: number) =>
         typeof price === "number"
@@ -54,6 +84,24 @@ const OrderHistory = () => {
             <Sidebar />
             <div className="max-w-5xl mx-auto p-6 bg-white rounded shadow w-full">
                 <h1 className="text-3xl font-bold mb-6">Lịch sử đơn hàng</h1>
+                {/* Tabs filter trạng thái */}
+                <div className="mb-4 flex flex-wrap gap-2">
+                    {orderTabs.map(tab => (
+                        <button
+                            key={tab.value}
+                            onClick={() => setStatusFilter(tab.value)}
+                            className={
+                                "px-4 py-2 rounded-full font-semibold transition " +
+                                (statusFilter === tab.value
+                                    ? "bg-black text-white"
+                                    : "bg-gray-100 text-gray-700 hover:bg-gray-200")
+                            }
+                        >
+                            {tab.label}
+                        </button>
+                    ))}
+                </div>
+                {/* Ô tìm kiếm */}
                 <input
                     type="text"
                     placeholder="Tìm theo mã đơn, tên sản phẩm, hoặc danh mục"
@@ -142,7 +190,18 @@ const OrderHistory = () => {
                             <div className="font-semibold text-lg">
                                 Tổng cộng: {formatPrice(order.totalAmount)}
                             </div>
-                            {/* Có thể bổ sung thêm nút thao tác như hủy đơn, mua lại... nếu cần */}
+                            {/* Chỉ cho phép hủy khi trạng thái là PENDING hoặc CONFIRMED */}
+                            {["PENDING", "CONFIRMED"].includes(order.orderStatus) && (
+                                <button
+                                    className={`ml-4 px-4 py-2 rounded bg-red-500 text-white font-semibold hover:bg-red-700 transition ${
+                                        cancelingId === order.id ? "opacity-60 cursor-not-allowed" : ""
+                                    }`}
+                                    disabled={cancelingId === order.id}
+                                    onClick={() => handleCancelOrder(order.id)}
+                                >
+                                    {cancelingId === order.id ? "Đang hủy..." : "Hủy đơn hàng"}
+                                </button>
+                            )}
                         </div>
                     </div>
                 ))}

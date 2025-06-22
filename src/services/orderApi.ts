@@ -44,3 +44,17 @@ export const getOrderHistory = async (): Promise<OrderDetails[]> => {
     if (!res.ok) throw new Error(await res.text());
     return await res.json();
 };
+
+export const cancelOrder = async (orderId: string) => {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${API_BASE_URL}/order/cancel/${orderId}`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(errorText || "Hủy đơn thất bại");
+    }
+    // Không trả về gì hoặc return true để xác nhận thành công
+    return true;
+};

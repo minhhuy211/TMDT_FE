@@ -15,8 +15,9 @@ export interface Product {
   description: string;
   price: number;
   stock: number;
-  img: string;
-  status: ProductStatus;
+  urlImage: string;
+  categoryName: string;
+
 }
 
 export interface ProductRequest {
@@ -24,7 +25,7 @@ export interface ProductRequest {
   description: string;
   price: number;
   stock: number;
-  img: string;
+  urlImage: string;
   cate_ID: string;            // UUID
   status: ProductStatus;
 }
@@ -36,6 +37,7 @@ export interface ProductResponse {
   description: string;
   price: number;
   stock: number;
-  img: string;
+  urlImage: string;
   status: ProductStatus;
+
 }

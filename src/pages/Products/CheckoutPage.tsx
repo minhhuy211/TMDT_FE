@@ -29,9 +29,8 @@ const CheckoutPage = () => {
     const [paymentMethod, setPaymentMethod] = useState("Credit Card");
     const [expectedDeliveryDate, setExpectedDeliveryDate] = useState(getDefaultExpectedDeliveryDate());
     const [isModalOpen, setIsModalOpen] = useState(false);
-
     const navigate = useNavigate();
-
+    const totalAmount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
     useEffect(() => {
         setCart(getCartLocal());
     }, []);
@@ -53,7 +52,6 @@ const CheckoutPage = () => {
         });
     }, []);
 
-    const totalAmount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -112,7 +110,7 @@ const CheckoutPage = () => {
             setIsModalOpen(false);
             navigate("/successPayment");
 
-        } catch (err: any) {
+        } catch (err:  any) {
             alert("Đặt hàng thất bại! " + (err?.message || "Vui lòng thử lại."));
             setIsModalOpen(false);
         }
