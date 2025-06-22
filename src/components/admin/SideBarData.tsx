@@ -71,7 +71,7 @@ import { cn } from "@/components/admin-ts/utils";
 import { useTheme } from "next-themes";
 
 import { DatePickerWithRange } from "@/components/ui/DatePickerWithRange";
-import { useMobile } from "@/hooks/useMobile";
+import { useMobile } from "@/components/admin-data/hooks/useMobile"
 import { Outlet, useNavigate } from "react-router-dom";
 
 // Register ChartJS components
@@ -238,198 +238,6 @@ export default function Dashboard() {
         },
       },
     },
-  };
-
-  // Line chart data
-  const lineChartData = {
-    labels: [
-      "T1",
-      "T2",
-      "T3",
-      "T4",
-      "T5",
-      "T6",
-      "T7",
-      "T8",
-      "T9",
-      "T10",
-      "T11",
-      "T12",
-    ],
-    datasets: [
-      {
-        label: "Năm nay",
-        data: [30, 40, 35, 50, 49, 60, 70, 91, 86, 95, 90, 100],
-        borderColor: "rgba(34, 197, 94, 1)",
-        backgroundColor: "rgba(34, 197, 94, 0.1)",
-        tension: 0.3,
-        fill: true,
-      },
-      {
-        label: "Năm trước",
-        data: [20, 25, 30, 35, 40, 45, 55, 65, 70, 80, 75, 85],
-        borderColor: "rgba(99, 102, 241, 1)",
-        backgroundColor: "rgba(99, 102, 241, 0.1)",
-        tension: 0.3,
-        fill: true,
-      },
-    ],
-  };
-
-  // Line chart options
-  const lineChartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: "top" as const,
-        labels: {
-          usePointStyle: true,
-          pointStyle: "circle",
-          font: {
-            size: 12,
-          },
-          color:
-            theme === "dark"
-              ? "rgba(255, 255, 255, 0.7)"
-              : "rgba(0, 0, 0, 0.7)",
-        },
-      },
-      tooltip: {
-        backgroundColor: "rgba(0, 0, 0, 0.8)",
-        padding: 12,
-        titleFont: {
-          size: 14,
-        },
-        bodyFont: {
-          size: 13,
-        },
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        grid: {
-          color:
-            theme === "dark"
-              ? "rgba(255, 255, 255, 0.1)"
-              : "rgba(0, 0, 0, 0.05)",
-        },
-        ticks: {
-          font: {
-            size: 12,
-          },
-          color:
-            theme === "dark"
-              ? "rgba(255, 255, 255, 0.7)"
-              : "rgba(0, 0, 0, 0.7)",
-        },
-      },
-      x: {
-        grid: {
-          display: false,
-        },
-        ticks: {
-          font: {
-            size: 12,
-          },
-          color:
-            theme === "dark"
-              ? "rgba(255, 255, 255, 0.7)"
-              : "rgba(0, 0, 0, 0.7)",
-        },
-      },
-    },
-  };
-
-  // Sample orders data
-  const recentOrders = [
-    {
-      id: "ORD-001",
-      customer: "Nguyễn Văn A",
-      date: "15/05/2023",
-      amount: "2,500,000 ₫",
-      status: "Hoàn thành",
-      statusColor: "bg-green-500",
-    },
-    {
-      id: "ORD-002",
-      customer: "Trần Thị B",
-      date: "14/05/2023",
-      amount: "1,800,000 ₫",
-      status: "Đang xử lý",
-      statusColor: "bg-blue-500",
-    },
-    {
-      id: "ORD-003",
-      customer: "Lê Văn C",
-      date: "13/05/2023",
-      amount: "3,200,000 ₫",
-      status: "Hoàn thành",
-      statusColor: "bg-green-500",
-    },
-    {
-      id: "ORD-004",
-      customer: "Phạm Thị D",
-      date: "12/05/2023",
-      amount: "950,000 ₫",
-      status: "Đã hủy",
-      statusColor: "bg-red-500",
-    },
-    {
-      id: "ORD-005",
-      customer: "Hoàng Văn E",
-      date: "11/05/2023",
-      amount: "4,100,000 ₫",
-      status: "Hoàn thành",
-      statusColor: "bg-green-500",
-    },
-  ];
-
-  // Sample products data
-  const topProducts = [
-    {
-      name: "Điện thoại iPhone 14 Pro Max",
-      category: "Điện thoại",
-      sales: 120,
-      revenue: "3,600,000,000 ₫",
-      growth: 15,
-      positive: true,
-    },
-    {
-      name: "Laptop MacBook Pro M2",
-      category: "Laptop",
-      sales: 85,
-      revenue: "2,975,000,000 ₫",
-      growth: 8,
-      positive: true,
-    },
-    {
-      name: "Tai nghe AirPods Pro",
-      category: "Phụ kiện",
-      sales: 210,
-      revenue: "1,260,000,000 ₫",
-      growth: 25,
-      positive: true,
-    },
-    {
-      name: "Samsung Galaxy S23 Ultra",
-      category: "Điện thoại",
-      sales: 95,
-      revenue: "2,375,000,000 ₫",
-      growth: 5,
-      positive: true,
-    },
-    {
-      name: "iPad Pro 12.9",
-      category: "Máy tính bảng",
-      sales: 65,
-      revenue: "1,625,000,000 ₫",
-      growth: -3,
-      positive: false,
-    },
-  ];
-
   return (
     <div
       className={cn(
@@ -512,7 +320,7 @@ export default function Dashboard() {
             label="Sản phẩm"
             to="/admin/product"
           />
-          {/*<SidebarItem icon={<Gift size={20} />} label="Ưu đãi" to="/admin"/>*/}
+
           {/*<SidebarItem icon={<Calendar size={20} />} label="Lịch" to="/admin"/>*/}
           {/*<SidebarItem icon={<HelpCircle size={20} />} label="Hỗ trợ khách hàng" to="/admin"/>*/}
 

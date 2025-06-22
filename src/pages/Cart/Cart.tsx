@@ -96,24 +96,21 @@ export const Cart = () => {
                 <span>Tổng tiền hàng</span>
                 <span className="font-semibold">{totalAmount.toLocaleString()} ₫</span>
               </div>
-              <div className="flex justify-between text-base">
-                <span>Phí vận chuyển</span>
-                <span>20,000 ₫</span>
-              </div>
+
               <div className="flex justify-between text-lg border-t pt-4 font-bold">
                 <span>Tổng cộng</span>
-                <span className="text-green-700">{(totalAmount + 20000).toLocaleString()} ₫</span>
+                <span className="text-green-700">{(totalAmount).toLocaleString()} ₫</span>
               </div>
             </div>
-            <div className="mb-6">
-              <label className="block mb-1 text-sm text-gray-600">Nhập mã giảm giá</label>
-              <div className="flex gap-2">
-                <input type="text" placeholder="Nhập mã giảm giá"
-                       className="flex-1 px-3 py-2 rounded border focus:outline-none focus:ring"
-                />
-                <Button variant="secondary" className="font-semibold">Áp dụng</Button>
-              </div>
-            </div>
+            {/*<div className="mb-6">*/}
+            {/*  <label className="block mb-1 text-sm text-gray-600">Nhập mã giảm giá</label>*/}
+            {/*  <div className="flex gap-2">*/}
+            {/*    <input type="text" placeholder="Nhập mã giảm giá"*/}
+            {/*           className="flex-1 px-3 py-2 rounded border focus:outline-none focus:ring"*/}
+            {/*    />*/}
+            {/*    <Button variant="secondary" className="font-semibold">Áp dụng</Button>*/}
+            {/*  </div>*/}
+            {/*</div>*/}
             <Button
                 className="w-full bg-primary text-white font-bold text-lg py-3 rounded-xl mb-3 shadow-md hover:bg-green-700 transition"
                 onClick={() => navigate("/checkout")}

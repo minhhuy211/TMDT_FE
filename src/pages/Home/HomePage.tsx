@@ -24,7 +24,7 @@ export const HomePage = () => {
       const selectedCate = categories.find((c) => c.cate_ID === selectedCateId);
       productList = selectedCate?.productList || [];
     } else {
-      productList = categories.flatMap((c) => c.productList);
+      productList = categories.flatMap((c) => c.productList ?? []).filter(Boolean);
     }
   }
   return (
@@ -103,7 +103,7 @@ export const HomePage = () => {
                       className="rounded-full whitespace-nowrap"
                       onClick={() => setSelectedCateId(cate.cate_ID)}
                   >
-                    {cate.name} ({cate.productList.length})
+                    {cate.name} ({cate.productList?.length ?? 0})
                   </Button>
               ))}
             </div>
