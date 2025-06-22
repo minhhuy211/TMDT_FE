@@ -32,6 +32,9 @@ import { Plus, Edit, Trash, Search, X, Package, Tag } from "lucide-react"
 import { toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 
+// Define the CategoryRequest type (for better clarity)
+type CategoryRequest = Omit<Category, "id" | "createdAt" | "productCount">;
+
 type Category = {
     id: string
     name: string
@@ -40,6 +43,7 @@ type Category = {
     createdAt?: string
     status?: "active" | "inactive"
 }
+
 function SearchInput({ value, onChange }: { value: string; onChange: (value: string) => void }) {
     return (
         <div className="relative flex-1 max-w-md">
@@ -74,7 +78,7 @@ function CategoryDialog({
     category?: Category
     isOpen: boolean
     onClose: () => void
-    onSave: (category: Omit<Category, "id" | "createdAt" | "productCount">) => void
+    onSave: (category: CategoryRequest) => void
     loading?: boolean
 }) {
     const [name, setName] = useState(category?.name || "")
@@ -95,12 +99,8 @@ function CategoryDialog({
         onSave({ name: name.trim(), description: description.trim(), status })
     }
 
-    const handleClose = () => {
-        onClose()
-    }
-
     return (
-        <Dialog open={isOpen} onOpenChange={handleClose}>
+        <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>{category ? "Chỉnh sửa danh mục" : "Thêm danh mục mới"}</DialogTitle>
@@ -145,7 +145,7 @@ function CategoryDialog({
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button variant="outline" onClick={handleClose} disabled={loading}>
+                    <Button variant="outline" onClick={onClose} disabled={loading}>
                         Hủy
                     </Button>
                     <Button onClick={handleSave} disabled={loading}>
@@ -179,9 +179,9 @@ function DeleteDialog({
                         Bạn có chắc chắn muốn xóa danh mục "{category?.name}"?
                         {category?.productCount && category.productCount > 0 && (
                             <span className="text-red-600 font-medium">
-                <br />
-                Danh mục này có {category.productCount} sản phẩm. Hành động này không thể hoàn tác.
-              </span>
+                                <br />
+                                Danh mục này có {category.productCount} sản phẩm. Hành động này không thể hoàn tác.
+                            </span>
                         )}
                     </AlertDialogDescription>
                 </AlertDialogHeader>
@@ -274,13 +274,13 @@ export default function CategoryPage() {
     const [deletingCategory, setDeletingCategory] = useState<Category | undefined>(undefined)
     const [loading, setLoading] = useState(false)
 
-    // Lấy danh mục khi component mount
     useEffect(() => {
         async function fetchCategories() {
+            setLoading(true);
             try {
                 const data = await categoryApi.getCategories();
                 setCategories(data.map(cat => ({
-                    id: cat.id, // ✅ đúng field
+                    id: cat.id,
                     name: cat.name,
                     description: cat.description,
                     productCount: cat.productCount,
@@ -288,10 +288,24 @@ export default function CategoryPage() {
                 })));
             } catch (error) {
                 console.error(error);
+                toast.error("Lấy danh mục thất bại");
+            } finally {
+                setLoading(false);
             }
         }
         fetchCategories();
-    }, []);
+    }, []);  // Gọi khi trang tải lần đầu
+
+// Sau khi thực hiện các thao tác CRUD, cần lấy lại danh mục (update lại state)
+    useEffect(() => {
+        async function fetchCategories() {
+            const data = await categoryApi.getCategories();
+            setCategories(data);
+        }
+        if (loading === false) {
+            fetchCategories(); // Lấy lại dữ liệu sau khi thao tác hoàn tất
+        }
+    }, [loading]); // Khi loading thay đổi, fetch lại danh mục
 
     const filteredCategories = useMemo(() => {
         return categories.filter((cat) =>
@@ -318,56 +332,34 @@ export default function CategoryPage() {
         setDeletingCategory(category);
         setDeleteDialogOpen(true);
     };
-    const handleSaveCategory = async (
-        categoryData: Omit<Category, "id" | "createdAt" | "productCount"> // Không cần tách status riêng nữa
-    ) => {
+
+    const handleCreateCategory = async (categoryData: CategoryRequest) => {
         setLoading(true);
         try {
-            const apiPayload = {
-                name: categoryData.name,
-                description: categoryData.description,
-                urlImage: categoryData.urlImage ?? "", // Nếu không có URL thì truyền một chuỗi trống
-                status: categoryData.status ?? "active", // Mặc định status là "active" nếu không có
-            };
-
-            if (editingCategory) {
-                // Kiểm tra lại xem `editingCategory.id` có tồn tại không
-                if (!editingCategory.id) {
-                    throw new Error("Invalid category ID");
-                }
-
-                // Cập nhật
-                const updatedCategory = await categoryApi.updateCategory(editingCategory.id, apiPayload);
-                setCategories((prev) =>
-                    prev.map((cat) =>
-                        cat.cate_ID === updatedCategory.cate_ID
-                            ? { ...cat, ...updatedCategory }
-                            : cat
-                    )
-                );
-                toast.success("Cập nhật danh mục thành công");
-            } else {
-                // Tạo mới
-                const created = await categoryApi.createCategory(apiPayload);
-                setCategories((prev) => [
-                    ...prev,
-                    {
-                        cate_ID: created.cate_ID,
-                        name: created.name,
-                        description: created.description,
-                        productCount: created.productCount,
-                        status: created.status ?? "active", // Mặc định nếu không có
-                        productList: created.productList ?? [], // Nếu không có productList thì gán mảng rỗng
-                    },
-                ]);
-                toast.success("Thêm danh mục thành công");
-            }
-
-            setDialogOpen(false);
-            setEditingCategory(undefined);
+            const created = await categoryApi.createCategory(categoryData);
+            setCategories((prev) => [...prev, created]);  // Thêm mới danh mục vào danh sách
+            toast.success("Thêm danh mục thành công");
+            setDialogOpen(false);  // Đóng dialog sau khi thêm
         } catch (error) {
-            toast.error(`Lưu danh mục thất bại: ${error.message}`);
+            toast.error(`Thêm danh mục thất bại: ${error.message}`);
             console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleUpdateCategory = async (categoryData: CategoryRequest) => {
+        if (!editingCategory) return;
+        setLoading(true);
+        try {
+            const updatedCategory = await categoryApi.updateCategory(editingCategory.id, categoryData);
+            setCategories((prevCategories) =>
+                prevCategories.map((cat) => (cat.id === updatedCategory.id ? updatedCategory : cat))  // Cập nhật danh mục
+            );
+            toast.success("Cập nhật danh mục thành công");
+            setDialogOpen(false);  // Đóng dialog sau khi sửa
+        } catch (error) {
+            toast.error(`Cập nhật danh mục thất bại: ${error.message}`);
         } finally {
             setLoading(false);
         }
@@ -381,10 +373,10 @@ export default function CategoryPage() {
         setLoading(true);
         try {
             await categoryApi.deleteCategory(deletingCategory.id);
-            setCategories((prev) => prev.filter((cat) => cat.id !== deletingCategory.id));
+            setCategories((prev) => prev.filter((cat) => cat.id !== deletingCategory.id));  // Loại bỏ danh mục đã xóa khỏi danh sách
             toast.success("Xóa danh mục thành công");
-            setDeleteDialogOpen(false);
-            setDeletingCategory(undefined);
+            setDeleteDialogOpen(false);  // Đóng dialog xóa
+            setDeletingCategory(undefined);  // Reset danh mục đang xóa
         } catch (error) {
             console.error("Delete category failed:", error);
             toast.error("Xóa danh mục thất bại");
@@ -392,6 +384,17 @@ export default function CategoryPage() {
             setLoading(false);
         }
     };
+
+    // Handle save category (create or update)
+    const handleSaveCategory = (categoryData: CategoryRequest) => {
+        if (editingCategory) {
+            handleUpdateCategory(categoryData);
+        } else {
+            handleCreateCategory(categoryData);
+        }
+    };
+
+    // Handle category deletion
 
     return (
         <div className="container mx-auto px-4 py-8">

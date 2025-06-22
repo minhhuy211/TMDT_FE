@@ -176,10 +176,9 @@ function StatsCards({ orders }: { orders: Order[] }) {
     const stats = useMemo(() => {
         const total = orders.length
         const completed = orders.filter((o) => o.status === "completed").length
-        const processing = orders.filter((o) => o.status === "processing").length
         const totalRevenue = orders.filter((o) => o.status === "completed").reduce((sum, o) => sum + o.totalAmount, 0)
 
-        return { total, completed, processing, totalRevenue }
+        return { total, completed, totalRevenue }
     }, [orders])
 
     return (
@@ -198,7 +197,7 @@ function StatsCards({ orders }: { orders: Order[] }) {
 
             <Card>
                 <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Hoàn thành</CardTitle>
+                    <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Đang xử lý</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <div className="flex items-center gap-2">
@@ -208,11 +207,7 @@ function StatsCards({ orders }: { orders: Order[] }) {
                     </div>
                 </CardContent>
             </Card>
-
             <Card>
-                <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Đang xử lý</CardTitle>
-                </CardHeader>
                 <CardContent>
                     <div className="flex items-center gap-2">
                         <Badge
@@ -282,10 +277,11 @@ export default function OrderPage() {
             )
         }
 
-        // Filter by status
         if (statusFilter !== "all") {
             filtered = filtered.filter((order) => order.status === statusFilter)
         }
+
+
 
         return filtered
     }, [orders, search, statusFilter])
@@ -313,10 +309,7 @@ export default function OrderPage() {
     const getStatusBadge = (status: OrderStatus) => {
         const statusConfig = {
             pending: { label: "Chờ xử lý", className: "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200" },
-            processing: {
-                label: "Đang xử lý",
-                className: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-            },
+
             completed: {
                 label: "Hoàn thành",
                 className: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
@@ -382,11 +375,11 @@ export default function OrderPage() {
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="all">Tất cả trạng thái</SelectItem>
-                        <SelectItem value="pending">Chờ xử lý</SelectItem>
-                        <SelectItem value="processing">Đang xử lý</SelectItem>
-                        <SelectItem value="completed">Hoàn thành</SelectItem>
-                        <SelectItem value="shipped">Đã giao</SelectItem>
-                        <SelectItem value="cancelled">Đã hủy</SelectItem>
+                        <SelectItem value="PENDING">Chờ xử lý</SelectItem>
+                        <SelectItem value="COMPLETED">Hoàn thành</SelectItem>
+                        <SelectItem value="SHIPPED">Đã giao</SelectItem>
+                        <SelectItem value="CANCELLED">Đã hủy</SelectItem>
+
                     </SelectContent>
                 </Select>
                 <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
@@ -451,7 +444,6 @@ export default function OrderPage() {
                                                         </SelectTrigger>
                                                         <SelectContent>
                                                             <SelectItem value="pending">Chờ xử lý</SelectItem>
-                                                            <SelectItem value="processing">Đang xử lý</SelectItem>
                                                             <SelectItem value="completed">Hoàn thành</SelectItem>
                                                             <SelectItem value="shipped">Đã giao</SelectItem>
                                                             <SelectItem value="cancelled">Đã hủy</SelectItem>
@@ -469,15 +461,15 @@ export default function OrderPage() {
                                                         >
                                                             <Eye className="w-4 h-4" />
                                                         </Button>
-                                                        <Button
-                                                            size="icon"
-                                                            variant="ghost"
-                                                            onClick={() => handleDeleteOrder(order)}
-                                                            className="h-8 w-8 text-red-500 hover:text-red-700"
-                                                            disabled={loading}
-                                                        >
-                                                            <Trash className="w-4 h-4" />
-                                                        </Button>
+                                                        {/*<Button*/}
+                                                        {/*    size="icon"*/}
+                                                        {/*    variant="ghost"*/}
+                                                        {/*    onClick={() => handleDeleteOrder(order)}*/}
+                                                        {/*    className="h-8 w-8 text-red-500 hover:text-red-700"*/}
+                                                        {/*    disabled={loading}*/}
+                                                        {/*>*/}
+                                                        {/*    <Trash className="w-4 h-4" />*/}
+                                                        {/*</Button>*/}
                                                     </div>
                                                 </TableCell>
                                             </TableRow>
