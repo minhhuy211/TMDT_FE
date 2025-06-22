@@ -5,7 +5,8 @@ import { toast } from "react-toastify"
 import { API_BASE_URL } from "@/services/api"  // giống như placeOrder
 
 
-export type OrderStatus = "pending" | "processing" | "completed" | "cancelled" | "shipped"
+export type OrderStatus = "pending" | "completed" | "shipped" | "cancelled"
+
 
 export type Order = {
     id: string
