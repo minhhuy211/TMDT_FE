@@ -1,8 +1,8 @@
 import React from 'react';
 import {
-    FiUser, FiCreditCard, FiMapPin, FiLock,
+    FiUser, FiCreditCard, FiLock,
     FiBell, FiSettings, FiInbox, FiShoppingBag,
-    FiTag, FiGift
+    FiTag
 } from 'react-icons/fi';
 import { NavLink } from 'react-router-dom';
 
@@ -23,16 +23,11 @@ const Sidebar: React.FC = React.memo(() => {
                             <FiUser /> Hồ sơ
                         </NavLink>
                     </div>
-                    <div className="border p-2 rounded-lg shadow-sm">
-                        <div className={linkClass}>
-                            <FiCreditCard /> Ngân hàng
-                        </div>
-                    </div>
-                    <div className="border p-2 rounded-lg shadow-sm">
-                        <NavLink to="/address" className={({ isActive }) => `${linkClass} ${isActive ? activeClass : ''}`}>
-                            <FiMapPin /> Địa chỉ
-                        </NavLink>
-                    </div>
+                    {/*<div className="border p-2 rounded-lg shadow-sm">*/}
+                    {/*    <div className={linkClass}>*/}
+                    {/*        <FiCreditCard /> Ngân hàng*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
                     <div className="border p-2 rounded-lg shadow-sm">
                         <NavLink to="/change-password" className={({ isActive }) => `${linkClass} ${isActive ? activeClass : ''}`}>
                             <FiLock /> Đổi mật khẩu
