@@ -1,4 +1,3 @@
-import type { AxiosResponse } from "axios";
 import type { APIResponse } from "@/model/APIResponse";
 import type { Category, CategoryRequest } from "@/model/Category";
 import type { Product } from "@/model/Product";
@@ -35,34 +34,33 @@ const categoryApi = {
         return data.result;
     },
 
-    updateCategory: async (id: string, payload: CategoryRequest): Promise<Category> => {
-        try {
-            const data = await api.put<APIResponse<Category>>(`/categories/${id}`, payload);
-            console.log("Update result:", data);
+        updateCategory: async (id: string, payload: CategoryRequest): Promise<Category> => {
+            try {
+                // Send the PUT request to update the category
+                const data = await api.put<APIResponse<Category>>(`/categories/${id}`, payload);
 
-            // Kiểm tra nếu không có kết quả hợp lệ hoặc có lỗi trong phản hồi
-            if (!data || data.code !== 0 || !data.result) {
-                throw new Error("Cập nhật danh mục thất bại hoặc không có dữ liệu hợp lệ");
+                // Check if the response contains the expected result
+                if (!data || data.code !== 0 || !data.result) {
+                    throw new Error(data.message || "Cập nhật danh mục thất bại. Không có dữ liệu hợp lệ.");
+                }
+
+                const result = data.result;
+
+                // Ensure all fields are populated with default values if they're missing or null
+                return {
+                    cate_ID: result.cate_ID,
+                    name: result.name ?? "Chưa có tên",  // Default value for name
+                    description: result.description ?? "Chưa có mô tả", // Default value for description
+                    status: result.status ?? "active", // Default value for status
+                    productList: result.productList ?? [], // Default to an empty array
+                    urlImage: result.urlImage ?? "", // Default to an empty string
+                };
+            } catch (error: any) {
+                console.error("Error while updating category:", error.message || error);
+                // Re-throw the error to be handled where this function is called
+                throw new Error(`Cập nhật danh mục thất bại: ${error.message || error}`);
             }
-
-            const result = data.result;
-
-            // Kiểm tra các trường `null` và thay thế bằng giá trị mặc định
-            return {
-                cate_ID: result.cate_ID,
-                name: result.name ?? "Chưa có tên",  // Thay thế `null` bằng "Chưa có tên"
-                description: result.description ?? "Chưa có mô tả", // Thay thế `null` bằng "Chưa có mô tả"
-                productCount: result.count ?? 0, // Thay thế `null` bằng 0
-                status: result.status ?? "active", // Thay thế `null` bằng "active"
-                productList: result.productList ?? [], // Thay thế `null` bằng mảng rỗng
-                urlImage: result.urlImage ?? "", // Thay thế `null` bằng chuỗi rỗng
-            };
-        } catch (error) {
-            console.error("Error while updating category:", error);
-            throw error; // Đảm bảo ném lỗi để có thể xử lý ở nơi gọi
-        }
-    }
-,
+        },
 
 
     deleteCategory: async (id: string): Promise<void> => {
