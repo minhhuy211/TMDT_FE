@@ -123,9 +123,9 @@ export default function ProductPage() {
               <TableCell>{product.description}</TableCell>
               <TableCell>{product.price}</TableCell>
               <TableCell>
-                {product.img ? (
+                {product.urlImage ? (
                   <img
-                    src={product.img}
+                    src={product.urlImage}
                     alt={product.productName}
                     className="w-16 h-16 object-cover rounded"
                   />
