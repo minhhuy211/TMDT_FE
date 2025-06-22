@@ -39,6 +39,7 @@ import { Outlet, useNavigate } from "react-router-dom"
 import { useDispatch } from "react-redux"
 import { useQueryClient } from "@tanstack/react-query"
 import { logout } from "@/redux/authSlice"
+import { FaBox } from "react-icons/fa"
 
 // Register ChartJS components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, PointElement, LineElement)
@@ -106,6 +107,7 @@ export default function Dashboard() {
             <SidebarItem icon={<Users size={20} />} label="Người dùng" to="/admin/user" />
             <SidebarItem icon={<ShoppingCart size={20} />} label="Đơn hàng" to="/admin/order"/>
             <SidebarItem icon={<Layers size={20} />} label="Danh mục" to="/admin/category" />
+            <SidebarItem icon={<FaBox size={20} />} label="Sản phẩm" to="/admin/product" />
 
 
             <div className="pt-4 mt-4 border-t border-gray-200 dark:border-gray-800">
