@@ -30,7 +30,7 @@ export function addToCartLocal(product: Product) {
             productId: product.productId,
             productName: product.productName,
             price: product.price,
-            img: product.img,
+            img: product.urlImage,
             quantity: 1
         });
     }

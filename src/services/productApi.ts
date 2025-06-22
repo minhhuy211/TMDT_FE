@@ -19,7 +19,7 @@ export default {
       },
 
     // Lấy sản phẩm theo ID
-    getProductById: async (id: number): Promise<Product> => {
+    getProductById: async (id: string): Promise<Product> => {
         const response = await api.get<APIResponse<Product>>(`/products/${id}`);
         console.log("Full API response: ", response);
         return response.result;
@@ -28,7 +28,7 @@ export default {
 
 
     // Lấy sản phẩm theo categoryId (theo đúng endpoint backend)
-    getProductsByCategory: async (categoryId: number): Promise<Product[]> => {
+    getProductsByCategory: async (categoryId: string): Promise<Product[]> => {
         const response = await api.get<APIResponse<Product[]>>(`categories/${categoryId}`);
 
         return response.result;

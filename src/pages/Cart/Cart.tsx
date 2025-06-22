@@ -32,7 +32,7 @@ export const Cart = () => {
   return (
       <div className="container mx-auto py-8 px-2 min-h-[70vh]">
         <h2 className="text-3xl font-bold mb-8 flex items-center gap-2">
-          <span role="img" aria-label="cart">🛒</span> Giỏ Hàng
+          <span role="img" aria-label="cart"></span> Giỏ Hàng
         </h2>
         <div className="flex flex-col md:flex-row gap-8">
           {/* Cart Table */}
@@ -112,12 +112,27 @@ export const Cart = () => {
             {/*  </div>*/}
             {/*</div>*/}
             <Button
-                className="w-full bg-primary text-white font-bold text-lg py-3 rounded-xl mb-3 shadow-md hover:bg-green-700 transition"
-                onClick={() => navigate("/checkout")}
+                className={
+                    "w-full bg-primary text-white font-bold text-lg py-3 rounded-xl mb-3 shadow-md hover:bg-green-700 transition" +
+                    (cart.length === 0 ? " opacity-60 cursor-not-allowed" : "")
+                }
+                onClick={() => {
+                  if (cart.length === 0) {
+                    window.alert("Giỏ hàng đang trống.");
+                    return;
+                  }
+                  const token = localStorage.getItem("token");
+                  if (!token) {
+                    navigate("/login");
+                    return;
+                  }
+                  navigate("/checkout");
+                }}
                 disabled={cart.length === 0}
             >
-              Thanh Toán
-            </Button>
+            Thanh Toán
+          </Button>
+
             <Button
                 className="w-full bg-white border border-gray-300 text-gray-900 font-semibold py-3 rounded-xl hover:bg-gray-100 transition"
                 variant="outline"

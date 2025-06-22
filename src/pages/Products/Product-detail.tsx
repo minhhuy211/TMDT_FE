@@ -4,24 +4,21 @@ import { FaShoppingCart, FaArrowLeft } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import RecommendedProducts from "./recommended-products";
-import { ProductOptions } from "./ProductOptions";
-import { QuantitySelector } from "./QuantitySelector";
 import { AddToCartModal } from "./AddToCartModal";
 import { ProductReviews } from "./ProductReviews";
 import productApi from "@/services/productApi";
 import { useState } from "react";
 import { Product } from "@/model/Product";
-
-const materials = ["PLA", "ABS", "Resin", "TPU"];
-const sizes = ["Nhỏ", "Trung bình", "Lớn"];
-const colors = ["Trắng", "Đen", "Xanh dương", "Xám"];
-const printLocations = ["Mặt trước", "Mặt sau", "Góc cạnh", "Toàn bộ"];
+import RecommendedProducts from "@/pages/Products/RecommendedProducts.tsx";
+import {addToCartLocal, getCartLocal} from "@/utils/localCart.ts";
+import { useDispatch } from "react-redux";
+import {setCart} from "@/redux/cartSlice.ts";
 
 export const ProductDetail = () => {
   const { productId } = useParams<{ productId: string }>();
   const navigate = useNavigate();
 
+  const dispatch = useDispatch();
   // Lấy data sản phẩm bằng React Query
   const { data: product, isLoading, error } = useQuery<Product>({
     queryKey: ["productDetail", productId],
@@ -29,15 +26,25 @@ export const ProductDetail = () => {
     enabled: !!productId,
   });
 
-  // Các state UI liên quan tới lựa chọn (mặc định)
-  const [selectedColor, setSelectedColor] = useState(colors[0]);
-  const [selectedPrintLocation, setSelectedPrintLocation] = useState(printLocations[0]);
-  const [selectedMaterial, setSelectedMaterial] = useState(materials[0]);
-  const [selectedSize, setSelectedSize] = useState(sizes[0]);
   const [quantity, setQuantity] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Hàm tăng giảm số lượng
+  // Lấy danh sách sản phẩm cùng danh mục (nếu có category)
+  const { data: recommendedList = [] } = useQuery<Product[]>({
+    queryKey: ["recommended", product?.category?.cate_ID],
+    queryFn: () =>
+        product?.category?.cate_ID
+            ? productApi.getProductsByCategory(product.category.cate_ID)
+            : Promise.resolve([]),
+    enabled: !!product?.category?.cate_ID,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // Loại chính sản phẩm hiện tại ra khỏi danh sách gợi ý
+  const recommendedProducts = recommendedList.filter(
+      (p) => String(p.productId) !== String(productId)
+  );
+
   const handleQuantityChange = (newQuantity: number) => {
     if (!product) return;
     if (newQuantity >= 1 && newQuantity <= product.stock) setQuantity(newQuantity);
@@ -45,17 +52,18 @@ export const ProductDetail = () => {
     else if (newQuantity > product.stock) setQuantity(product.stock);
   };
 
-  // Xử lý thêm vào giỏ
   const handleAddToCart = () => {
     if (!product || quantity <= 0 || quantity > product.stock) {
       alert("Số lượng không hợp lệ hoặc sản phẩm đã hết hàng.");
       return;
     }
-    // ... như cũ
+    // Truyền nguyên object product vào, không cần cắt trường
+    addToCartLocal(product);
+    dispatch(setCart(getCartLocal()));
     setIsModalOpen(true);
   };
 
-  // Xử lý mua ngay
+
   const handleBuyNow = () => {
     if (!product || quantity <= 0 || quantity > product.stock) {
       alert("Số lượng không hợp lệ hoặc sản phẩm đã hết hàng.");
@@ -95,10 +103,6 @@ export const ProductDetail = () => {
               setIsModalOpen={setIsModalOpen}
               product={product}
               quantity={quantity}
-              selectedColor={selectedColor}
-              selectedPrintLocation={selectedPrintLocation}
-              selectedMaterial={selectedMaterial}
-              selectedSize={selectedSize}
           />
 
           <Link to="/product" className="mb-6 inline-flex items-center text-gray-600 hover:text-gray-900 transition-colors">
@@ -110,7 +114,7 @@ export const ProductDetail = () => {
           <Card className="flex flex-col lg:flex-row overflow-hidden shadow-lg rounded-lg bg-white">
             <div className="lg:w-1/2 p-4 flex items-center justify-center bg-gray-100">
               <img
-                  src={product.img || "/placeholder.svg?height=600&width=600"}
+                  src={product.urlImage || "/placeholder.svg?height=600&width=600"}
                   alt={product.productName}
                   className="max-w-full h-auto object-contain rounded-lg"
               />
@@ -129,26 +133,10 @@ export const ProductDetail = () => {
                   <h3 className="text-xl font-semibold mb-2">Mô tả sản phẩm:</h3>
                   <p>{product.description}</p>
                 </div>
-                <ProductOptions
-                    colors={colors}
-                    printLocations={printLocations}
-                    materials={materials}
-                    sizes={sizes}
-                    selectedColor={selectedColor}
-                    setSelectedColor={setSelectedColor}
-                    selectedPrintLocation={selectedPrintLocation}
-                    setSelectedPrintLocation={setSelectedPrintLocation}
-                    selectedMaterial={selectedMaterial}
-                    setSelectedMaterial={setSelectedMaterial}
-                    selectedSize={selectedSize}
-                    setSelectedSize={setSelectedSize}
-                />
-                <QuantitySelector
-                    quantity={quantity}
-                    handleQuantityChange={handleQuantityChange}
-                    stock={product.stock}
-                    isOutOfStock={isOutOfStock}
-                />
+                <div className="flex items-center gap-4 mb-6">
+
+                  <span className="text-gray-500">Còn lại: {product.stock}</span>
+                </div>
               </div>
 
               <div className="mt-6 flex flex-col sm:flex-row gap-4">
@@ -170,8 +158,10 @@ export const ProductDetail = () => {
             </CardContent>
           </Card>
 
-          <RecommendedProducts />
-          <ProductReviews />
+          {recommendedProducts.length > 0 && (
+              <RecommendedProducts products={recommendedProducts} />
+          )}
+          {/*<ProductReviews />*/}
         </div>
       </div>
   );

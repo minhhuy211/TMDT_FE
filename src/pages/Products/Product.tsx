@@ -9,6 +9,7 @@ import { Product } from "@/model/Product";
 import categoryApi from "@/services/categoryApi";
 import productApi from "@/services/productApi";
 
+
 const ProductPage = () => {
     // selectedCateId giờ dùng để lưu categoryName
     const [selectedCateName, setSelectedCateName] = useState<string | null>(null);
@@ -124,7 +125,9 @@ const ProductPage = () => {
                             </p>
                         )}
                     </div>
+
                 )}
+
             </div>
         </div>
     );
