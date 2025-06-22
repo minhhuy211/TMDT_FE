@@ -1,5 +1,5 @@
 import type { APIResponse } from "@/model/APIResponse";
-import type { Product, ProductResponse } from "@/model/Product";
+import type { Product, ProductResponse, ProductStatus } from "@/model/Product";
 import api from "./api";
 
 export default {
@@ -48,8 +48,15 @@ export default {
     },
 
     // Xóa sản phẩm theo ID
-    deleteProduct: async (id: number): Promise<null> => {
-        const response = await api.delete<APIResponse<null>>(`/products/${id}`);
+    deleteProduct: async (id: string): Promise<Product> => {
+        const response = await api.delete<APIResponse<Product>>(`/products/${id}`);
         return response.result;
     },
+
+    // Cập nhật trạng thái sản phẩm
+    updateStatus: async (productId: string, status: ProductStatus): Promise<void> => {
+        await api.patch(`/products/${productId}/status`, { status });
+    },
+
+
 };
