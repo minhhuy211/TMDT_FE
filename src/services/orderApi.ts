@@ -1,6 +1,6 @@
 // src/services/orderApi.ts
 import { API_BASE_URL } from "@/services/api";
-import type { OrderRequest } from "@/model/Order";
+import type {OrderDetails, OrderRequest} from "@/model/Order";
 
 export const placeOrder = async (order: OrderRequest) => {
     const token = localStorage.getItem("token");
@@ -36,3 +36,11 @@ export const placeOrder = async (order: OrderRequest) => {
     return await res.json();
 };
 
+export const getOrderHistory = async (): Promise<OrderDetails[]> => {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${API_BASE_URL}/order/user`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return await res.json();
+};

@@ -1,4 +1,3 @@
-import type { Product } from "@/model/Product";
 
 // Dùng cho lưu trên localStorage (frontend)
 export interface CartItemLocal {
