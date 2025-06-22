@@ -37,7 +37,6 @@ import {
   Sun,
   Menu,
   X,
-  Backpack,
 } from "lucide-react";
 import {
   Card,
@@ -71,7 +70,7 @@ import { cn } from "@/components/admin-ts/utils";
 import { useTheme } from "next-themes";
 
 import { DatePickerWithRange } from "@/components/ui/DatePickerWithRange";
-import { useMobile } from "@/components/admin-data/hooks/useMobile"
+import { useMobile } from "@/components/admin-data/hooks/useMobile";
 import { Outlet, useNavigate } from "react-router-dom";
 
 // Register ChartJS components
@@ -238,6 +237,7 @@ export default function Dashboard() {
         },
       },
     },
+  };
   return (
     <div
       className={cn(
@@ -302,8 +302,8 @@ export default function Dashboard() {
           />
           <SidebarItem
             icon={<Users size={20} />}
-            label="Khách hàng"
-            to="/admin/customer"
+            label="Người dùng"
+            to="/admin/user"
           />
           <SidebarItem
             icon={<ShoppingCart size={20} />}
@@ -315,12 +315,7 @@ export default function Dashboard() {
             label="Danh mục"
             to="/admin/category"
           />
-          <SidebarItem
-            icon={<Backpack size={20} />}
-            label="Sản phẩm"
-            to="/admin/product"
-          />
-
+          {/*<SidebarItem icon={<Gift size={20} />} label="Sản phẩm" to="/admin/product"/>*/}
           {/*<SidebarItem icon={<Calendar size={20} />} label="Lịch" to="/admin"/>*/}
           {/*<SidebarItem icon={<HelpCircle size={20} />} label="Hỗ trợ khách hàng" to="/admin"/>*/}
 
