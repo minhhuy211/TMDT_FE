@@ -4,7 +4,9 @@ import { FaShoppingCart } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Product } from "@/model/Product";
-import {addToCartLocal} from "@/utils/localCart.ts";
+import {addToCartLocal, getCartLocal} from "@/utils/localCart.ts";
+import {setCart} from "@/redux/cartSlice";
+import { useDispatch } from "react-redux";
 
 interface ProductCardProps {
     product: Product;
@@ -12,7 +14,8 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
-    // Destructuring cho gọn và rõ ràng
+
+    const dispatch = useDispatch();// Destructuring cho gọn và rõ ràng
     const { productId, img, productName, price, category } = product;
 
     return (
@@ -40,7 +43,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
                             onAddToCart(product);
                         } else {
                             addToCartLocal(product);
-                            alert(`Đã thêm "${product.productName}" vào giỏ hàng!`);
+                            dispatch(setCart(getCartLocal()));
+                           
                         }
                     }}
                 >
