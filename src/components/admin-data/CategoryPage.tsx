@@ -276,6 +276,7 @@ export default function CategoryPage() {
 
     useEffect(() => {
         async function fetchCategories() {
+            setLoading(true);
             try {
                 const data = await categoryApi.getCategories();
                 setCategories(data.map(cat => ({
@@ -287,16 +288,31 @@ export default function CategoryPage() {
                 })));
             } catch (error) {
                 console.error(error);
+                toast.error("Lấy danh mục thất bại");
+            } finally {
+                setLoading(false);
             }
         }
         fetchCategories();
-    }, []);
+    }, []);  // Gọi khi trang tải lần đầu
+
+// Sau khi thực hiện các thao tác CRUD, cần lấy lại danh mục (update lại state)
+    useEffect(() => {
+        async function fetchCategories() {
+            const data = await categoryApi.getCategories();
+            setCategories(data);
+        }
+        if (loading === false) {
+            fetchCategories(); // Lấy lại dữ liệu sau khi thao tác hoàn tất
+        }
+    }, [loading]); // Khi loading thay đổi, fetch lại danh mục
 
     const filteredCategories = useMemo(() => {
         return categories.filter((cat) =>
             (cat.name ?? "").toLowerCase().includes(search.toLowerCase())
         );
     }, [categories, search]);
+
 
     const openAddDialog = () => {
         setEditingCategory(undefined)
@@ -321,8 +337,9 @@ export default function CategoryPage() {
         setLoading(true);
         try {
             const created = await categoryApi.createCategory(categoryData);
-            setCategories((prev) => [...prev, created]);
+            setCategories((prev) => [...prev, created]);  // Thêm mới danh mục vào danh sách
             toast.success("Thêm danh mục thành công");
+            setDialogOpen(false);  // Đóng dialog sau khi thêm
         } catch (error) {
             toast.error(`Thêm danh mục thất bại: ${error.message}`);
             console.error(error);
@@ -336,12 +353,33 @@ export default function CategoryPage() {
         setLoading(true);
         try {
             const updatedCategory = await categoryApi.updateCategory(editingCategory.id, categoryData);
-            setCategories((prev) =>
-                prev.map((cat) => (cat.id === updatedCategory.id ? updatedCategory : cat))
+            setCategories((prevCategories) =>
+                prevCategories.map((cat) => (cat.id === updatedCategory.id ? updatedCategory : cat))  // Cập nhật danh mục
             );
             toast.success("Cập nhật danh mục thành công");
+            setDialogOpen(false);  // Đóng dialog sau khi sửa
         } catch (error) {
             toast.error(`Cập nhật danh mục thất bại: ${error.message}`);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleConfirmDelete = async () => {
+        if (!deletingCategory || !deletingCategory.id) {
+            toast.error("Không tìm thấy danh mục để xóa");
+            return;
+        }
+        setLoading(true);
+        try {
+            await categoryApi.deleteCategory(deletingCategory.id);
+            setCategories((prev) => prev.filter((cat) => cat.id !== deletingCategory.id));  // Loại bỏ danh mục đã xóa khỏi danh sách
+            toast.success("Xóa danh mục thành công");
+            setDeleteDialogOpen(false);  // Đóng dialog xóa
+            setDeletingCategory(undefined);  // Reset danh mục đang xóa
+        } catch (error) {
+            console.error("Delete category failed:", error);
+            toast.error("Xóa danh mục thất bại");
         } finally {
             setLoading(false);
         }
@@ -357,25 +395,7 @@ export default function CategoryPage() {
     };
 
     // Handle category deletion
-    const handleConfirmDelete = async () => {
-        if (!deletingCategory || !deletingCategory.id) {
-            toast.error("Không tìm thấy danh mục để xóa");
-            return;
-        }
-        setLoading(true);
-        try {
-            await categoryApi.deleteCategory(deletingCategory.id);
-            setCategories((prev) => prev.filter((cat) => cat.id !== deletingCategory.id));
-            toast.success("Xóa danh mục thành công");
-            setDeleteDialogOpen(false);
-            setDeletingCategory(undefined);
-        } catch (error) {
-            console.error("Delete category failed:", error);
-            toast.error("Xóa danh mục thất bại");
-        } finally {
-            setLoading(false);
-        }
-    };
+
     return (
         <div className="container mx-auto px-4 py-8">
             <h1 className="text-2xl font-bold mb-4">Quản lý danh mục</h1>
