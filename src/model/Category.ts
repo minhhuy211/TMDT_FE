@@ -1,7 +1,6 @@
 import type { Product } from "./Product";
 
 export interface Category {
-  status: string;
   cate_ID: string;        // UUID thay vì number
   name: string;
   description: string;
@@ -11,18 +10,19 @@ export interface Category {
 }
 
 
-export type CategoryRequest = {
+export interface CategoryRequest {
   name: string;
   description: string;
-  urlImage?: string;
-  status: "active" | "inactive";
-};
+  urlImage: string; // Thêm trường này
+}
+
 
 export interface CategoryResponse {
-  cate_ID: string;        // UUID thay vì number
+  cate_ID: string;
   name: string;
   description: string;
   urlImage: string;
   count: number;
   productList: Product[];
 }
+
