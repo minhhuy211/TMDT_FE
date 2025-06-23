@@ -38,7 +38,7 @@ export  interface UserCreationRequest {
 }
 
 // UserResponse.ts
-export  interface UserResponse {
+export interface UserResponse {
   id: string;
   username: string;
   password: string;
@@ -50,12 +50,17 @@ export  interface UserResponse {
   dob: string;
   roles: string[];
   avatarUrl : string;
-
 }
 export interface UserUpdateRequest {
   firstName?: string;
   lastName?: string;
   dob?: string;
   phoneNumber?: string;
+}
+export interface CreateStaffRequest {
+  username: string;
+  email: string;
+  password: string;
+  roles: string[]; // hoặc Set<string> nếu bạn đang sử dụng Set serialization
 }
 
