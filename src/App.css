@@ -1,6 +1,9 @@
 body {
   font-family: 'ubuntu', sans-serif;
 }
+body, html {
+  overflow-x: hidden;
+}
 @keyframes modalDrop {
   from {
     opacity: 0;

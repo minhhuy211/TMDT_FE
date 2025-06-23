@@ -138,7 +138,7 @@ export const Login = () => {
               className="w-full mt-4 flex items-center justify-center gap-2"
               onClick={() => {
                 window.location.href =
-                  "http://localhost:8080//api/oauth2/authorization/google";
+                  "http://localhost:8080/api/oauth2/authorization/google";
               }}
             >
               <img

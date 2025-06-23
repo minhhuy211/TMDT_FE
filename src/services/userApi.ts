@@ -6,6 +6,7 @@ import type {
   UserUpdateRequest,
 } from "@/model/User";
 import type { APIResponse } from "@/model/APIResponse";
+import { ResetPasswordRequest } from "@/model/Authentication";
 
 
 // @ts-ignore
@@ -85,7 +86,9 @@ export default {
     );
     return response.result; // Trả về người dùng đã được cập nhật
   },
-
+  changePassword: async (request: ResetPasswordRequest): Promise<void> => {
+    await api.post("/users/change-password",  request );
+  },
 
   deleteUser: async (id: string): Promise<void> => {
     await api.delete(`/users/${id}`);
