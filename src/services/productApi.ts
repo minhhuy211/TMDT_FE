@@ -41,7 +41,7 @@ export default {
     },
 
     // Cập nhật sản phẩm theo ID
-    updateProduct: async (id: number, productData: Partial<Product>): Promise<Product> => {
+    updateProduct: async (id: string, productData: Partial<Product>): Promise<Product> => {
         const response = await api.put<APIResponse<Product>>(`/products/${id}`, productData);
         console.log(response);
         return response.result;
@@ -57,6 +57,15 @@ export default {
     updateStatus: async (productId: string, status: ProductStatus): Promise<void> => {
         await api.patch(`/products/${productId}/status`, { status });
     },
+
+    // Lấy top sản phẩm mới nhất
+    getNewProducts: async (limit: number = 6): Promise<ProductResponse[]> => {
+        const response = await api.get<APIResponse<ProductResponse[]>>("/products/newProduct", {
+        params: { limit },
+    });
+        return response.result;
+    },
+
 
 
 };

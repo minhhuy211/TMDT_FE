@@ -10,14 +10,14 @@ export const statusOptions: { value: ProductStatus; label: string }[] = [
 
 export interface Product {
   productId: string;          // UUID
-  category: Category;
+  category?: Category;
   productName: string;
   description: string;
   price: number;
-  stock: number;
+  stock?: number;
   urlImage: string;
-  categoryName: string;
-
+  categoryName: string; 
+  status: ProductStatus
 }
 
 export interface ProductRequest {
@@ -39,5 +39,4 @@ export interface ProductResponse {
   stock: number;
   urlImage: string;
   status: ProductStatus;
-
 }

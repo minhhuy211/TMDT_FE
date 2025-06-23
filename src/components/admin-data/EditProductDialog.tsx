@@ -1,10 +1,6 @@
-import { ProductRequest, ProductStatus, statusOptions } from "@/model/Product";
-import productApi from "@/services/productApi";
 import { useEffect, useState } from "react";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { Category } from "@/model/Category";
-import categoryApi from "@/services/categoryApi";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -12,30 +8,35 @@ import {
   DialogFooter,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ProductRequest, ProductStatus, statusOptions } from "@/model/Product";
+import { Category } from "@/model/Category";
+import productApi from "@/services/productApi";
+import categoryApi from "@/services/categoryApi";
 
 interface Props {
   showDialog: boolean;
   setShowDialog: (v: boolean) => void;
-  onProductCreated: () => void;
+  onProductUpdated: () => void;
+  product: ProductRequest & { productId: string };
 }
 
-export default function CreateProductDialog({
+export default function EditProductDialog({
   showDialog,
   setShowDialog,
-  onProductCreated,
+  onProductUpdated,
+  product,
 }: Props) {
   const [form, setForm] = useState({
     productName: "",
     description: "",
     price: "",
     stock: "",
-    img: "",
+    urlImage: "",
     cate_ID: "",
     status: "ACTIVE" as ProductStatus,
   });
 
   const [categories, setCategories] = useState<Category[]>([]);
-
   useEffect(() => {
     const fetchCategories = async () => {
       const res = await categoryApi.getCategories();
@@ -44,25 +45,34 @@ export default function CreateProductDialog({
     fetchCategories();
   }, []);
 
+  useEffect(() => {
+    setForm({
+      productName: product.productName,
+      description: product.description,
+      price: String(product.price),
+      stock: String(product.stock),
+      urlImage: product.urlImage,
+      cate_ID: product.cate_ID ?? "",
+      status: product.status,
+    });
+  }, [product]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.productName || !form.description || !form.img || !form.cate_ID) {
-      alert("Vui lòng nhập đầy đủ thông tin bắt buộc.");
-      return;
-    }
     try {
-      const payload = {
+      const payload: ProductRequest = {
         ...form,
         price: Number(form.price),
         stock: Number(form.stock),
       };
-      await productApi.createProduct(payload);
-      alert("Tạo sản phẩm thành công");
+
+      await productApi.updateProduct(product.productId, payload);
+      alert("Cập nhật sản phẩm thành công");
       setShowDialog(false);
-      onProductCreated(); // cập nhật lại danh sách
+      onProductUpdated();
     } catch (err) {
       console.error(err);
-      alert("Tạo thất bại");
+      alert("Cập nhật thất bại");
     }
   };
 
@@ -70,7 +80,7 @@ export default function CreateProductDialog({
     <Dialog open={showDialog} onOpenChange={setShowDialog}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Thêm sản phẩm</DialogTitle>
+          <DialogTitle>Chỉnh sửa sản phẩm</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="grid gap-4 mt-2">
           <Input
@@ -101,12 +111,11 @@ export default function CreateProductDialog({
           />
           <Input
             placeholder="URL ảnh"
-            value={form.img}
-            onChange={(e) => setForm({ ...form, img: e.target.value })}
+            value={form.urlImage}
+            onChange={(e) => setForm({ ...form, urlImage: e.target.value })}
             required
           />
 
-          {/* Dropdown chọn danh mục */}
           <select
             value={form.cate_ID}
             onChange={(e) => setForm({ ...form, cate_ID: e.target.value })}
@@ -121,14 +130,10 @@ export default function CreateProductDialog({
             ))}
           </select>
 
-          {/* Dropdown status */}
           <select
             value={form.status}
             onChange={(e) =>
-              setForm({
-                ...form,
-                status: e.target.value as ProductStatus,
-              })
+              setForm({ ...form, status: e.target.value as ProductStatus })
             }
             className="border px-2 py-1 rounded"
           >
