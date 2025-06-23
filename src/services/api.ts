@@ -4,7 +4,7 @@ import type { AxiosRequestConfig } from "axios";
 
 
 
-export const API_BASE_URL = "http://localhost:8080/api";
+export const API_BASE_URL = "http://192.168.100.216:8080/api";
 const DOMAIN = `${API_BASE_URL}`;
 const api = axios.create({
   proxy: false,
