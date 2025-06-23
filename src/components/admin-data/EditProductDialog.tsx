@@ -21,11 +21,11 @@ interface Props {
 }
 
 export default function EditProductDialog({
-  showDialog,
-  setShowDialog,
-  onProductUpdated,
-  product,
-}: Props) {
+                                            showDialog,
+                                            setShowDialog,
+                                            onProductUpdated,
+                                            product,
+                                          }: Props) {
   const [form, setForm] = useState({
     productName: "",
     description: "",
@@ -34,7 +34,9 @@ export default function EditProductDialog({
     urlImage: "",
     cate_ID: "",
     status: "ACTIVE" as ProductStatus,
+    file: null as File | null, // <== thêm field file
   });
+
 
   const [categories, setCategories] = useState<Category[]>([]);
   useEffect(() => {
@@ -54,19 +56,33 @@ export default function EditProductDialog({
       urlImage: product.urlImage,
       cate_ID: product.cate_ID ?? "",
       status: product.status,
+      file: null,
     });
   }, [product]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!form.cate_ID) {
+      alert("Vui lòng chọn danh mục sản phẩm");
+      return;
+    }
+
     try {
-      const payload: ProductRequest = {
-        ...form,
+      const payload: ProductRequest & { file?: File | null } = {
+        productName: form.productName,
+        description: form.description,
         price: Number(form.price),
         stock: Number(form.stock),
+        cate_ID: form.cate_ID,
+        status: form.status,
+        file: form.file,
       };
 
+      console.log("Gửi payload updateProduct:", payload);
+
       await productApi.updateProduct(product.productId, payload);
+
       alert("Cập nhật sản phẩm thành công");
       setShowDialog(false);
       onProductUpdated();
@@ -77,81 +93,103 @@ export default function EditProductDialog({
   };
 
   return (
-    <Dialog open={showDialog} onOpenChange={setShowDialog}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Chỉnh sửa sản phẩm</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit} className="grid gap-4 mt-2">
-          <Input
-            placeholder="Tên sản phẩm"
-            value={form.productName}
-            onChange={(e) => setForm({ ...form, productName: e.target.value })}
-            required
-          />
-          <Input
-            placeholder="Mô tả"
-            value={form.description}
-            onChange={(e) => setForm({ ...form, description: e.target.value })}
-            required
-          />
-          <Input
-            placeholder="Giá"
-            type="number"
-            value={form.price}
-            onChange={(e) => setForm({ ...form, price: e.target.value })}
-            required
-          />
-          <Input
-            placeholder="Số lượng"
-            type="number"
-            value={form.stock}
-            onChange={(e) => setForm({ ...form, stock: e.target.value })}
-            required
-          />
-          <Input
-            placeholder="URL ảnh"
-            value={form.urlImage}
-            onChange={(e) => setForm({ ...form, urlImage: e.target.value })}
-            required
-          />
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Chỉnh sửa sản phẩm</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="grid gap-4 mt-2">
+            <Input
+                placeholder="Tên sản phẩm"
+                value={form.productName}
+                onChange={(e) => setForm({ ...form, productName: e.target.value })}
+                required
+            />
+            <Input
+                placeholder="Mô tả"
+                value={form.description}
+                onChange={(e) => setForm({ ...form, description: e.target.value })}
+                required
+            />
+            <Input
+                placeholder="Giá"
+                type="number"
+                value={form.price}
+                onChange={(e) => setForm({ ...form, price: e.target.value })}
+                required
+            />
+            <Input
+                placeholder="Số lượng"
+                type="number"
+                value={form.stock}
+                onChange={(e) => setForm({ ...form, stock: e.target.value })}
+                required
+            />
+            <input
+                type="file"
+                accept="image/*"
+                onChange={(e) =>
+                    setForm({ ...form, file: e.target.files?.[0] || null })
+                }
+            />
 
-          <select
-            value={form.cate_ID}
-            onChange={(e) => setForm({ ...form, cate_ID: e.target.value })}
-            required
-            className="border px-2 py-1 rounded"
-          >
-            <option value="">-- Chọn danh mục --</option>
-            {categories.map((cate) => (
-              <option key={cate.cate_ID} value={cate.cate_ID}>
-                {cate.name}
-              </option>
-            ))}
-          </select>
+            {form.file ? (
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Ảnh mới:</p>
+                  <img
+                      src={URL.createObjectURL(form.file)}
+                      alt="Preview mới"
+                      className="w-32 h-32 object-cover border rounded"
+                  />
+                </div>
+            ) : form.urlImage && (
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Ảnh hiện tại:</p>
+                  <img
+                      src={form.urlImage}
+                      alt="Preview cũ"
+                      className="w-32 h-32 object-cover border rounded"
+                  />
+                </div>
+            )}
 
-          <select
-            value={form.status}
-            onChange={(e) =>
-              setForm({ ...form, status: e.target.value as ProductStatus })
-            }
-            className="border px-2 py-1 rounded"
-          >
-            {statusOptions.map((s) => (
-              <option key={s.value} value={s.value}>
-                {s.label}
-              </option>
-            ))}
-          </select>
 
-          <DialogFooter className="col-span-2 mt-4">
-            <Button type="submit">Lưu</Button>
-            <Button variant="outline" onClick={() => setShowDialog(false)}>
-              Huỷ
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+            <select
+                value={form.cate_ID}
+                onChange={(e) => setForm({ ...form, cate_ID: e.target.value })}
+                required
+                className="border px-2 py-1 rounded"
+            >
+              <option value="">-- Chọn danh mục --</option>
+              {categories.map((cate) => (
+                  <option key={cate.cate_ID} value={cate.cate_ID}>
+                    {cate.name}
+                  </option>
+              ))}
+            </select>
+
+            <select
+                value={form.status}
+                onChange={(e) =>
+                    setForm({ ...form, status: e.target.value as ProductStatus })
+                }
+                className="border px-2 py-1 rounded"
+            >
+              {statusOptions.map((s) => (
+                  <option key={s.value} value={s.value}>
+                    {s.label}
+                  </option>
+              ))}
+            </select>
+
+            <DialogFooter className="col-span-2 mt-4">
+              <Button type="submit">Lưu</Button>
+              <Button variant="outline" onClick={() => setShowDialog(false)}>
+                Huỷ
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
   );
 }

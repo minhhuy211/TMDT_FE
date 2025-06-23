@@ -65,26 +65,48 @@ function CategoryDialog({
     category?: Category
     isOpen: boolean
     onClose: () => void
-    onSave: (category: CategoryRequest) => void
+    onSave: (category: CategoryRequest & { file?: File | null }) => void
     loading?: boolean
 }) {
     const [name, setName] = useState(category?.name || "");
     const [description, setDescription] = useState(category?.description || "");
-    const [imageUrl, setImageUrl] = useState(category?.urlImage || "");  // New state for the image URL
+    const [imageUrl, setImageUrl] = useState(category?.urlImage || ""); // URL hoặc base64
+    const [file, setFile] = useState<File | null>(null);
 
     useEffect(() => {
         setName(category?.name || "");
         setDescription(category?.description || "");
-        setImageUrl(category?.urlImage || "");  // Set the image URL from category if editing
+        setImageUrl(category?.urlImage || "");
+        setFile(null);  // Reset file khi category thay đổi
     }, [category]);
+
+    // Khi chọn file ảnh
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const selectedFile = e.target.files?.[0];
+        if (selectedFile) {
+            setFile(selectedFile);
+
+            // Đọc file để preview ảnh
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                setImageUrl(ev.target?.result as string);
+            };
+            reader.readAsDataURL(selectedFile);
+        }
+    };
 
     const handleSave = () => {
         if (!name.trim()) {
             toast.error("Tên danh mục không được để trống");
             return;
         }
-        // Save the category including the image URL
-        onSave({ name: name.trim(), description: description.trim(), urlImage: imageUrl.trim() });
+        // Truyền cả file và các trường còn lại cho onSave
+        onSave({
+            name: name.trim(),
+            description: description.trim(),
+            urlImage: imageUrl,  // tạm thời gửi base64 hoặc URL nếu bạn xử lý upload ở ngoài
+            file, // gửi file lên nếu bạn xử lý upload ảnh riêng biệt
+        });
     };
 
     return (
@@ -118,22 +140,24 @@ function CategoryDialog({
                             disabled={loading}
                         />
                     </div>
-                    {/* Image URL Input */}
+
+                    {/* Input chọn file ảnh */}
                     <div className="grid gap-2">
-                        <Label htmlFor="imageUrl">URL ảnh</Label>
-                        <Input
-                            id="imageUrl"
-                            value={imageUrl}
-                            onChange={(e) => setImageUrl(e.target.value)}
-                            placeholder="Nhập URL ảnh"
+                        <Label htmlFor="file">Chọn ảnh</Label>
+                        <input
+                            id="file"
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
                             disabled={loading}
                         />
                     </div>
-                    {/* Preview Image */}
+
+                    {/* Preview ảnh */}
                     {imageUrl && (
                         <div className="mt-2">
                             <Label>Ảnh xem trước:</Label>
-                            <img src={imageUrl} alt="Preview" className="max-h-48 mt-2" />
+                            <img src={imageUrl} alt="Preview" className="max-h-48 mt-2 object-contain rounded-md" />
                         </div>
                     )}
                 </div>
@@ -149,6 +173,7 @@ function CategoryDialog({
         </Dialog>
     );
 }
+
 
 function DeleteDialog({
                           category,
@@ -277,21 +302,20 @@ export default function CategoryPage() {
         setDeleteDialogOpen(true)
     }
 
-    const handleSaveCategory = async (category: CategoryRequest) => {
+    const handleSaveCategory = async (categoryReq: CategoryRequest & { file?: File | null }) => {
         setLoading(true);
         try {
             if (editingCategory) {
-                // Edit existing category with imageUrl
-                await categoryApi.updateCategory(editingCategory.cate_ID, category);
+                await categoryApi.updateCategory(editingCategory.cate_ID, categoryReq);
                 toast.success("Cập nhật danh mục thành công");
             } else {
-                // Create new category with imageUrl
-                await categoryApi.createCategory(category);
+                await categoryApi.createCategory(categoryReq);  // truyền luôn cả file vào đây
                 toast.success("Tạo danh mục mới thành công");
             }
+
             setDialogOpen(false);
             setEditingCategory(undefined);
-            // Refetch categories after save
+
             const data = await categoryApi.getCategories();
             setCategories(data);
         } catch (error) {
