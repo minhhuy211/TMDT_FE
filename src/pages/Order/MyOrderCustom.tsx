@@ -47,6 +47,8 @@ const MyOrdersCustomPage = () => {
       queryClient.invalidateQueries({ queryKey: ["my-ordersCustom"] }),
   });
 
+  
+
   const handleAction = (order: OrderCustomResponse) => {
     switch (order.status) {
       case OrderCustomStatus.PENDING_QUOTE:
@@ -54,6 +56,9 @@ const MyOrdersCustomPage = () => {
         break;
       case OrderCustomStatus.QUOTED:
         confirmMutation.mutate(order.id);
+        break;
+      case OrderCustomStatus.CANCELLED:
+        cancelMutation.mutate(order.id);
         break;
       case OrderCustomStatus.AWAITING_PAYMENT:
         navigate(`/payment/${order.id}`);
