@@ -46,5 +46,6 @@ export function useUsers() {
         loading,
         error,
         refetch: fetchUsers,
+        createStaff: userApi.createStaff, // 👈 Thêm dòng này để gọi từ component
     }
 }
