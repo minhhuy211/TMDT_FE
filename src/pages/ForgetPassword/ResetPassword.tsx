@@ -25,6 +25,7 @@ const ResetPasswordPage = () => {
   const mutation = useMutation({
     mutationFn: authApi.resetPassword,
     onSuccess: () => {
+        localStorage.removeItem("forgot_password_email"); // Xoá email sau khi reset mật khẩu
       setMessage(
         "✅ Đặt lại mật khẩu thành công. Vui lòng đăng nhập. Đang chuyển trang..."
       );
