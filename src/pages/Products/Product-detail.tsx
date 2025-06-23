@@ -9,7 +9,7 @@ import { ProductReviews } from "./ProductReviews";
 import productApi from "@/services/productApi";
 import { useState } from "react";
 import { Product } from "@/model/Product";
-import RecommendedProducts from "@/pages/Products/RecommendedProducts.tsx";
+import RecommendedProducts from "@/pages/Products/RecommendedProducts";
 import {addToCartLocal, getCartLocal} from "@/utils/localCart.ts";
 import { useDispatch } from "react-redux";
 import {setCart} from "@/redux/cartSlice.ts";
@@ -26,7 +26,7 @@ export const ProductDetail = () => {
     enabled: !!productId,
   });
 
-  const [quantity, setQuantity] = useState(1);
+  const [quantity] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Lấy danh sách sản phẩm cùng danh mục (nếu có category)
@@ -45,12 +45,6 @@ export const ProductDetail = () => {
       (p) => String(p.productId) !== String(productId)
   );
 
-  const handleQuantityChange = (newQuantity: number) => {
-    if (!product) return;
-    if (newQuantity >= 1 && newQuantity <= product.stock) setQuantity(newQuantity);
-    else if (newQuantity < 1) setQuantity(1);
-    else if (newQuantity > product.stock) setQuantity(product.stock);
-  };
 
   const handleAddToCart = () => {
     if (!product || quantity <= 0 || quantity > product.stock) {
@@ -161,7 +155,8 @@ export const ProductDetail = () => {
           {recommendedProducts.length > 0 && (
               <RecommendedProducts products={recommendedProducts} />
           )}
-          {/*<ProductReviews />*/}
+          <ProductReviews productId={productId!} />
+
         </div>
       </div>
   );
