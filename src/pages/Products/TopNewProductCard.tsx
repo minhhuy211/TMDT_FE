@@ -14,41 +14,43 @@ interface TopNewProductCardProps {
 const TopNewProductCard: React.FC<TopNewProductCardProps> = ({ product }) => {
   const dispatch = useDispatch();
 
+  const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    addToCartLocal({
+      productId: product.productId,
+      productName: product.productName,
+      price: product.price,
+      urlImage: product.urlImage,
+      categoryName: "",
+      status: product.status,
+      description: product.description,
+    });
+    dispatch(setCart(getCartLocal()));
+  };
+
   return (
-    <div className="group flex flex-col justify-between h-full overflow-hidden border rounded-lg shadow-sm">
+    <div className="group flex flex-col justify-between h-full overflow-hidden rounded-2xl border border-gray-200 shadow-md hover:shadow-lg transition-shadow duration-300 bg-white">
       <Link to={`/product-detail/${product.productId}`} className="block">
-        <div className="p-0">
+        <div className="relative overflow-hidden rounded-t-2xl aspect-square">
           <img
-            src={product.urlImage || "/placeholder.svg?height=300&width=300"}
+            src={product.urlImage || "/placeholder.svg?height=400&width=400"}
             alt={product.productName}
-            className="w-full h-48 object-cover rounded-t-lg transition-transform duration-300 group-hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         </div>
-        <div className="p-4 flex-grow">
-          <h3 className="text-lg font-semibold text-gray-900 mb-1">
+        <div className="p-4 flex flex-col gap-1">
+          <h3 className="text-base sm:text-lg font-semibold text-gray-900 line-clamp-2">
             {product.productName}
           </h3>
-          <p className="text-gray-900 font-bold text-lg">
+          <p className="text-lg font-bold text-primary">
             {product.price?.toLocaleString("vi-VN")}đ
           </p>
         </div>
       </Link>
       <div className="p-4 pt-0">
         <Button
-          className="w-full bg-gray-800 text-white hover:bg-gray-700 transition-colors duration-300"
-          onClick={(e) => {
-            e.preventDefault();
-            addToCartLocal({
-              productId: product.productId,
-              productName: product.productName,
-              price: product.price,
-              urlImage: product.urlImage,
-              categoryName: "", // không cần
-              status: product.status,
-              description: product.description,
-            });
-            dispatch(setCart(getCartLocal()));
-          }}
+          className="w-full bg-primary text-white hover:bg-primary/90 transition-colors duration-300 rounded-xl text-sm font-medium py-2"
+          onClick={handleAddToCart}
         >
           <FaShoppingCart className="inline mr-2" />
           Thêm vào giỏ
