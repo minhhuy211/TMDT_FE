@@ -240,20 +240,20 @@ export const HomePage = () => {
 
               <div className="space-y-6">
                 <div className="border rounded-lg p-4">
-                  <h3 className="font-bold text-lg mb-2">No Minimum Orders</h3>
+                  <h3 className="font-bold text-lg mb-2">Đặt hàng không giới hạn</h3>
                   <p className="text-gray-600">
                     Không có số lượng đặt hàng tối thiểu - đặt hàng bao nhiêu
                     tùy ý
                   </p>
                 </div>
                 <div className="border rounded-lg p-4">
-                  <h3 className="font-bold text-lg mb-2">Fast Production</h3>
+                  <h3 className="font-bold text-lg mb-2">Thời gian đặt hàng nhanh </h3>
                   <p className="text-gray-600">
                     Thời gian sản xuất nhanh chóng, đảm bảo giao hàng đúng hẹn
                   </p>
                 </div>
                 <div className="border rounded-lg p-4">
-                  <h3 className="font-bold text-lg mb-2">Premium Materials</h3>
+                  <h3 className="font-bold text-lg mb-2">Sản phẩm cao cấp</h3>
                   <p className="text-gray-600">
                     Sử dụng vật liệu cao cấp, đảm bảo độ bền và chất lượng sản
                     phẩm
@@ -261,7 +261,7 @@ export const HomePage = () => {
                 </div>
                 <div className="border rounded-lg p-4">
                   <h3 className="font-bold text-lg mb-2">
-                    Eco-Friendly Options
+                    Lựa chọn thân thiện môi trường
                   </h3>
                   <p className="text-gray-600">
                     Cung cấp các lựa chọn vật liệu thân thiện với môi trường
@@ -275,11 +275,11 @@ export const HomePage = () => {
             </div>
             <div className="flex justify-center items-center">
               <img
-                src="/placeholder.svg?height=400&width=400"
+                src="https://dsuj2mkiosyd2.cloudfront.net/a360-rendering/230110/2554/1b4b95fd/raasrendering-710dc9fd-72bb-4f09-8465-0b73997d2b4c_1300-auto.webp?t=1676208993"
                 alt="3D Printer Features"
                 width={400}
                 height={400}
-                className="object-contain"
+                className="object-cover w-full border rounded-lg shadow-md"
               />
             </div>
           </div>
