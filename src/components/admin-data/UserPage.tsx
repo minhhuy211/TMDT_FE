@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import {useState, useMemo, useEffect} from "react"
 import { User, Users, Filter, RefreshCw, Search, X, AlertCircle } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
@@ -10,6 +10,16 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useUsers, type User as UserType } from "@/components/admin-data/hooks/use-user"
+import {
+    Dialog,
+    DialogTrigger,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+    DialogDescription,
+} from "@/components/ui/dialog"
+import { getUserRoleFromToken } from "@/decode/getUserRoleFromToken";
 
 // Helper functions
 const getRoleColor = (role: string) => {
@@ -224,29 +234,79 @@ function StatsCards({ users }: { users: UserType[] }) {
     )
 }
 
-// Main Component
+
 export default function UserPage() {
-    const { users, loading, error, refetch } = useUsers()
-    const [search, setSearch] = useState("")
+    const [search, setSearch] = useState("");
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [newStaff, setNewStaff] = useState({ username: "", email: "", password: "" });
+    const [creating, setCreating] = useState(false);
+    const { users, loading, error, refetch, createStaff } = useUsers();
+
+    const currentUserRole = getUserRoleFromToken()?.toUpperCase() || "USER";
+
+    useEffect(() => {
+        console.log("Users hiện tại với role:", users.map(u => ({ username: u.username, role: u.role })));
+        console.log("Role user hiện tại:", currentUserRole);
+    }, [users, currentUserRole]);
 
     const filteredUsers = useMemo(() => {
-        if (!search.trim()) return users
+        let filteredList = users;
 
-        const searchText = search.toLowerCase().trim()
-        return users.filter((user) => {
-            const name = user.name?.toLowerCase() || ""
-            const email = user.email?.toLowerCase() || ""
-            const role = user.role?.toLowerCase() || ""
-            const username = user.username?.toLowerCase() || ""
+        if (currentUserRole === "STAFF") {
+            filteredList = users.filter(u => u.role.toUpperCase() === "USER");
+        }
+
+        if (!search.trim()) return filteredList;
+
+        const searchText = search.toLowerCase().trim();
+
+        return filteredList.filter(user => {
+            const name = user.name?.toLowerCase() || "";
+            const email = user.email?.toLowerCase() || "";
+            const role = user.role?.toLowerCase() || "";
+            const username = user.username?.toLowerCase() || "";
 
             return (
                 name.includes(searchText) ||
                 email.includes(searchText) ||
                 role.includes(searchText) ||
                 username.includes(searchText)
-            )
-        })
-    }, [users, search])
+            );
+        });
+    }, [users, search, currentUserRole]);
+
+    const handleCreateStaff = async () => {
+        if (currentUserRole === "STAFF") {
+            alert("Bạn không có quyền tạo nhân viên mới.");
+            return;
+        }
+        setCreating(true);
+        try {
+            console.log("Dữ liệu gửi đi:", { ...newStaff, roles: ["STAFF"] });
+
+            await createStaff({
+                ...newStaff,
+                roles: ["STAFF"],
+            });
+
+            await refetch();
+            setIsDialogOpen(false);
+            setNewStaff({ username: "", email: "", password: "" });
+        } catch (err: any) {
+            if (err.response && err.response.data) {
+                console.error("Lỗi tạo nhân viên:", err.response.data);
+                alert("Lỗi tạo nhân viên: " + JSON.stringify(err.response.data));
+            } else if (err.message) {
+                console.error("Lỗi tạo nhân viên:", err.message);
+                alert("Lỗi tạo nhân viên: " + err.message);
+            } else {
+                console.error("Lỗi tạo nhân viên:", err);
+                alert("Lỗi tạo nhân viên: Không xác định");
+            }
+        } finally {
+            setCreating(false);
+        }
+    };
 
     return (
         <div className="p-6 space-y-6">
@@ -261,10 +321,54 @@ export default function UserPage() {
                         Quản lý và theo dõi thông tin người dùng trong hệ thống
                     </p>
                 </div>
+
                 <Button onClick={refetch} disabled={loading}>
                     <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
                     Làm mới
                 </Button>
+
+                {/* Chỉ hiển thị form tạo nhân viên nếu không phải STAFF */}
+                {currentUserRole !== "STAFF" && (
+                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                        <DialogTrigger asChild>
+                            <Button variant="secondary">+ Thêm nhân viên</Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Thêm nhân viên mới</DialogTitle>
+                                <DialogDescription>
+                                    Nhập thông tin để tạo một nhân viên với vai trò STAFF
+                                </DialogDescription>
+                            </DialogHeader>
+
+                            <div className="space-y-4 py-2">
+                                <Input
+                                    placeholder="Tên người dùng"
+                                    value={newStaff.username}
+                                    onChange={(e) => setNewStaff(prev => ({ ...prev, username: e.target.value }))}
+                                />
+                                <Input
+                                    placeholder="Email"
+                                    type="email"
+                                    value={newStaff.email}
+                                    onChange={(e) => setNewStaff(prev => ({ ...prev, email: e.target.value }))}
+                                />
+                                <Input
+                                    placeholder="Mật khẩu"
+                                    type="password"
+                                    value={newStaff.password}
+                                    onChange={(e) => setNewStaff(prev => ({ ...prev, password: e.target.value }))}
+                                />
+                            </div>
+
+                            <DialogFooter>
+                                <Button onClick={handleCreateStaff} disabled={creating}>
+                                    {creating ? "Đang tạo..." : "Tạo nhân viên"}
+                                </Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+                )}
             </div>
 
             {/* Stats Cards */}
@@ -289,7 +393,9 @@ export default function UserPage() {
                 <Card>
                     <CardHeader>
                         <CardTitle>Danh sách người dùng</CardTitle>
-                        <CardDescription>Thông tin chi tiết về tất cả người dùng trong hệ thống</CardDescription>
+                        <CardDescription>
+                            Thông tin chi tiết về tất cả người dùng trong hệ thống
+                        </CardDescription>
                     </CardHeader>
                     <CardContent className="p-0">
                         <UserTable users={filteredUsers} loading={loading} />
@@ -297,5 +403,5 @@ export default function UserPage() {
                 </Card>
             )}
         </div>
-    )
+    );
 }

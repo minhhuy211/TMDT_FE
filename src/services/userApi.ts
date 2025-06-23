@@ -1,5 +1,6 @@
 import api from "./api";
 import type {
+  CreateStaffRequest,
   UserCreationRequest,
   UserResponse,
   UserUpdateRequest,
@@ -88,5 +89,21 @@ export default {
 
   deleteUser: async (id: string): Promise<void> => {
     await api.delete(`/users/${id}`);
+  },
+  createStaff: async (staff: CreateStaffRequest): Promise<UserResponse> => {
+    const token = localStorage.getItem("token");
+
+    const response = await api.post<APIResponse<UserResponse>>(
+        "/users/create-staff",
+        staff,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+    );
+
+    return response.result;
   },
 };

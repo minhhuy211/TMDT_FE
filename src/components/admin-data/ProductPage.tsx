@@ -15,11 +15,16 @@ import { Plus, Edit, Trash } from "lucide-react";
 import { ProductResponse, ProductStatus, statusOptions } from "@/model/Product";
 import productApi from "@/services/productApi";
 import CreateProductDialog from "./CreateProductDialog";
+import EditProductDialog from "./EditProductDialog";
+import { Category } from "@/model/Category";
 
 export default function ProductPage() {
   const [product, setProduct] = useState<ProductResponse[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [search, setSearch] = useState("");
   const [showDialog, setShowDialog] = useState(false);
+  const [showEditDialog, setEditDialog] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<any>(null);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -76,6 +81,28 @@ export default function ProductPage() {
   const handleProductCreated = async () => {
     const newProducts = await productApi.getProducts(10, 0);
     setProduct(newProducts);
+  };
+
+  const handleEditClick = (prod: ProductResponse) => {
+    const matchedCategory = categories.find(
+      (cat) => cat.name.toLowerCase() === prod.categoryName.toLowerCase()
+    );
+
+    const cate_ID = matchedCategory?.cate_ID ?? "";
+
+    const mappedProduct = {
+      productId: prod.productId,
+      productName: prod.productName,
+      description: prod.description,
+      price: prod.price,
+      stock: prod.stock,
+      urlImage: prod.urlImage,
+      cate_ID,
+      status: prod.status,
+    };
+
+    setEditingProduct(mappedProduct);
+    setEditDialog(true);
   };
 
   const filteredProduct = product.filter(
@@ -154,7 +181,11 @@ export default function ProductPage() {
               </TableCell>
 
               <TableCell className="text-right space-x-2">
-                <Button size="icon" variant="ghost">
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => handleEditClick(product)}
+                >
                   <Edit className="w-4 h-4" />
                 </Button>
                 <Button
@@ -175,6 +206,15 @@ export default function ProductPage() {
         setShowDialog={setShowDialog}
         onProductCreated={handleProductCreated}
       />
+
+      {editingProduct && (
+        <EditProductDialog
+          showDialog={showEditDialog}
+          setShowDialog={setEditDialog}
+          product={editingProduct}
+          onProductUpdated={handleProductCreated}
+        />
+      )}
     </div>
   );
 }
