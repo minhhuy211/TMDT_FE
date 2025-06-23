@@ -4,11 +4,11 @@ import api from "./api";
 
 export default {
     // Lấy tất cả sản phẩm
-    // getProducts: async (): Promise<ProductResponse[]> => {
-    //     const response = await api.get<APIResponse<ProductResponse[]>>("/products");
-    //     console.log(response);
-    //     return response.result;
-    // },
+    getAllProducts: async (): Promise<ProductResponse[]> => {
+        const response = await api.get<APIResponse<ProductResponse[]>>("/products");
+        console.log(response);
+        return response.result;
+    },
 
     getProducts: async (limit: number, offset: number): Promise<ProductResponse[]> => {
         const response = await api.get<APIResponse<ProductResponse[]>>("/products", {
@@ -65,7 +65,5 @@ export default {
     });
         return response.result;
     },
-
-
 
 };
