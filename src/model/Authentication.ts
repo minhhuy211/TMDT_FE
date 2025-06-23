@@ -15,3 +15,13 @@ export interface VerifyUserRequest {
   email: string;
   verificationCode: string;
 }
+
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+export interface ResetPasswordRequest {
+  email: string;
+  newPassword: string;
+  confirmPassword: string;
+}
