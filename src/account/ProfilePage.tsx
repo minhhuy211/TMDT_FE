@@ -15,7 +15,6 @@ const ProfilePage: React.FC = () => {
         refetchOnWindowFocus: false,
     });
 
-    // State cho form
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [dob, setDob] = useState("");
@@ -32,7 +31,7 @@ const ProfilePage: React.FC = () => {
         },
         onError: (err: any) => {
             alert("Lỗi cập nhật: " + (err?.response?.data?.message || "Không xác định"));
-        }
+        },
     });
 
     const uploadAvatarMutation = useMutation({
@@ -43,7 +42,7 @@ const ProfilePage: React.FC = () => {
         },
         onError: (err: any) => {
             alert("Lỗi cập nhật avatar: " + (err?.response?.data?.message || "Không xác định"));
-        }
+        },
     });
 
     useEffect(() => {
@@ -53,18 +52,13 @@ const ProfilePage: React.FC = () => {
             setDob(user.dob || "");
             setPhone(user.phoneNumber || "");
             if (user.avatarUrl) {
-                if (user.avatarUrl.startsWith("http")) {
-                    setPreview(user.avatarUrl);
-                } else {
-                    setPreview(API_BASE_URL + user.avatarUrl);
-                }
+                setPreview(user.avatarUrl.startsWith("http") ? user.avatarUrl : API_BASE_URL + user.avatarUrl);
             } else {
                 setPreview(null);
             }
         }
     }, [user]);
 
-    // Chọn ảnh mới
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             setAvatar(e.target.files[0]);
@@ -72,7 +66,6 @@ const ProfilePage: React.FC = () => {
         }
     };
 
-    // Lưu cập nhật
     const handleSave = async () => {
         setLoading(true);
         try {
@@ -80,7 +73,7 @@ const ProfilePage: React.FC = () => {
                 firstName,
                 lastName,
                 phoneNumber: phone,
-                dob: dob,
+                dob,
             });
             if (avatar) {
                 await uploadAvatarMutation.mutateAsync(avatar);
@@ -97,113 +90,111 @@ const ProfilePage: React.FC = () => {
     return (
         <div className="min-h-screen bg-gray-100 flex">
             <Sidebar />
-            <main className="flex-1 bg-white p-6 rounded shadow">
-                <h1 className="text-xl font-bold text-black mb-6">Hồ sơ của tôi</h1>
-                <p className="text-sm text-gray-600 mb-4">Quản lý thông tin hồ sơ để bảo mật tài khoản</p>
-                <div className="space-y-4 max-w-xl">
-                    {/* Ảnh đại diện */}
-                    <div className="flex items-start gap-6 mt-4">
-                        <div>
-                            <label className="block font-semibold text-black mb-2">Ảnh đại diện</label>
-                            <input type="file" accept=".png,.jpg,.jpeg" onChange={handleFileChange}/>
-                            <p className="text-xs text-gray-500 mt-1">
-                                Dung lượng tối đa 1 MB. Định dạng: .JPEG, .PNG
-                            </p>
+            <main className="flex-1 p-8">
+                <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl p-10">
+                    <h1 className="text-3xl font-bold text-gray-900 mb-2">Hồ sơ cá nhân</h1>
+                    <p className="text-sm text-gray-500 mb-6">Cập nhật thông tin để bảo vệ tài khoản của bạn</p>
+
+                    <div className="grid md:grid-cols-2 gap-8">
+                        <div className="space-y-5">
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-1">Họ</label>
+                                <input
+                                    type="text"
+                                    value={firstName}
+                                    onChange={e => setFirstName(e.target.value)}
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-1">Tên</label>
+                                <input
+                                    type="text"
+                                    value={lastName}
+                                    onChange={e => setLastName(e.target.value)}
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-1">Số điện thoại</label>
+                                <input
+                                    type="text"
+                                    value={phone}
+                                    onChange={e => setPhone(e.target.value)}
+                                    maxLength={15}
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-1">Ngày sinh</label>
+                                <input
+                                    type="date"
+                                    value={dob}
+                                    onChange={e => setDob(e.target.value)}
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+                                />
+                            </div>
                         </div>
-                        {preview && (
-                            <img
-                                src={
-                                    preview ||
-                                    (user?.avatarUrl
-                                        ? `http://localhost:8080${user.avatarUrl}`
-                                        : "/placeholder-avatar.png")
-                                }
-                                alt="Avatar"
-                                className="w-24 h-24 rounded-full object-cover border mx-auto"
-                                style={{aspectRatio: "1/1", objectFit: "cover", display: "block"}}
-                            />
-                        )}
+
+                        <div className="space-y-5">
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-1">Tên đăng nhập</label>
+                                <input
+                                    type="text"
+                                    value={user.username}
+                                    disabled
+                                    className="w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-2 text-gray-700"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-1">Email</label>
+                                <input
+                                    type="email"
+                                    value={user.email}
+                                    disabled
+                                    className="w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-2 text-gray-700"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-1">Ảnh đại diện</label>
+                                <input
+                                    type="file"
+                                    accept=".png,.jpg,.jpeg"
+                                    onChange={handleFileChange}
+                                    className="block w-full text-sm text-gray-500"
+                                />
+                                {preview && (
+                                    <div className="mt-3">
+                                        <img
+                                            src={preview}
+                                            alt="Avatar preview"
+                                            className="w-24 h-24 rounded-full object-cover border shadow"
+                                            style={{ aspectRatio: '1 / 1' }}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     </div>
-                    {/* Username (readonly) */}
-                    <div>
-                        <label className="block font-semibold text-black">Tên đăng nhập</label>
-                        <input
-                            type="text"
-                            value={user.username}
-                            disabled
-                            className="w-full p-2 border border-gray-400 rounded bg-gray-100 text-black"
-                        />
-                    </div>
-                    {/* Email (readonly) */}
-                    <div>
-                        <label className="block font-semibold text-black">Email</label>
-                        <input
-                            type="email"
-                            value={user.email}
-                            disabled
-                            className="w-full p-2 border border-gray-400 rounded bg-gray-100 text-black"
-                        />
-                    </div>
-                    {/* Họ */}
-                    <div>
-                        <label className="block font-semibold text-black">Họ</label>
-                        <input
-                            type="text"
-                            value={firstName}
-                            onChange={e => setFirstName(e.target.value)}
-                            className="w-full p-2 border border-gray-400 rounded text-black"
-                        />
-                    </div>
-                    {/* Tên */}
-                    <div>
-                        <label className="block font-semibold text-black">Tên</label>
-                        <input
-                            type="text"
-                            value={lastName}
-                            onChange={e => setLastName(e.target.value)}
-                            className="w-full p-2 border border-gray-400 rounded text-black"
-                        />
-                    </div>
-                    {/* Số điện thoại */}
-                    <div>
-                        <label className="block font-semibold text-black">Số điện thoại</label>
-                        <input
-                            type="text"
-                            value={phone}
-                            onChange={e => setPhone(e.target.value)}
-                            className="w-full p-2 border border-gray-400 rounded text-black"
-                            maxLength={15}
-                        />
-                    </div>
-                    {/* Ngày sinh */}
-                    <div>
-                        <label className="block font-semibold text-black">Ngày sinh</label>
-                        <input
-                            type="date"
-                            value={dob}
-                            onChange={e => setDob(e.target.value)}
-                            className="w-full p-2 border border-gray-400 rounded text-black"
-                        />
-                    </div>
+
                     <div className="mt-10">
-                        <AddressSection/>
+                        <AddressSection />
                     </div>
 
-
-                    <div className="pt-4">
+                    <div className="mt-8 text-right">
                         <button
                             onClick={handleSave}
-                            className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 disabled:opacity-60"
                             disabled={loading || updateUserMutation.isPending || uploadAvatarMutation.isPending}
+                            className="inline-block bg-black text-white px-6 py-2 rounded-lg font-medium hover:bg-gray-800 disabled:opacity-60"
                         >
-                            {loading ? "Đang lưu..." : "Lưu"}
+                            {loading ? 'Đang lưu...' : 'Lưu thay đổi'}
                         </button>
                     </div>
                 </div>
-
             </main>
         </div>
     );
+
 };
 
 export default ProfilePage;
