@@ -150,7 +150,11 @@ export default function ProductPage() {
                   ? product.productName.slice(0, 30) + "..."
                   : product.productName}
               </TableCell>
-              <TableCell>{product.categoryName}</TableCell>
+              <TableCell>
+                {product.categoryName.length > 20
+                  ? product.categoryName.slice(0, 20) + "..."
+                  : product.categoryName}
+              </TableCell>
               <TableCell>
                 {product.description.length > 50
                   ? product.description.slice(0, 50) + "..."
