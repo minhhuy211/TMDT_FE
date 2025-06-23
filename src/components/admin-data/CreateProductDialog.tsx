@@ -29,10 +29,11 @@ export default function CreateProductDialog({
     description: "",
     price: "",
     stock: "",
-    img: "",
+    file: null as File | null, // thêm file
     cate_ID: "",
     status: "ACTIVE" as ProductStatus,
   });
+
 
   const [categories, setCategories] = useState<Category[]>([]);
 
@@ -46,20 +47,25 @@ export default function CreateProductDialog({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.productName || !form.description || !form.img || !form.cate_ID) {
+    if (!form.productName || !form.description || !form.cate_ID) {
       alert("Vui lòng nhập đầy đủ thông tin bắt buộc.");
       return;
     }
     try {
       const payload = {
-        ...form,
+        productName: form.productName,
+        description: form.description,
         price: Number(form.price),
         stock: Number(form.stock),
+        cate_ID: form.cate_ID,
+        status: form.status,
+        file: form.file, // gửi file thay vì url
       };
+
       await productApi.createProduct(payload);
       alert("Tạo sản phẩm thành công");
       setShowDialog(false);
-      onProductCreated(); // cập nhật lại danh sách
+      onProductCreated();
     } catch (err) {
       console.error(err);
       alert("Tạo thất bại");
@@ -99,12 +105,12 @@ export default function CreateProductDialog({
             onChange={(e) => setForm({ ...form, stock: e.target.value })}
             required
           />
-          <Input
-            placeholder="URL ảnh"
-            value={form.img}
-            onChange={(e) => setForm({ ...form, img: e.target.value })}
-            required
+          <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setForm({ ...form, file: e.target.files?.[0] || null })}
           />
+
 
           {/* Dropdown chọn danh mục */}
           <select
