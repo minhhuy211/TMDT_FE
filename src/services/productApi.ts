@@ -35,18 +35,70 @@ export default {
     },
 
     // Tạo sản phẩm mới
-    createProduct: async (productData: Partial<Product>): Promise<Product> => {
-        const response = await api.post<APIResponse<Product>>("/products", productData);
+    createProduct: async (productData: Partial<Product> & { file?: File | null }): Promise<Product> => {
+        const formData = new FormData();
+
+        if (productData.productName) formData.append("productName", productData.productName);
+        if (productData.description) formData.append("description", productData.description);
+        if (productData.price !== undefined) formData.append("price", productData.price.toString());
+        if (productData.stock !== undefined) formData.append("stock", productData.stock.toString());
+        if (productData.cate_ID) formData.append("cate_ID", productData.cate_ID);
+        if (productData.status) formData.append("status", productData.status);
+
+        if (productData.file) formData.append("file", productData.file);
+
+        const response = await api.post<APIResponse<Product>>("/products", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+
         return response.result;
     },
+    updateProduct: async (
+        id: string,
+        productData: Partial<Product> & { file?: File | null }
+    ): Promise<Product | null> => {
+        const formData = new FormData();
+        formData.append("productName", productData.productName ?? "");
+        formData.append("description", productData.description ?? "");
+        formData.append("price", productData.price?.toString() ?? "0");
+        formData.append("stock", productData.stock?.toString() ?? "0");
+        if (!productData.cate_ID) throw new Error("cate_ID không được để trống");
+        formData.append("cate_ID", productData.cate_ID);
+        if (productData.file) formData.append("file", productData.file);
 
-    // Cập nhật sản phẩm theo ID
-    updateProduct: async (id: string, productData: Partial<Product>): Promise<Product> => {
-        const response = await api.put<APIResponse<Product>>(`/products/${id}`, productData);
-        console.log(response);
-        return response.result;
-    },
+        try {
+            // Vì api.put(...) trả về data trực tiếp
+            const responseData = await api.put(`/products/${id}`, formData);
 
+            // responseData = { code, message, result }
+
+            console.log("Full response data:", responseData);
+
+            if (!responseData) {
+                throw new Error("No data in response");
+            }
+
+            if ("result" in responseData) {
+                return responseData.result;
+            }
+
+            // Nếu không có result thì trả về luôn
+            return responseData as Product;
+
+        } catch (error: any) {
+            if (error.response) {
+                console.error("Error response data:", error.response.data);
+                console.error("Error response status:", error.response.status);
+            } else {
+                console.error("Error message:", error.message);
+            }
+            throw error;
+        }
+    }
+
+,
     // Xóa sản phẩm theo ID
     deleteProduct: async (id: string): Promise<Product> => {
         const response = await api.delete<APIResponse<Product>>(`/products/${id}`);

@@ -4,6 +4,7 @@ import type { Product } from "@/model/Product";
 import api from "./api";
 
 const categoryApi = {
+
   getCategories: async (): Promise<Category[]> => {
     try {
       const data = await api.get<APIResponse<Category[]>>("/categories");
@@ -49,28 +50,57 @@ const categoryApi = {
     }
   },
 
-  createCategory: async (payload: CategoryRequest): Promise<Category> => {
+  createCategory: async (payload: CategoryRequest & { file?: File | null }): Promise<Category> => {
     try {
-      const data = await api.post<APIResponse<Category>>("/categories", payload);
+      const formData = new FormData();
+      formData.append("name", payload.name);
+      formData.append("description", payload.description || "");
+      if (payload.file) {
+        formData.append("file", payload.file);  // sửa lại thành "file"
+      } else if (payload.urlImage) {
+        formData.append("urlImage", payload.urlImage);
+      }
+
+      const data = await api.post<APIResponse<Category>>("/categories", formData, {
+        headers: { "Content-Type": "multipart/form-data" }
+      });
+
       console.log("Created category:", data);
       console.log("Created category result:", data.result);
+
       if (data.code !== 0 || !data.result) {
         throw new Error(data.message || "Tạo danh mục thất bại");
       }
       return data.result;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating category:", error);
       throw new Error(`Tạo danh mục thất bại: ${error.message || error}`);
     }
   },
 
-  updateCategory: async (id: string, payload: CategoryRequest): Promise<Category> => {
-    if (!id) {
-      throw new Error("ID danh mục không hợp lệ.");
-    }
+
+
+  updateCategory: async (
+      id: string,
+      payload: CategoryRequest & { file?: File | null }
+  ): Promise<Category> => {
+    if (!id) throw new Error("ID danh mục không hợp lệ.");
+
     try {
-      const data = await api.put<APIResponse<Category>>(`/categories/${id}`, payload);
-      console.log(`Updated category with ID (${id}):`, data);
+      const formData = new FormData();
+      formData.append("name", payload.name);
+      formData.append("description", payload.description || "");
+
+      if (payload.file) {
+        formData.append("file", payload.file);
+      }
+
+      const data = await api.put<APIResponse<Category>>(`/categories/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
       if (data.code !== 0 || !data.result) {
         throw new Error(data.message || "Cập nhật danh mục thất bại.");
       }

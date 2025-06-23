@@ -69,107 +69,126 @@ function SearchInput({
 }
 
 function CategoryDialog({
-  category,
-  isOpen,
-  onClose,
-  onSave,
-  loading,
-}: {
-  category?: Category;
-  isOpen: boolean;
-  onClose: () => void;
-  onSave: (category: CategoryRequest) => void;
-  loading?: boolean;
+
+                            category,
+                            isOpen,
+                            onClose,
+                            onSave,
+                            loading,
+                        }: {
+    category?: Category
+    isOpen: boolean
+    onClose: () => void
+    onSave: (category: CategoryRequest & { file?: File | null }) => void
+    loading?: boolean
 }) {
-  const [name, setName] = useState(category?.name || "");
-  const [description, setDescription] = useState(category?.description || "");
-  const [imageUrl, setImageUrl] = useState(category?.urlImage || ""); // New state for the image URL
+    const [name, setName] = useState(category?.name || "");
+    const [description, setDescription] = useState(category?.description || "");
+    const [imageUrl, setImageUrl] = useState(category?.urlImage || ""); // URL hoặc base64
+    const [file, setFile] = useState<File | null>(null);
 
-  useEffect(() => {
-    setName(category?.name || "");
-    setDescription(category?.description || "");
-    setImageUrl(category?.urlImage || ""); // Set the image URL from category if editing
-  }, [category]);
+    useEffect(() => {
+        setName(category?.name || "");
+        setDescription(category?.description || "");
+        setImageUrl(category?.urlImage || "");
+        setFile(null);  // Reset file khi category thay đổi
+    }, [category]);
 
-  const handleSave = () => {
-    if (!name.trim()) {
-      toast.error("Tên danh mục không được để trống");
-      return;
-    }
-    // Save the category including the image URL
-    onSave({
-      name: name.trim(),
-      description: description.trim(),
-      urlImage: imageUrl.trim(),
-    });
-  };
+    // Khi chọn file ảnh
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const selectedFile = e.target.files?.[0];
+        if (selectedFile) {
+            setFile(selectedFile);
 
-  return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>
-            {category ? "Chỉnh sửa danh mục" : "Thêm danh mục mới"}
-          </DialogTitle>
-          <DialogDescription>
-            {category
-              ? "Cập nhật thông tin danh mục"
-              : "Tạo danh mục sản phẩm mới"}
-          </DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid gap-2">
-            <Label htmlFor="name">Tên danh mục *</Label>
-            <Input
-              id="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Nhập tên danh mục"
-              disabled={loading}
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="description">Mô tả</Label>
-            <Textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Nhập mô tả danh mục"
-              rows={3}
-              disabled={loading}
-            />
-          </div>
-          {/* Image URL Input */}
-          <div className="grid gap-2">
-            <Label htmlFor="imageUrl">URL ảnh</Label>
-            <Input
-              id="imageUrl"
-              value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
-              placeholder="Nhập URL ảnh"
-              disabled={loading}
-            />
-          </div>
-          {/* Preview Image */}
-          {imageUrl && (
-            <div className="mt-2">
-              <Label>Ảnh xem trước:</Label>
-              <img src={imageUrl} alt="Preview" className="max-h-48 mt-2" />
-            </div>
-          )}
-        </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose} disabled={loading}>
-            Hủy
-          </Button>
-          <Button onClick={handleSave} disabled={loading}>
-            {category ? "Cập nhật" : "Thêm mới"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
+            // Đọc file để preview ảnh
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                setImageUrl(ev.target?.result as string);
+            };
+            reader.readAsDataURL(selectedFile);
+        }
+    };
+
+    const handleSave = () => {
+        if (!name.trim()) {
+            toast.error("Tên danh mục không được để trống");
+            return;
+        }
+        // Truyền cả file và các trường còn lại cho onSave
+        onSave({
+            name: name.trim(),
+            description: description.trim(),
+            urlImage: imageUrl,  // tạm thời gửi base64 hoặc URL nếu bạn xử lý upload ở ngoài
+            file, // gửi file lên nếu bạn xử lý upload ảnh riêng biệt
+        });
+    };
+
+    return (
+        <Dialog open={isOpen} onOpenChange={onClose}>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle>{category ? "Chỉnh sửa danh mục" : "Thêm danh mục mới"}</DialogTitle>
+                    <DialogDescription>
+                        {category ? "Cập nhật thông tin danh mục" : "Tạo danh mục sản phẩm mới"}
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                    <div className="grid gap-2">
+                        <Label htmlFor="name">Tên danh mục *</Label>
+                        <Input
+                            id="name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder="Nhập tên danh mục"
+                            disabled={loading}
+                        />
+                    </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="description">Mô tả</Label>
+                        <Textarea
+                            id="description"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            placeholder="Nhập mô tả danh mục"
+                            rows={3}
+                            disabled={loading}
+                        />
+                    </div>
+
+                    {/* Input chọn file ảnh */}
+                    <div className="grid gap-2">
+                        <Label htmlFor="file">Chọn ảnh</Label>
+                        <input
+                            id="file"
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                            disabled={loading}
+                        />
+                    </div>
+
+                    {/* Preview ảnh */}
+                    {imageUrl && (
+                        <div className="mt-2">
+                            <Label>Ảnh xem trước:</Label>
+                            <img src={imageUrl} alt="Preview" className="max-h-48 mt-2 object-contain rounded-md" />
+                        </div>
+                    )}
+                </div>
+                <DialogFooter>
+                    <Button variant="outline" onClick={onClose} disabled={loading}>
+                        Hủy
+                    </Button>
+                    <Button onClick={handleSave} disabled={loading}>
+                        {category ? "Cập nhật" : "Thêm mới"}
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    );
+
 }
+
 
 function DeleteDialog({
   category,
@@ -296,30 +315,31 @@ export default function CategoryPage() {
     setDeleteDialogOpen(true);
   };
 
-  const handleSaveCategory = async (category: CategoryRequest) => {
-    setLoading(true);
-    try {
-      if (editingCategory) {
-        // Edit existing category with imageUrl
-        await categoryApi.updateCategory(editingCategory.cate_ID, category);
-        toast.success("Cập nhật danh mục thành công");
-      } else {
-        // Create new category with imageUrl
-        await categoryApi.createCategory(category);
-        toast.success("Tạo danh mục mới thành công");
-      }
-      setDialogOpen(false);
-      setEditingCategory(undefined);
-      // Refetch categories after save
-      const data = await categoryApi.getCategories();
-      setCategories(data);
-    } catch (error) {
-      toast.error("Lỗi khi lưu danh mục");
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+
+    const handleSaveCategory = async (categoryReq: CategoryRequest & { file?: File | null }) => {
+        setLoading(true);
+        try {
+            if (editingCategory) {
+                await categoryApi.updateCategory(editingCategory.cate_ID, categoryReq);
+                toast.success("Cập nhật danh mục thành công");
+            } else {
+                await categoryApi.createCategory(categoryReq);  // truyền luôn cả file vào đây
+                toast.success("Tạo danh mục mới thành công");
+            }
+
+            setDialogOpen(false);
+            setEditingCategory(undefined);
+
+            const data = await categoryApi.getCategories();
+            setCategories(data);
+        } catch (error) {
+            toast.error("Lỗi khi lưu danh mục");
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
   const handleDeleteCategory = async () => {
     if (!deletingCategory) return;
