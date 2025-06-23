@@ -6,14 +6,12 @@ import { FaTrashAlt } from "react-icons/fa";
 const AddressSection: React.FC = () => {
     const [newAddress, setNewAddress] = useState({ name: "", street: "", city: "" });
 
-    // Lấy danh sách địa chỉ
     const { data: addresses = [], refetch } = useQuery({
         queryKey: ["addresses"],
         queryFn: addressApi.getAddresses,
         refetchOnWindowFocus: false,
     });
 
-    // Thêm địa chỉ mới
     const addMutation = useMutation({
         mutationFn: () => addressApi.addAddress({ ...newAddress }),
         onSuccess: () => {
@@ -24,7 +22,6 @@ const AddressSection: React.FC = () => {
         onError: (err: any) => alert("Thêm địa chỉ thất bại: " + (err?.message || "Không xác định")),
     });
 
-    // Xóa địa chỉ
     const deleteMutation = useMutation({
         mutationFn: (id: string) => addressApi.deleteAddress(id),
         onSuccess: () => {
@@ -35,17 +32,20 @@ const AddressSection: React.FC = () => {
     });
 
     return (
-        <div className="mt-4 p-4 bg-white rounded shadow max-w-xl">
-            <h2 className="text-lg font-bold mb-3">Địa chỉ nhận hàng</h2>
-            {/* List addresses */}
+        <div className="mt-8 p-6 bg-white rounded-xl shadow-md max-w-3xl">
+            <h2 className="text-xl font-semibold mb-4 text-gray-800">Địa chỉ nhận hàng</h2>
+
             {addresses.length === 0 ? (
-                <div className="text-gray-500 mb-3">Bạn chưa có địa chỉ nào.</div>
+                <div className="text-gray-500 mb-4">Bạn chưa có địa chỉ nào.</div>
             ) : (
-                <ul className="mb-3 space-y-2">
+                <ul className="mb-6 space-y-3">
                     {addresses.map(addr => (
-                        <li key={addr.id} className="border rounded px-3 py-2 bg-gray-50 flex justify-between items-center">
-                            <span>
-                                <span className="font-semibold">{addr.name}</span>: {addr.street}{addr.city ? `, ${addr.city}` : ""}
+                        <li
+                            key={addr.id}
+                            className="border rounded-lg px-4 py-3 bg-gray-50 flex justify-between items-center hover:shadow"
+                        >
+                            <span className="text-gray-700">
+                                <span className="font-medium text-black">{addr.name}</span>: {addr.street}{addr.city ? `, ${addr.city}` : ""}
                             </span>
                             <button
                                 onClick={() => {
@@ -53,7 +53,7 @@ const AddressSection: React.FC = () => {
                                         deleteMutation.mutate(addr.id);
                                     }
                                 }}
-                                className="ml-2 text-red-600 hover:text-red-900"
+                                className="text-red-500 hover:text-red-700 disabled:opacity-60"
                                 title="Xóa địa chỉ"
                                 disabled={deleteMutation.isPending}
                             >
@@ -64,9 +64,8 @@ const AddressSection: React.FC = () => {
                 </ul>
             )}
 
-            {/* Add new address form */}
             <form
-                className="grid grid-cols-1 md:grid-cols-3 gap-3"
+                className="grid grid-cols-1 md:grid-cols-3 gap-4"
                 onSubmit={e => {
                     e.preventDefault();
                     addMutation.mutate();
@@ -77,7 +76,7 @@ const AddressSection: React.FC = () => {
                     placeholder="Tên người nhận"
                     value={newAddress.name}
                     onChange={e => setNewAddress(v => ({ ...v, name: e.target.value }))}
-                    className="border p-2 rounded"
+                    className="border border-gray-300 p-2 rounded-md shadow-sm focus:ring-black focus:border-black"
                     required
                 />
                 <input
@@ -85,7 +84,7 @@ const AddressSection: React.FC = () => {
                     placeholder="Địa chỉ (street)"
                     value={newAddress.street}
                     onChange={e => setNewAddress(v => ({ ...v, street: e.target.value }))}
-                    className="border p-2 rounded"
+                    className="border border-gray-300 p-2 rounded-md shadow-sm focus:ring-black focus:border-black"
                     required
                 />
                 <input
@@ -93,16 +92,18 @@ const AddressSection: React.FC = () => {
                     placeholder="Tỉnh/thành phố"
                     value={newAddress.city}
                     onChange={e => setNewAddress(v => ({ ...v, city: e.target.value }))}
-                    className="border p-2 rounded"
+                    className="border border-gray-300 p-2 rounded-md shadow-sm focus:ring-black focus:border-black"
                     required
                 />
-                <button
-                    type="submit"
-                    className="col-span-1 md:col-span-3 bg-black text-white px-4 py-2 rounded mt-2"
-                    disabled={addMutation.isPending}
-                >
-                    {addMutation.isPending ? "Đang thêm..." : "Thêm địa chỉ mới"}
-                </button>
+                <div className="md:col-span-3">
+                    <button
+                        type="submit"
+                        className="w-full bg-black text-white py-2 px-4 rounded-md hover:bg-gray-800 disabled:opacity-60"
+                        disabled={addMutation.isPending}
+                    >
+                        {addMutation.isPending ? "Đang thêm..." : "Thêm địa chỉ mới"}
+                    </button>
+                </div>
             </form>
         </div>
     );
