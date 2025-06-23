@@ -1,6 +1,7 @@
 // src/services/orderApi.ts
-import { API_BASE_URL } from "@/services/api";
+import api, { API_BASE_URL } from "@/services/api";
 import type {OrderDetails, OrderRequest} from "@/model/Order";
+import { APIResponse } from "@/model/APIResponse";
 
 export const placeOrder = async (order: OrderRequest) => {
     const token = localStorage.getItem("token");
@@ -58,3 +59,11 @@ export const cancelOrder = async (orderId: string) => {
     // Không trả về gì hoặc return true để xác nhận thành công
     return true;
 };
+
+export const orderApi = {
+  getRevenue: async (): Promise<number> => {
+    const response = await api.get<APIResponse<number>>("/order/revenue");
+    return response.data.result;
+  },
+};
+
