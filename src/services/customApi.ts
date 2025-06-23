@@ -126,7 +126,7 @@ export default {
 
   payOrderCustom: async (id: string): Promise<void> => {
     const token = localStorage.getItem("token");
-    await api.put(
+    await api.post(
         `/order-custom/${id}/pay`,
         {},
         {
