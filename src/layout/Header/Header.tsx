@@ -120,7 +120,7 @@ const Header = () => {
                       {user.username}
                     </p>
                     <p className="text-xs leading-none text-muted-foreground">
-                      {user.firstName}
+                      {user.firstName} {user.lastName}
                     </p>
                   </div>
                 </DropdownMenuLabel>
