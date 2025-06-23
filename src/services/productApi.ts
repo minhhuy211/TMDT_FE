@@ -42,7 +42,7 @@ export default {
         if (productData.description) formData.append("description", productData.description);
         if (productData.price !== undefined) formData.append("price", productData.price.toString());
         if (productData.stock !== undefined) formData.append("stock", productData.stock.toString());
-        if (productData.cate_ID) formData.append("cate_ID", productData.cate_ID);
+        if (productData.category?.cate_ID) formData.append("cate_ID", productData.category.cate_ID);
         if (productData.status) formData.append("status", productData.status);
 
         if (productData.file) formData.append("file", productData.file);
@@ -64,27 +64,25 @@ export default {
         formData.append("description", productData.description ?? "");
         formData.append("price", productData.price?.toString() ?? "0");
         formData.append("stock", productData.stock?.toString() ?? "0");
-        if (!productData.cate_ID) throw new Error("cate_ID không được để trống");
-        formData.append("cate_ID", productData.cate_ID);
-        if (productData.file) formData.append("file", productData.file);
+
+        const cateId = productData.cate_ID ?? productData.category?.cate_ID;
+        if (!cateId) throw new Error("cate_ID không được để trống");
+        formData.append("cate_ID", cateId);
+
+        if (productData.file) {
+            formData.append("file", productData.file);
+        }
 
         try {
-            // Vì api.put(...) trả về data trực tiếp
             const responseData = await api.put(`/products/${id}`, formData);
-
-            // responseData = { code, message, result }
-
             console.log("Full response data:", responseData);
 
-            if (!responseData) {
-                throw new Error("No data in response");
-            }
+            if (!responseData) throw new Error("No data in response");
 
             if ("result" in responseData) {
                 return responseData.result;
             }
 
-            // Nếu không có result thì trả về luôn
             return responseData as Product;
 
         } catch (error: any) {

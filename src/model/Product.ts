@@ -18,8 +18,6 @@ export interface Product {
   urlImage: string;
   categoryName: string; 
   status: ProductStatus
-  cate_ID: string;            // UUID
-
 }
 
 export interface ProductRequest {
