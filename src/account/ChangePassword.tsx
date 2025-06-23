@@ -1,7 +1,6 @@
     import React, { useState } from "react";
     import Sidebar from "./sidebar";
     import { ResetPasswordRequest } from "@/model/Authentication";
-    import authApi from "@/services/authApi";
     import { useMutation } from "@tanstack/react-query";
     import userApi from "@/services/userApi";
 
@@ -17,6 +16,7 @@
         mutationFn: userApi.changePassword,
         onSuccess: () => {
             console.log("Đặt lại mật khẩu thành công");
+            localStorage.removeItem("user_email"); // Xoá email sau khi đổi mật khẩu
         setMessage("Đặt lại mật khẩu thành công");
         setError("");
         },
