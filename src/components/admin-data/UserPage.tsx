@@ -39,7 +39,7 @@ const getRoleLabel = (role: string) => {
     switch (role.toUpperCase()) {
         case "ADMIN":
             return "Quản trị viên"
-        case "MODERATOR":
+        case "STAFF":
             return "Điều hành viên"
         case "USER":
             return "Người dùng"
@@ -170,7 +170,7 @@ function StatsCards({ users }: { users: UserType[] }) {
     const stats = useMemo(() => {
         const total = users.length
         const admins = users.filter((u) => u.role.toUpperCase() === "ADMIN").length
-        const moderators = users.filter((u) => u.role.toUpperCase() === "MODERATOR").length
+        const moderators = users.filter((u) => u.role.toUpperCase() === "STAFF").length
         const regularUsers = users.filter((u) => u.role.toUpperCase() === "USER").length
         return { total, admins, moderators, regularUsers }
     }, [users])

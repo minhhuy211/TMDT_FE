@@ -69,7 +69,7 @@ export default function EditProductDialog({
     }
 
     try {
-      const payload: ProductRequest & { file?: File | null } = {
+      const payload: ProductRequest & { file?: File | null; urlImage?: string } = {
         productName: form.productName,
         description: form.description,
         price: Number(form.price),
@@ -78,6 +78,11 @@ export default function EditProductDialog({
         status: form.status,
         file: form.file,
       };
+
+      // Nếu không có ảnh mới thì giữ lại ảnh cũ
+      if (!form.file) {
+        payload.urlImage = form.urlImage;
+      }
 
       console.log("Gửi payload updateProduct:", payload);
 

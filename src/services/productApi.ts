@@ -71,6 +71,8 @@ export default {
 
         if (productData.file) {
             formData.append("file", productData.file);
+        } else if (productData.urlImage) {
+            formData.append("urlImage", productData.urlImage); // 👈 giữ ảnh cũ
         }
 
         try {
@@ -84,7 +86,6 @@ export default {
             }
 
             return responseData as Product;
-
         } catch (error: any) {
             if (error.response) {
                 console.error("Error response data:", error.response.data);
@@ -95,7 +96,6 @@ export default {
             throw error;
         }
     }
-
 ,
     // Xóa sản phẩm theo ID
     deleteProduct: async (id: string): Promise<Product> => {
