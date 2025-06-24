@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { toast } from "react-toastify"
 import { API_BASE_URL } from "@/services/api"  // giống như placeOrder
+import { addressApi } from "@/services/addresses";
 
 
 export type OrderStatus = "pending" | "completed" | "shipped" | "cancelled"
@@ -84,7 +85,29 @@ export function useOrders() {
         setError(null)
         try {
             const data = await orderApi.getOrders()
-            setOrders(data)
+
+            // Lấy thông tin địa chỉ tương ứng cho mỗi order
+            const enrichedOrders = await Promise.all(
+                data.map(async (order) => {
+                    if (order.shippingAddress) {
+                        try {
+                            const address = await addressApi.getAddressById(order.shippingAddress)
+                            return {
+                                ...order,
+                                shippingAddressId: order.shippingAddress,
+                                shippingAddress: `${address.name}, ${address.street}, ${address.city ?? ""}`.trim()
+                            }
+
+                        } catch (err) {
+                            console.warn(`Không tìm thấy địa chỉ ${order.shippingAddress}`)
+                            return order
+                        }
+                    }
+                    return order
+                })
+            )
+
+            setOrders(enrichedOrders)
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : "Lỗi khi tải đơn hàng"
             setError(errorMessage)

@@ -45,9 +45,22 @@ const deleteAddress = async (id: string): Promise<void> => {
     });
     if (!res.ok) throw new Error("Không xóa được địa chỉ");
 };
+    const getAddressById = async (id: string): Promise<Address> => {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${API_BASE_URL}/addresses/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) throw new Error("Không lấy được địa chỉ theo ID");
+    const data = await res.json();
+    if ("result" in data) return data.result as Address;
+    return data as Address;
+};
+
 
 export const addressApi = {
     getAddresses,
+    getAddressById, // 👈 thêm dòng này
     addAddress,
-    deleteAddress
+    deleteAddress,
 };
+
