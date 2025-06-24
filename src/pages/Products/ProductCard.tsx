@@ -19,7 +19,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
     const { productId, urlImage, productName, price } = product;
 
     return (
-        <Card className="group flex flex-col justify-between h-full overflow-hidden">
+        <Card className="group flex flex-col justify-between h-full overflow-hidden py-0">
             <Link to={`/product-detail/${productId}`} className="block">
                 <CardHeader className="p-0">
                     <img

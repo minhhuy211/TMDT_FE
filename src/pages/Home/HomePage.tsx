@@ -115,7 +115,7 @@ export const HomePage = () => {
           {latestProducts.length === 0 ? (
             <p className="text-gray-500">Chưa có sản phẩm mới.</p>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {latestProducts.map((product) => (
                 <TopNewProductCard key={product.productId} product={product} />
               ))}
@@ -125,7 +125,7 @@ export const HomePage = () => {
       </section>
 
       {/* Product Categories */}
-      <section className="py-16">
+      <section className="py-0">
         <div className="mx-16 px-4">
           <h2 className="text-2xl md:text-3xl font-bold mb-4">
             Bạn thích tạo ra thứ gì?
@@ -157,7 +157,7 @@ export const HomePage = () => {
             ))}
           </div>
           {/* Product List */}
-          <section className="py-16">
+          <section className="py-0">
             <div className="mx-16 px-4">
               {/* ... filter button ... */}
               {loadingCate ? (
@@ -165,8 +165,8 @@ export const HomePage = () => {
               ) : productList.length === 0 ? (
                 <div>Không có sản phẩm nào</div>
               ) : (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                  {productList.map((prod) => (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                  {productList.slice(0, 8).map((prod) => (
                     <ProductCard product={prod} key={prod.productId} />
                   ))}
                 </div>

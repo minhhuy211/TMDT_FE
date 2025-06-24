@@ -145,9 +145,21 @@ export default function ProductPage() {
         <TableBody>
           {filteredProduct.map((product) => (
             <TableRow key={product.productId}>
-              <TableCell>{product.productName}</TableCell>
-              <TableCell>{product.categoryName}</TableCell>
-              <TableCell>{product.description}</TableCell>
+              <TableCell>
+                {product.productName.length > 30
+                  ? product.productName.slice(0, 30) + "..."
+                  : product.productName}
+              </TableCell>
+              <TableCell>
+                {product.categoryName.length > 20
+                  ? product.categoryName.slice(0, 20) + "..."
+                  : product.categoryName}
+              </TableCell>
+              <TableCell>
+                {product.description.length > 50
+                  ? product.description.slice(0, 50) + "..."
+                  : product.description}
+              </TableCell>
               <TableCell>{product.price}</TableCell>
               <TableCell>
                 {product.urlImage ? (
